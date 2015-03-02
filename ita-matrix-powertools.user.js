@@ -3,7 +3,8 @@
 // @namespace http://matrix.itasoftware.com
 // @description Builds fare purchase links
 // @version 0.9
-// @grant none
+// @grant GM_getValue
+// @grant GM_setValue
 // @include http://matrix.itasoftware.com/*
 // ==/UserScript==
 
@@ -96,12 +97,17 @@
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-mptUsersettings["timeformat"] = "12h";       // replaces times on resultpage - valid: 12h / 24h
-mptUsersettings["language"] = "en";          // replaces several items on resultpage - valid: en / de
-mptUsersettings["enableInlinemode"] = 0;     // enables inline mode - valid: 0 / 1
-mptUsersettings["enableIMGautoload"] = 0;    // enables images to auto load - valid: 0 / 1
-mptUsersettings["enableFarerules"] = 1;      // enables fare rule opening in new window - valid: 0 / 1
-mptUsersettings["enablePricebreakdown"] = 1; // enables price breakdown - valid: 0 / 1
+var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
+if (mptSavedUsersettings) {
+  mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
+}
+
+mptUsersettings["timeformat"]           = mptSavedUsersettings["timeformat"] || "12h";       // replaces times on resultpage - valid: 12h / 24h
+mptUsersettings["language"]             = mptSavedUsersettings["language"] || "en";          // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableInlinemode"]     = mptSavedUsersettings["enableInlinemode"] || 0;     // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"]    = mptSavedUsersettings["enableIMGautoload"] || 0;    // enables images to auto load - valid: 0 / 1
+mptUsersettings["enableFarerules"]      = mptSavedUsersettings["enableFarerules"] || 1;      // enables fare rule opening in new window - valid: 0 / 1
+mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
 
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
