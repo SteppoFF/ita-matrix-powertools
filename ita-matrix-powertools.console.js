@@ -1,18 +1,3 @@
-// ==UserScript==
-// @name DL/ORB Itinary Builder
-// @namespace http://matrix.itasoftware.com
-// @description Builds fare purchase links
-// @version 0.8
-// @grant GM_getValue
-// @grant GM_setValue
-// @include http://matrix.itasoftware.com/*
-// ==/UserScript==
-
-/*
-The CONSOLE version is designed to maintain minify support for execution in the command line of browsers
-(Thus may have special unicode restrictions for OS which do not support copying outside of 7-8bit ASCII)
-*/
-
 /*
  Written by paul21, Steppo & IAkH of FlyerTalk.com
  http://www.flyertalk.com/forum/members/paul21.html
@@ -20,6 +5,13 @@ The CONSOLE version is designed to maintain minify support for execution in the 
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.9 ****
+# 2015-03-01 Edited by Steppo (Adapted script to latest ITA-Changes..,
+				removed local storage to maintain compatibility)
+# 2015-02-26 Edited by IAkH   (Added Alitalia,
+				fixed Air France,
+				fixed GCM image-width,
+				introduced local storage)                                
 **** Version 0.8 ****
 # 2015-02-19 Edited by Steppo (Added settings menu,
                                 added price breakdown,
@@ -95,17 +87,13 @@ The CONSOLE version is designed to maintain minify support for execution in the 
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
-if (mptSavedUsersettings) {
-  mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
-}
+mptUsersettings["timeformat"] = "12h";       // replaces times on resultpage - valid: 12h / 24h
+mptUsersettings["language"] = "en";          // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableInlinemode"] = 0;     // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"] = 0;    // enables images to auto load - valid: 0 / 1
+mptUsersettings["enableFarerules"] = 1;      // enables fare rule opening in new window - valid: 0 / 1
+mptUsersettings["enablePricebreakdown"] = 1; // enables price breakdown - valid: 0 / 1
 
-mptUsersettings["timeformat"]           = mptSavedUsersettings["timeformat"] || "12h";       // replaces times on resultpage - valid: 12h / 24h
-mptUsersettings["language"]             = mptSavedUsersettings["language"] || "en";          // replaces several items on resultpage - valid: en / de
-mptUsersettings["enableInlinemode"]     = mptSavedUsersettings["enableInlinemode"] || 0;     // enables inline mode - valid: 0 / 1
-mptUsersettings["enableIMGautoload"]    = mptSavedUsersettings["enableIMGautoload"] || 0;    // enables images to auto load - valid: 0 / 1
-mptUsersettings["enableFarerules"]      = mptSavedUsersettings["enableFarerules"] || 1;      // enables fare rule opening in new window - valid: 0 / 1
-mptUsersettings["enablePricebreakdown"] = mptSavedUsersettings["enablePricebreakdown"] || 1; // enables price breakdown - valid: 0 / 1
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -115,7 +103,6 @@ mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 
-// execute language detection and afterwards functions for current page
 startcript();
 
 function startcript(){
@@ -197,7 +184,6 @@ function toggleSettings(target){
            mptUsersettings[target]=1;
          };
   }
-  GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
   document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target); 
 }
 
@@ -359,7 +345,7 @@ function hasClass(element, cls) {
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
     // retry if itin not loaded  
-    if (findtarget("GE-ODR-BMBB",1).firstChild.nextSibling.style.display!="none") { 
+    if (findtarget("FNGTPEB-n-c",1).parentNode.style.display!="none") { 
       mptSettings["retrycount"]++;
       if (mptSettings["retrycount"]>20) {
         console.log("Error Content not found.");
@@ -368,7 +354,7 @@ function fePS() {
       setTimeout(function(){fePS();}, 200);    
       return false;
     };
-    
+  
     if (mptUsersettings["enableFarerules"]==1) bindRulelinks();
        
     // empty outputcontainer
@@ -385,15 +371,16 @@ function fePS() {
     
     // configure sidebar
     if (mptUsersettings["enableInlinemode"]==1) {
-    findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 10);
-    findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
+    findtarget('FNGTPEB-A-e',1).setAttribute('rowspan', 10);
+    //findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
     } else if (mptUsersettings["enableInlinemode"]==0 && mptUsersettings["enablePricebreakdown"]==1) {
-      findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 3);
+      findtarget('FNGTPEB-A-e',1).setAttribute('rowspan', 3);
     } else {
-      findtarget('GE-ODR-BOBB',1).setAttribute('rowspan', 2);
+      findtarget('FNGTPEB-A-e',1).setAttribute('rowspan', 2);
     }
+  
     var data = readItinerary();
-    
+ 
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
@@ -402,12 +389,12 @@ function fePS() {
 	 
     printAC(data);
     
-    if (data["itin"].length == 2 && 
+    if (data["itin"].length == 2 &&
         data["itin"][0]["orig"] == data["itin"][1]["dest"] &&
         data["itin"][0]["dest"] == data["itin"][1]["orig"]) {
-      printAF(data);
+        printAF(data);
     }
-    
+  
     // we print AZ if its only on AZ-flights
     if (data["carriers"].length==1 && data["carriers"][0]=="AZ"){
       printAZ(data);
@@ -442,7 +429,7 @@ function bindRulelinks(){
     var i = 0;
     var j = 0;
     var t = 1;
-    var target=findtarget('GE-ODR-BGS',t);
+    var target=findtarget('FNGTPEB-l-d',t);
     if (target!=undefined){
       do {
           var current=Number(target.firstChild.innerHTML.replace(/[^\d]/gi, ""));
@@ -461,7 +448,7 @@ function bindRulelinks(){
           target.parentNode.replaceChild(newlink,target);    
           i++;
           t++;
-          target=findtarget('GE-ODR-BGS',t);
+          target=findtarget('FNGTPEB-l-d',t);
       }
       while (target!=undefined);  
     }   
@@ -476,7 +463,7 @@ function rearrangeprices(dist){
     // define serchpattern to detect carrier imposed surcharges
     var surchpatt = new RegExp("\((YQ|YR)\)");
     var t=1;
-    var target=findtarget('GE-ODR-BJS',t);
+    var target=findtarget('FNGTPEB-l-g',t);
     if (mptUsersettings["enableInlinemode"] == 0){
      var output="";
      var count=0;
@@ -494,7 +481,7 @@ function rearrangeprices(dist){
             //its a pricenode
             var name  = target.firstChild.innerHTML;    
             var price = Number(target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, ""));            
-            if( hasClass(target.nextSibling, 'GE-ODR-BOS') == 1) {
+            if( hasClass(target.nextSibling, 'FNGTPEB-l-l') == 1) {
              //we are done for this container
               //console.log( "Basefare: "+ basefares);    
               //console.log( "Taxes: "+ taxes); 
@@ -502,16 +489,16 @@ function rearrangeprices(dist){
               var sum=basefares+taxes+surcharges;
               if (mptUsersettings["enableInlinemode"] == 1){
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BOS"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Basefare per passenger ('+((basefares/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-l"><div class="gwt-Label">'+cur+(basefares/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BIS"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Taxes per passenger ('+((taxes/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-f"><div class="gwt-Label">'+cur+(taxes/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BIS"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Surcharges per passenger ('+((surcharges/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-f"><div class="gwt-Label">'+cur+(surcharges/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode);  
                   var newtr = document.createElement('tr');
-                  newtr.innerHTML = '<td class="GE-ODR-BJS"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="GE-ODR-BOS"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
+                  newtr.innerHTML = '<td class="FNGTPEB-l-g"><div class="gwt-Label">Basefare + Taxes per passenger ('+(((basefares+taxes)/sum)*100).toFixed(2).toString()+'%)</div></td><td class="FNGTPEB-l-l"><div class="gwt-Label">'+cur+((basefares+taxes)/100).toFixed(2).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div></td>';
                   target.parentNode.parentNode.insertBefore(newtr, target.parentNode); 
               } else {
                  count++;
@@ -540,15 +527,15 @@ function rearrangeprices(dist){
             }
           }    
           t++;
-          target=findtarget('GE-ODR-BJS',t);
+          target=findtarget('FNGTPEB-l-g',t);
       }
       while (target!=undefined);  
     }
     if (mptUsersettings["enableInlinemode"] == 0){
-      var printtarget=findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode;
+      var printtarget=findtarget('FNGTPEB-F-a',1).parentNode.parentNode.parentNode.parentNode;
       var newtr = document.createElement('tr');
       newtr.setAttribute('class','pricebreakdown');
-      newtr.innerHTML = '<td class="GE-ODR-BMBB"><div>'+output+'</div></td>';
+      newtr.innerHTML = '<td><div>'+output+'</div></td>';
       printtarget.parentNode.insertBefore(newtr, printtarget); 
     }
 }
@@ -623,10 +610,9 @@ function readItinerary(){
       //Searches through inner-html of div itineraryNode
       var itinHTML = new Array();
       // Seaerch for itin
-      var re=/GE-ODR-BNBB(.*?)GE-ODR-BOBB/g;
+      var re=/FNGTPEB-A-c(.*?)FNGTPEB-A-e/g;
       itinHTML = exRE(document.getElementById("contentwrapper").innerHTML,re);
       itinHTML=itinHTML[0];
-  
       // Lets split result into legs
       var legs = new Array();
       var re=/<tbody>(.*?)<\/tbody>/g;
@@ -657,7 +643,6 @@ function readItinerary(){
         }
         
       }
-      
       //Find carrier
       var re=/airline_logos\/35px\/(\w\w)\.png/g;
       var carriers = new Array();
@@ -665,19 +650,19 @@ function readItinerary(){
       var re = /airline_logos.*?gwt-Label\"\>(.*?)\s{1}[0-9]*\<\/div>/g;
       var airlineName = new Array();
       airlineName = exRE(itinHTML, re);
-  
       // build the array of unique carriers  
       for (i=0;i<carriers.length;i++) {
         if (!inArray(carriers[i],carrieruarray)) {carrieruarray.push(carriers[i]);};
       }  
           
       //Find Airports
-      var re=/(GE-ODR-BHR")*\>[^\(\<]*\(([A-Z]{3})[^\(\<]*\(([A-Z]{3})/g;
+      var re=/(FNGTPEB-k-l)*"\>[^\(\<]*\(([A-Z]{3})[^\(\<]*\(([A-Z]{3})/g;
       var airports= new Array();
       var tmp_airports= new Array();
       var legNum = new Array();
       var legAirports = new Array();
       tmp_airports = exRE(itinHTML,re);
+  
       //Find Date
       var re=/(strong)*\>[^\(\<]*\([A-Z]{3}[^\(\<]*\([A-Z]{3}[^\,]*\,\s*([a-zA-Z0-9]{1,3})\.?\s*([a-zA-Z0-9ä]{1,3})/g;
       var tmp_airdate= new Array();
@@ -689,9 +674,10 @@ function readItinerary(){
           tmp_airdate[i+1]=tmp_airdate[i+2].replace(/ä/g, "a").replace(/i/g, "y").replace(/Dez/g, "Dec").replace(/Okt/g, "Oct");
           tmp_airdate[i+2]=speicher;
           }
-      }     
+      }
       // find information like codeshare layoverduration and timechange on arrival
       // lets see what we got
+
       var addinformations = Array();
       for (var i = 0; i < tmp_airarrdate.length; i+=5) {
         var speicher = {codeshare:0, arrdate:"", layoverduration:""};
@@ -722,7 +708,7 @@ function readItinerary(){
           }
           addinformations.push(speicher);
        }
-      
+            
       //Find times
       var re=/Dep:[^0-9]+(.*?)\<\/div\>/g;
       var deptimes= new Array();
@@ -768,7 +754,7 @@ function readItinerary(){
       var re = /(\w)[\w]+\s\(\w\)/g;
       var classofservice = new Array();
       classofservice = exRE(itinHTML,re);
-
+ 
   
       var basisHTML = document.getElementById("contentwrapper").innerHTML;
       //Currency in EUR?
@@ -785,18 +771,19 @@ function readItinerary(){
       }
       //console.log("Cur: "+itinCur); 
       // Find fare-price
-      var re=/GE-ODR-BOR\"\>\<div[^0-9]*([0-9,.]+)/g;
+      var re=/FNGTPEB-s-a\"\>\<div[^0-9]*([0-9,.]+)/g;
       var farePrice = new Array();
       farePrice = exRE(basisHTML,re);
       //total price will be the last one
       farePrice=farePrice[(farePrice.length-1)];
+      //console.log("Fare: "+farePrice); 
       if (mptSettings["itaLanguage"]=="de"){
       farePrice=farePrice.replace(/\./g,"").replace(/\,/g,".");
       } else {
       farePrice=farePrice.replace(/\,/g,"");
       }	  
       // Find mileage
-      var re=/GE-ODR-BCT\"\>([0-9,.]+)/g;
+      var re=/FNGTPEB-t-a\"\>([0-9,.]+)/g;
       var mileage = exRE(basisHTML,re);
       //total mileage will be the first one
       if (mileage.length){
@@ -850,9 +837,10 @@ function readItinerary(){
       var datapointer=0;  
       var legobj={};
       // lets try to build a structured object
+
       for(i=0;i<tmp_airports.length;i+=3) {
-            if (tmp_airports[i] == 'GE-ODR-BHR"' ) //Matches the heading airport
-            {
+            if (tmp_airports[i] == 'FNGTPEB-k-l' ) //Matches the heading airport
+            {    
                 if (k>=0) {data.push(legobj);}
                 k++;
                 legobj={};
@@ -864,10 +852,10 @@ function readItinerary(){
                 legobj["dep"]["day"]=parseInt(tmp_airdate[i+2]);
                 legobj["dep"]["month"]=monthnameToNumber(tmp_airdate[i+1]);
                 legobj["dep"]["year"]=getFlightYear(legobj["dep"]["day"],legobj["dep"]["month"]);
-                legobj["dep"]["time"] = deptimes[datapointer];
+                legobj["dep"]["time"] = deptimes[datapointer];             
                 legobj["seg"] = new Array();
-                if (tmp_airports.length <= i+3 || tmp_airports[i+3] == 'GE-ODR-BHR"') //Single flight in leg
-                {                       
+                if (tmp_airports.length <= i+3 || tmp_airports[i+3] == 'FNGTPEB-k-l') //Single flight in leg
+                {   
                     speicher={};
                     speicher["orig"]=tmp_airports[i+1];
                     speicher["dest"]=tmp_airports[i+2];
@@ -911,6 +899,7 @@ function readItinerary(){
                     datapointer++;
                 }
             } else {
+              //is normal flight of leg
                 speicher={};
                 speicher["orig"]=tmp_airports[i+1];
                 speicher["dest"]=tmp_airports[i+2];
@@ -963,7 +952,7 @@ function readItinerary(){
   
       // lets do the replacement
      if(replacementsold.length>0) {
-       target=findtarget("GE-ODR-BNBB",1).nextSibling.nextSibling;
+       target=findtarget("FNGTPEB-A-d",1).nextSibling.nextSibling;
        for(i=0;i<replacementsold.length;i++) {
          re = new RegExp(replacementsold[i],"g");
          target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
@@ -1406,7 +1395,7 @@ function printGCM (data){
       }
     }
   if (mptUsersettings["enableInlinemode"]==1){
-      printImageInline('http://www.gcmap.com/map?MR=900&MX=210x210&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url, 3);
+      printImageInline('http://www.gcmap.com/map?MR=900&MX=182x182&PM=*&P='+url, 'http://www.gcmap.com/mapui?P='+url);
   } else {
       printUrl("http://www.gcmap.com/mapui?P="+url,"GCM","");
   }
@@ -1526,7 +1515,7 @@ function printImageInline(src,url,nth){
     div.innerHTML = div.innerHTML + (url?'<a href="'+url+ '" target="_blank" class="powertoolsitem">':'')+'<img src="'+src+'" style="margin-top:10px;"'+(!url?' class="powertoolsitem"':'')+'/>'+(url?'</a>':'');      
    } else {
      var id=Math.random();
-     div.innerHTML = div.innerHTML + '<div id="'+id+'" class="powertoolsitem" style="width:200px;height:108px;background-color:white;cursor:pointer;text-align:center;margin-top:10px;padding-top:92px;"><span>Click</span></div>';
+     div.innerHTML = div.innerHTML + '<div id="'+id+'" class="powertoolsitem" style="width:184px;height:100px;background-color:white;cursor:pointer;text-align:center;margin-top:10px;padding-top:84px;"><span>Click</span></div>';
      document.getElementById(id).onclick=function(){
        var newdiv = document.createElement('div');
        newdiv.setAttribute('class','powertoolsitem');
@@ -1536,21 +1525,21 @@ function printImageInline(src,url,nth){
    } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget('GE-ODR-BBFB',nth);
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget('FNGTPEB-I-c',nth);
   return div ||createUrlContainerInline();
 }
 function createUrlContainerInline(){
   var newdiv = document.createElement('div');
-  newdiv.setAttribute('class','GE-ODR-BDFB');
-  newdiv.innerHTML = '<div class="GE-ODR-BAFB">Powertools</div><ul id="powertoolslinkinlinecontainer" class="GE-ODR-BBFB"></ul>';
-  findtarget('GE-ODR-BCFB',1).appendChild(newdiv);
+  newdiv.setAttribute('class','FNGTPEB-I-e');
+  newdiv.innerHTML = '<div class="FNGTPEB-I-b">Powertools</div><ul id="powertoolslinkinlinecontainer" class="FNGTPEB-t-c"></ul>';
+  findtarget('FNGTPEB-I-d',1).appendChild(newdiv);
   return document.getElementById('powertoolslinkinlinecontainer');
 }
 // Printing Stuff
 function printUrl(url,name,desc) {
-if (document.getElementById('powertoolslinkcontainer')==undefined){
-createUrlContainer();
-}
+    if (document.getElementById('powertoolslinkcontainer')==undefined){
+    createUrlContainer();
+    }
 var div = document.getElementById('powertoolslinkcontainer');
 div.innerHTML = div.innerHTML + "<br><br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
 }
@@ -1558,5 +1547,5 @@ function createUrlContainer(){
   var newdiv = document.createElement('div');
   newdiv.setAttribute('id','powertoolslinkcontainer');
   newdiv.setAttribute('style','margin-left:10px;');
-  findtarget('GE-ODR-BKEB',1).parentNode.parentNode.parentNode.appendChild(newdiv);
+  findtarget('FNGTPEB-F-k',1).parentNode.parentNode.parentNode.appendChild(newdiv);
 }
