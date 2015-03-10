@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name DL/ORB Itinary Builder
-// @namespace http://matrix.itasoftware.com
+// @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
 // @version 0.9a
 // @grant GM_getValue
 // @grant GM_setValue
-// @include http://matrix.itasoftware.com/*
+// @include http*://matrix.itasoftware.com/*
 // ==/UserScript==
 
 /*
