@@ -5,13 +5,17 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.9a ****
+# 2015-03-02 Edited by Steppo (Rewritten extraction function,
+                                readded local storage,
+                                adapted Hipmunk)
 **** Version 0.9 ****
 # 2015-03-01 Edited by Steppo (Adapted script to latest ITA-Changes..,
-				removed local storage to maintain compatibility)
+                                removed local storage to maintain compatibility)
 # 2015-02-26 Edited by IAkH   (Added Alitalia,
-				fixed Air France,
-				fixed GCM image-width,
-				introduced local storage)                                
+                                fixed Air France,
+                                fixed GCM image-width,
+                                introduced local storage)                                
 **** Version 0.8 ****
 # 2015-02-19 Edited by Steppo (Added settings menu,
                                 added price breakdown,
@@ -87,13 +91,12 @@
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-mptUsersettings["timeformat"] = "12h";       // replaces times on resultpage - valid: 12h / 24h
-mptUsersettings["language"] = "en";          // replaces several items on resultpage - valid: en / de
-mptUsersettings["enableInlinemode"] = 0;     // enables inline mode - valid: 0 / 1
-mptUsersettings["enableIMGautoload"] = 0;    // enables images to auto load - valid: 0 / 1
-mptUsersettings["enableFarerules"] = 1;      // enables fare rule opening in new window - valid: 0 / 1
-mptUsersettings["enablePricebreakdown"] = 1; // enables price breakdown - valid: 0 / 1
-
+mptUsersettings["timeformat"] = "12h"; // replaces times on resultpage - valid: 12h / 24h
+mptUsersettings["language"] = "en"; // replaces several items on resultpage - valid: en / de
+mptUsersettings["enableInlinemode"] =  0; // enables inline mode - valid: 0 / 1
+mptUsersettings["enableIMGautoload"] = 0; // enables images to auto load - valid: 0 / 1
+mptUsersettings["enableFarerules"] = 1; // enables fare rule opening in new window - valid: 0 / 1
+mptUsersettings["enablePricebreakdown"] =  1; // enables price breakdown - valid: 0 / 1
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -184,6 +187,7 @@ function toggleSettings(target){
            mptUsersettings[target]=1;
          };
   }
+  GM_setValue("mptUsersettings", JSON.stringify(mptUsersettings));
   document.getElementById("mpt"+target).firstChild.nextSibling.innerHTML=printSettingsvalue(target); 
 }
 
@@ -204,29 +208,9 @@ function printSettingsvalue(target){
 
 /**************************************** Get Language *****************************************/
 function getPageLang(){
-    if (document.getElementById("localeSelect_label")== null ) {
-      console.log("Matrix 3.0: Falling back to EN"); 
-      mptSettings["itaLanguage"]="en";
-      mptSettings["retrycount"]=1;  
-    } else {      
-      if (document.getElementById("localeSelect_label").innerHTML == "Deutsch") {
-      mptSettings["itaLanguage"]="de";
-      mptSettings["retrycount"]=1;
-     } else if (document.getElementById("localeSelect_label").innerHTML == "English") {
-      mptSettings["itaLanguage"]="en";
-      mptSettings["retrycount"]=1;
-     } else if (mptSettings["retrycount"]>=20) {
-      //set default and go ahead 
-      console.log("Unable to detect language: Falling back to EN"); 
-      mptSettings["itaLanguage"]="en";
-      mptSettings["retrycount"]=1; 
-     } else {
-      mptSettings["retrycount"]++; 
-      setTimeout(function(){getPageLang();}, 100);
-      return false; 
-     }
-   }  
-      
+    console.log("Matrix 3.0: Set lang to en"); 
+    mptSettings["itaLanguage"]="en";
+    mptSettings["retrycount"]=1;
     if (window.location.href.indexOf("view-details") !=-1) {
        setTimeout(function(){fePS();}, 200);   
     }   
@@ -460,8 +444,8 @@ function rearrangeprices(dist){
     var surcharges =0;
     var basefound=0;
     var cur="";
-    // define serchpattern to detect carrier imposed surcharges
-    var surchpatt = new RegExp("\((YQ|YR)\)");
+    // define searchpattern to detect carrier imposed surcharges
+    var searchpatt = new RegExp("\((YQ|YR)\)");
     var t=1;
     var target=findtarget('FNGTPEB-l-g',t);
     if (mptUsersettings["enableInlinemode"] == 0){
@@ -519,7 +503,7 @@ function rearrangeprices(dist){
               surcharges =0;         
             } else {
               //Carrier surcharge?
-              if (surchpatt.test(name)===true){
+              if (searchpatt.test(name)===true){
                surcharges+=price; 
               } else {
                taxes+=price; 
@@ -540,14 +524,32 @@ function rearrangeprices(dist){
     }
 }
   //*** Readfunction ****//
-function readaddinfo(str){
-  var result=new Array();
-  var re=/<td>(.*?)<\/td>/g;
-  result=exRE(str,re);
-  for (i=result.length;i<5;i++) {
-  result.push("");
-  }
-  return result;
+function parseAddInfo(info){
+  var ret= {codeshare:0, layoverduration:0, airportchange:0, arrDate:""};
+  if (info.indexOf("This flight contains airport changes") ==-1){
+               airportchange=1; 
+              }
+  if (info.indexOf("OPERATED BY") ==-1){
+               codeshare=1; 
+              }
+  var temp = new Array();
+  var re=/\,\s*([a-zA-Z]{3})\s*([0-9]{1,2})/g;
+  temp = exRE(info,re);
+  if (temp.length == 2){
+    // Got datechange
+      ret["arrDate"]={};
+      ret["arrDate"]["month"]=monthnameToNumber(temp[0]);
+      ret["arrDate"]["day"]=parseInt(temp[1]);
+      ret["arrDate"]["year"]=getFlightYear(ret["arrDate"]["day"],ret["arrDate"]["month"]);
+    }
+  var temp = new Array();
+  var re=/([0-9]{1,2})h\s([0-9]{1,2})m/g;
+  temp = exRE(info,re);
+  if (temp.length == 2){
+     // Got layover
+      ret["layoverduration"]=parseInt(temp[0])*60 + parseInt(temp[1]);
+    }
+  return ret;
 }
 
 function readItinerary(){
@@ -603,361 +605,144 @@ function readItinerary(){
        replacementsnew.push(" Dezember ");
         replacementsold.push("OPERATED BY ");
        replacementsnew.push("Durchgef&uuml;hrt von ");        
-      }
-  
-      var data= new Array();
-      var carrieruarray= new Array();  
-      //Searches through inner-html of div itineraryNode
-      var itinHTML = new Array();
-      // Seaerch for itin
-      var re=/FNGTPEB-A-c(.*?)FNGTPEB-A-e/g;
-      itinHTML = exRE(document.getElementById("contentwrapper").innerHTML,re);
-      itinHTML=itinHTML[0];
-      // Lets split result into legs
-      var legs = new Array();
-      var re=/<tbody>(.*?)<\/tbody>/g;
-      legs = exRE(itinHTML,re);
-      // devide into tr
-      var re=/<tr>(.*?)<\/tr>/g;
-      var tmp_airarrdate=new Array();
-      var offset=0; 
-      for (i=0;i<legs.length;i++) {
-        speicher = exRE(legs[i],re);
-        legs[i]=new Array();
-        for (j=0;j<speicher.length;j++) {
-            if(speicher[j].indexOf("This flight contains airport changes") ==-1){
-            legs[i].push(speicher[j]);
-            }
-        }            
-        if (legs[i].length>3){
-          for (j=2;j<legs[i].length;j+=2) {
-           tmp_airarrdate=tmp_airarrdate.concat(readaddinfo(legs[i][j]));
-          }  
-        } else {
-           tmp_airarrdate=tmp_airarrdate.concat(readaddinfo(legs[i][1])); 
-        }
-        if (legs[i].length%2 == 0){
-            for (k=0;k<5;k++) {
-            tmp_airarrdate.push("");
-            }
-        }
-        
-      }
-      //Find carrier
-      var re=/airline_logos\/35px\/(\w\w)\.png/g;
-      var carriers = new Array();
-      carriers = exRE(itinHTML,re);
-      var re = /airline_logos.*?gwt-Label\"\>(.*?)\s{1}[0-9]*\<\/div>/g;
-      var airlineName = new Array();
-      airlineName = exRE(itinHTML, re);
-      // build the array of unique carriers  
-      for (i=0;i<carriers.length;i++) {
-        if (!inArray(carriers[i],carrieruarray)) {carrieruarray.push(carriers[i]);};
       }  
-          
-      //Find Airports
-      var re=/(FNGTPEB-k-l)*"\>[^\(\<]*\(([A-Z]{3})[^\(\<]*\(([A-Z]{3})/g;
-      var airports= new Array();
-      var tmp_airports= new Array();
-      var legNum = new Array();
-      var legAirports = new Array();
-      tmp_airports = exRE(itinHTML,re);
-  
-      //Find Date
-      var re=/(strong)*\>[^\(\<]*\([A-Z]{3}[^\(\<]*\([A-Z]{3}[^\,]*\,\s*([a-zA-Z0-9]{1,3})\.?\s*([a-zA-Z0-9ä]{1,3})/g;
-      var tmp_airdate= new Array();
-      tmp_airdate = exRE(itinHTML,re);
-      // lets swap values if german language
-      if (mptSettings["itaLanguage"]=="de"){
-        for (var i = 0; i < tmp_airdate.length; i+=3) {
-          var speicher=tmp_airdate[i+1];
-          tmp_airdate[i+1]=tmp_airdate[i+2].replace(/ä/g, "a").replace(/i/g, "y").replace(/Dez/g, "Dec").replace(/Okt/g, "Oct");
-          tmp_airdate[i+2]=speicher;
-          }
+      var itin= new Array();
+      var carrieruarray= new Array();
+      var html = document.getElementById("contentwrapper").innerHTML;
+      var re=/colspan\=\"5\"[^\(]+\(([\w]{3})[^\(]+\(([\w]{3})/g
+      legs = exRE(html,re);
+      // Got our outer legs now:
+      for(i=0;i<legs.length;i+=2) {
+        var legobj={};
+        // prepare all elements but fill later
+        legobj["arr"]={};
+        legobj["dep"]={};
+        legobj["orig"]=legs[i];
+        legobj["dest"]=legs[i+1];
+        legobj["seg"]= new Array();
+        itin.push(legobj);
       }
-      // find information like codeshare layoverduration and timechange on arrival
-      // lets see what we got
-
-      var addinformations = Array();
-      for (var i = 0; i < tmp_airarrdate.length; i+=5) {
-        var speicher = {codeshare:0, arrdate:"", layoverduration:""};
-          // check for codeshare
-          if(tmp_airarrdate[i]!="") {speicher["codeshare"]=1;}
-          // check timeshift on arrival
-          if(tmp_airarrdate[i+2]!="") {
-            speicher["arrdate"]={};
-            var re=/[^\,]*\,\s*([a-zA-Z0-9]{1,3})\.?\s*([a-zA-Z0-9ä]{1,3})/g;
-            var speicher2= new Array();
-            speicher2 = exRE(tmp_airarrdate[i+2],re);
-            // lets swap values if german language
-            if (mptSettings["itaLanguage"]=="de"){
-                var speicher3=speicher2[0];
-                speicher2[0]=speicher2[1].replace(/ä/g, "a").replace(/i/g, "y").replace(/Dez/g, "Dec").replace(/Okt/g, "Oct");
-                speicher2[1]=speicher3;
-            }
-           speicher["arrdate"]["day"]=parseInt(speicher2[1]);
-           speicher["arrdate"]["month"]=monthnameToNumber(speicher2[0]);
-           speicher["arrdate"]["year"]=getFlightYear(speicher["arrdate"]["day"],speicher["arrdate"]["month"]);
-            
-          }
-          if(tmp_airarrdate[i+3]!="") {
-            var re=/([0-9]{1,2})/g;
-            var speicher2 = new Array();
-            speicher2 = exRE(tmp_airarrdate[i+3],re);
-            speicher["layoverduration"]=parseInt(speicher2[0])*60 + parseInt(speicher2[1]);
-          }
-          addinformations.push(speicher);
-       }
-            
-      //Find times
-      var re=/Dep:[^0-9]+(.*?)\<\/div\>/g;
-      var deptimes= new Array();
-      deptimes = exRE(itinHTML,re);
-      
-      var re=/Arr:[^0-9]+(.*?)\<\/div\>/g;
-      var arrtimes= new Array();
-      arrtimes = exRE(itinHTML,re);
-      if (mptSettings["itaLanguage"]!="de"){
-      // take care of 12h
-        for (var i = 0; i < deptimes.length; i++) {
-          if (mptUsersettings["timeformat"]=="24h") {
-           replacementsold.push(deptimes[i]);
-           replacementsold.push(arrtimes[i]); 
-          }
-          deptimes[i]=return12htime(deptimes[i]);
-          arrtimes[i]=return12htime(arrtimes[i]);
-          if (mptUsersettings["timeformat"]=="24h") {          
-            replacementsnew.push((deptimes[i].length==4? "0":"")+deptimes[i]) ;
-            replacementsnew.push((arrtimes[i].length==4? "0":"")+arrtimes[i]);
-          }
-        }
-      }
-      // find flightduration
-      var re=/([0-9]{1,2})h\s([0-9]{1,2})m[^\(]*\(\w\)/g; // we need [^\(]*\(\w\) to skip layovers
-      var durations= new Array();
-      speicher = exRE(itinHTML,re);
-      for (var i=0; i<(speicher.length/2);i++){
-        durations[i]=parseInt(speicher[i*2])*60 + parseInt(speicher[(i*2)+1]);                 
-      }
- 
-      //Find flight number      
-      var re = /airline_logos.*?gwt-Label.*?([0-9]*)\<\/div>/g;
-      var flightnums = new Array();
-      flightnums = exRE(itinHTML,re);
-  
-      //Find Book Class
-      var re = /\((\w)\)/g;
-      var bookclass = new Array();
-      bookclass = exRE(itinHTML,re);
-  
-      //Find Class of Service
-      var re = /(\w)[\w]+\s\(\w\)/g;
-      var classofservice = new Array();
-      classofservice = exRE(itinHTML,re);
- 
-  
-      var basisHTML = document.getElementById("contentwrapper").innerHTML;
-      //Currency in EUR?
-      var itinCur="";
-      var re=/(€)/g;
-      var speicher = new Array();
-      speicher = exRE(basisHTML,re);
-      if (speicher.length>1) itinCur="EUR";
-      if (itinCur==""){
-          var re=/($)/g;
-          var speicher = new Array();
-          speicher = exRE(basisHTML,re);
-          if (speicher.length>1) itinCur="USD";
-      }
-      //console.log("Cur: "+itinCur); 
-      // Find fare-price
-      var re=/FNGTPEB-s-a\"\>\<div[^0-9]*([0-9,.]+)/g;
-      var farePrice = new Array();
-      farePrice = exRE(basisHTML,re);
-      //total price will be the last one
-      farePrice=farePrice[(farePrice.length-1)];
-      //console.log("Fare: "+farePrice); 
-      if (mptSettings["itaLanguage"]=="de"){
-      farePrice=farePrice.replace(/\./g,"").replace(/\,/g,".");
-      } else {
-      farePrice=farePrice.replace(/\,/g,"");
-      }	  
-      // Find mileage
-      var re=/FNGTPEB-t-a\"\>([0-9,.]+)/g;
-      var mileage = exRE(basisHTML,re);
-      //total mileage will be the first one
-      if (mileage.length){
-        mileage=mileage[0].replace(/\./g,"").replace(/\,/g,"");
-      } else {
-        mileage='0';
-      }    
-      // Get the number of Pax
-      if (mptSettings["itaLanguage"]=="de"){
-      var re=/Gesamtpreis\sfür\s([0-9])\sPassagier/g;
-      } else {
-      var re=/Total\scost\sfor\s([0-9])\spassenger/g;
-      }
-      var numPax = new Array();
-      numPax = exRE(basisHTML,re);
-      //console.log(numPax+" pax with total fare of "+farePrice);
-
-      //find farecodes
-      if (mptSettings["itaLanguage"]=="de"){
-      var re=/Airline\s\w\w\s(\w+)\s[\w{3}]/g;
-      } else {
-      var re=/Carrier\s\w\w\s(\w+)\s[\w{3}]/g;
-      }
-      var fareBasis=new Array();
-      fareBasis=exRE(basisHTML,re);
-         
-      //Find basis legs  => NEW
-      if (mptSettings["itaLanguage"]=="de"){
-      var re=/Strecke\(n\) ([\w\(\)\s\-,]+)/g;
-      } else {
-      var re=/Covers ([\w\(\)\s\-,]+)/g;
-      }
+      // extract basefares
+      var farebases = new Array();
+      var re=/Carrier\s[\w]{2}\s([\w]+).*?Covers\s([\w\(\)\s\-,]+)/g;
+      farebases = exRE(html,re);
       var fareBaseLegs = { fares :new Array(), legs:new Array()};
-      fareBaseLegs["fares"]= exRE(basisHTML,re);
-      var re=/(\w\w\w\-\w\w\w)/g;
-      // find the covered airports
-      for (i=0;i<fareBaseLegs["fares"].length;i++) {
-       fareBaseLegs["legs"].push(exRE(fareBaseLegs["fares"][i],re));
+      for(i=0;i<farebases.length;i+=2) {
+        fareBaseLegs["fares"].push(farebases[i]);
+        // find the covered airports
+        fareBaseLegs["legs"].push(exRE(farebases[i+1],/(\w\w\w\-\w\w\w)/g));
       }
-      fareBaseLegs["fares"]=fareBasis;
-      // We have an object now in which fares[i] covers coutes[i]
-      
       var dirtyFare= new Array();  
       // dirty but handy for later usage since there is no each function
       for(var i=0;i<fareBaseLegs["legs"].length;i++) {
-        for(var j=0;j<fareBaseLegs["legs"][i].length;j++) {
-         dirtyFare.push(fareBaseLegs["legs"][i][j]+"-"+fareBaseLegs["fares"][i]);
-        }
-      }    
-      var k=-1;
-      var datapointer=0;  
-      var legobj={};
-      // lets try to build a structured object
-
-      for(i=0;i<tmp_airports.length;i+=3) {
-            if (tmp_airports[i] == 'FNGTPEB-k-l' ) //Matches the heading airport
-            {    
-                if (k>=0) {data.push(legobj);}
-                k++;
-                legobj={};
-                //lets build the outer structure
-                legobj["orig"]=tmp_airports[i+1];
-                legobj["dest"]=tmp_airports[i+2];
-                legobj["dep"]={};
-                legobj["arr"]={};
-                legobj["dep"]["day"]=parseInt(tmp_airdate[i+2]);
-                legobj["dep"]["month"]=monthnameToNumber(tmp_airdate[i+1]);
-                legobj["dep"]["year"]=getFlightYear(legobj["dep"]["day"],legobj["dep"]["month"]);
-                legobj["dep"]["time"] = deptimes[datapointer];             
-                legobj["seg"] = new Array();
-                if (tmp_airports.length <= i+3 || tmp_airports[i+3] == 'FNGTPEB-k-l') //Single flight in leg
-                {   
-                    speicher={};
-                    speicher["orig"]=tmp_airports[i+1];
-                    speicher["dest"]=tmp_airports[i+2];
-                    speicher["dep"]={};
-                    speicher["dep"]["day"]=parseInt(tmp_airdate[i+2]);
-                    speicher["dep"]["month"]=monthnameToNumber(tmp_airdate[i+1]);
-                    speicher["dep"]["year"]=getFlightYear(speicher["dep"]["day"],speicher["dep"]["month"]);
-                    speicher["dep"]["time"]=deptimes[datapointer];
-                    speicher["arr"]={};
-                    if (addinformations[datapointer]["arrdate"]!=""){
-                      speicher["arr"]["day"]=addinformations[datapointer]["arrdate"]["day"];
-                      speicher["arr"]["month"]=addinformations[datapointer]["arrdate"]["month"];
-                      speicher["arr"]["year"]=addinformations[datapointer]["arrdate"]["year"];                     
-                    } else {
-                      speicher["arr"]["day"]=speicher["dep"]["day"];
-                      speicher["arr"]["month"]=speicher["dep"]["month"];
-                      speicher["arr"]["year"]=speicher["dep"]["year"];                    
-                    }
-                    speicher["arr"]["time"]=arrtimes[datapointer];
-                    legobj["arr"]["day"]=speicher["arr"]["day"];
-                    legobj["arr"]["month"]=speicher["arr"]["month"];
-                    legobj["arr"]["year"]=speicher["arr"]["year"];
-                    legobj["arr"]["time"]=speicher["arr"]["time"];
-                    speicher["codeshare"]=addinformations[datapointer]["codeshare"];
-                    speicher["layoverduration"]=addinformations[datapointer]["layoverduration"];    
-                    speicher["duration"]=durations[datapointer];
-                    speicher["carrier"]=carriers[datapointer];
-                    speicher["bookingclass"]=bookclass[datapointer];
-                    speicher["fnr"]=flightnums[datapointer];
-                    speicher["cabin"]=getcabincode(classofservice[datapointer]);
-                    // find farecode for leg
-                    for(var j=0;j<dirtyFare.length;j++) {
-                         if (dirtyFare[j].indexOf(speicher["orig"]+"-"+speicher["dest"]+"-")!= -1) {
-                          //found farebase of this segment
-                           speicher["farebase"]=dirtyFare[j].replace(speicher["orig"]+"-"+speicher["dest"]+"-","");
-                           dirtyFare[j]=speicher["farebase"]; // avoid reuse
-                           j=dirtyFare.length;
-                         }
-                    }
-                    legobj["seg"].push(speicher);
-                    datapointer++;
+              for(var j=0;j<fareBaseLegs["legs"][i].length;j++) {
+               dirtyFare.push(fareBaseLegs["legs"][i][j]+"-"+fareBaseLegs["fares"][i]);
+              }
+        }   
+      var segs = new Array();
+      var re=/35px\/(\w{2}).png[^\(]+\(([A-Z]{3})[^\(]+\(([A-Z]{3})[^\,]*\,\s*([a-zA-Z]{3})\s*([0-9]{1,2}).*?gwt-Label.*?([0-9]*)\<.*?Dep:[^0-9]+(.*?)\<.*?Arr:[^0-9]+(.*?)\<.*?([0-9]{1,2})h\s([0-9]{1,2})m.*?gwt-Label.*?\<.*?gwt-Label\"\>(\w).*?\((\w)\).*?\<.*?tr(.*?)(table|airline_logos)/g;
+      segs = exRE(html,re);
+      // used massive regex to get all our segment-info in one extraction
+      var legnr=0;
+      var segnr=0;
+      for(i=0;i<segs.length;i+=14) {
+            temp={};
+            temp["carrier"]=segs[i];
+            temp["orig"]=segs[i+1];
+            temp["dest"]=segs[i+2];
+            temp["dep"]={};
+            temp["arr"]={};
+            temp["dep"]["month"]=monthnameToNumber(segs[i+3]);
+            temp["dep"]["day"]=parseInt(segs[i+4]);
+            temp["dep"]["year"]=getFlightYear(temp["dep"]["day"],temp["dep"]["month"]);
+            temp["fnr"]=segs[i+5];      
+            if (mptUsersettings["timeformat"]=="24h") {
+                 replacementsold.push(segs[i+6]);
+                 replacementsold.push(segs[i+7]); 
                 }
+            segs[i+6]=return12htime(segs[i+6]);
+            segs[i+7]=return12htime(segs[i+7]);
+            if (mptUsersettings["timeformat"]=="24h") {          
+                  replacementsnew.push((segs[i+6].length==4? "0":"")+segs[i+6]) ;
+                  replacementsnew.push((segs[i+7].length==4? "0":"")+segs[i+7]);
+                }
+            temp["dep"]["time"]=segs[i+6];  
+            temp["arr"]["time"]=segs[i+7];  
+            temp["duration"]=parseInt(segs[i+8])*60 + parseInt(segs[i+9]);
+            temp["cabin"]=getcabincode(segs[i+10]);   
+            temp["bookingclass"]=segs[i+11];
+            var addinformations=parseAddInfo(segs[i+12]);  
+            if (addinformations["arrDate"]!=""){
+            temp["arr"]["day"]=addinformations["arrDate"]["day"];
+            temp["arr"]["month"]=addinformations["arrDate"]["month"];
+            temp["arr"]["year"]=addinformations["arrDate"]["year"]; 
             } else {
-              //is normal flight of leg
-                speicher={};
-                speicher["orig"]=tmp_airports[i+1];
-                speicher["dest"]=tmp_airports[i+2];
-                speicher["dep"]={};
-                speicher["dep"]["day"]=parseInt(tmp_airdate[i+2]);
-                speicher["dep"]["month"]=monthnameToNumber(tmp_airdate[i+1]);
-                speicher["dep"]["year"]=getFlightYear(speicher["dep"]["day"],speicher["dep"]["month"]);
-                speicher["dep"]["time"]=deptimes[datapointer];
-                speicher["arr"]={};
-                if (addinformations[datapointer]["arrdate"]!=""){
-                  speicher["arr"]["day"]=addinformations[datapointer]["arrdate"]["day"];
-                  speicher["arr"]["month"]=addinformations[datapointer]["arrdate"]["month"];
-                  speicher["arr"]["year"]=addinformations[datapointer]["arrdate"]["year"];                     
-                 } else {
-                  speicher["arr"]["day"]=speicher["dep"]["day"];
-                  speicher["arr"]["month"]=speicher["dep"]["month"];
-                  speicher["arr"]["year"]=speicher["dep"]["year"];                    
-                 }
-                speicher["arr"]["time"]=arrtimes[datapointer];
-                legobj["arr"]["day"]=speicher["arr"]["day"];
-                legobj["arr"]["month"]=speicher["arr"]["month"];
-                legobj["arr"]["year"]=speicher["arr"]["year"];
-                legobj["arr"]["time"]=speicher["arr"]["time"];
-                speicher["codeshare"]=addinformations[datapointer]["codeshare"];
-                speicher["layoverduration"]=addinformations[datapointer]["layoverduration"];    
-                speicher["duration"]=durations[datapointer];
-                speicher["carrier"]=carriers[datapointer];
-                speicher["bookingclass"]=bookclass[datapointer];
-                speicher["fnr"]=flightnums[datapointer];
-                speicher["cabin"]=getcabincode(classofservice[datapointer]);
-                // find farecode for leg
-                for(var j=0;j<dirtyFare.length;j++) {
-                    if (dirtyFare[j].indexOf(speicher["orig"]+"-"+speicher["dest"]+"-")!= -1) {
-                     //found farebase of this segment
-                      speicher["farebase"]=dirtyFare[j].replace(speicher["orig"]+"-"+speicher["dest"]+"-","");
-                      dirtyFare[j]=speicher["farebase"]; // avoid reuse
-                      j=dirtyFare.length;
-                    }
-                 }
-                legobj["seg"].push(speicher);
-                datapointer++;      
+            temp["arr"]["day"]=temp["dep"]["day"];
+            temp["arr"]["month"]=temp["dep"]["month"];
+            temp["arr"]["year"]=temp["dep"]["year"];
             }
+            temp["codeshare"]=addinformations["codeshare"];
+            temp["layoverduration"]=addinformations["layoverduration"];  
+            temp["airportchange"]=addinformations["airportchange"];
+            // find farecode for leg
+             for(var j=0;j<dirtyFare.length;j++) {
+                 if (dirtyFare[j].indexOf(temp["orig"]+"-"+temp["dest"]+"-")!= -1) {
+                    //found farebase of this segment
+                     temp["farebase"]=dirtyFare[j].replace(temp["orig"]+"-"+temp["dest"]+"-","");
+                     dirtyFare[j]=temp["farebase"]; // avoid reuse
+                     j=dirtyFare.length;
+                     }
+             }
+            itin[legnr]["seg"].push(temp);     
+            // push carrier
+            if (!inArray(temp["carrier"],carrieruarray)) {carrieruarray.push(temp["carrier"]);};
+            // push dates and times into leg-array
+            if ( segnr == 0 ){
+              itin[legnr]["dep"]["day"]=temp["dep"]["day"];
+              itin[legnr]["dep"]["month"]=temp["dep"]["month"];
+              itin[legnr]["dep"]["year"]=temp["dep"]["year"];
+              itin[legnr]["dep"]["time"]=temp["dep"]["time"];
+            }
+            itin[legnr]["arr"]["day"]=temp["arr"]["day"];
+            itin[legnr]["arr"]["month"]=temp["arr"]["month"];
+            itin[legnr]["arr"]["year"]=temp["arr"]["year"];
+            itin[legnr]["arr"]["time"]=temp["arr"]["time"];
+            segnr++;
+            // check for legchange
+            if(segs[i+13]=="table") {
+              legnr++;
+              segnr=0;
+            }
+
       }
-      data.push(legobj); // push of last leg
-      // add price and pax
-      // a little bit unsure about multiple pax with different farebase
-      data={itin:data, price: farePrice, numPax:numPax[0] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"], dist:mileage};
-       
-      //console.log(data); //Remove to see flightstructure
-  
+      // extract mileage paxcount and total price
+      var milepaxprice = new Array();
+      var re=/Mileage[^0-9]+([0-9,]+).*?Total\scost\sfor\s([0-9])\spassenger[^0-9]+([0-9,.]+)/g;
+      milepaxprice = exRE(html,re);
+      // detect currency
+      itinCur="";
+      var re = /Total\scost\sfor\s[0-9]\spassenger([^0-9]+[^\<]+)/g;
+      var curstring=new Array();
+      curstring = exRE(html,re);
+      curstring=curstring[0].replace(/<[^>]+>/g,"")
+      var searchpatt = /\€/;
+      if (searchpatt.test(curstring)===true){
+            itinCur="EUR";
+                    }
+      var searchpatt = /US\$/;
+      if (searchpatt.test(curstring)===true){
+            itinCur="USD";
+                    }
+      data={itin:itin, price: milepaxprice[2].replace(/\,/g,""), numPax:milepaxprice[1] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"], dist:milepaxprice[0].replace(/\./g,"").replace(/\,/g,"")}; 
+      //console.log(data); //Remove to see flightstructure 
       // lets do the replacement
-     if(replacementsold.length>0) {
-       target=findtarget("FNGTPEB-A-d",1).nextSibling.nextSibling;
-       for(i=0;i<replacementsold.length;i++) {
-         re = new RegExp(replacementsold[i],"g");
-         target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
+       if(replacementsold.length>0) {
+         target=findtarget("FNGTPEB-A-d",1).nextSibling.nextSibling;
+         for(i=0;i<replacementsold.length;i++) {
+           re = new RegExp(replacementsold[i],"g");
+           target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
+         }
        }
-     }
       return data;
 }  
   //*** Printfunctions ****//
@@ -983,9 +768,9 @@ function printDelta(data){
 // Steppo: Cabincodefunction needs some care!?
 // Steppo: What about farebasis?
 // Steppo: What about segmentskipping?
-    var deltaURL ="http://"+(mptSettings["itaLanguage"]=="de" ? "de" : "www");
+    var deltaURL ="http://"+(mptSettings["itaLanguage"]=="de" || mptUsersettings["language"]=="de" ? "de" : "www");
     deltaURL +=".delta.com/booking/priceItin.do?dispatchMethod=priceItin&tripType=multiCity&cabin=B5-Coach";
-    deltaURL +="&currencyCd=" + (data["cur"]=="EUR" ? "EUR" : "USD") + "&exitCountry=US";
+    deltaURL +="&currencyCd=" + (data["cur"]=="EUR" ? "EUR" : "USD") + "&exitCountry="+(mptSettings["itaLanguage"]=="de" || mptUsersettings["language"]=="de" ? "US" : "US");
     var segcounter=0;
     for (var i=0;i<data["itin"].length;i++) {
       // walks each leg
@@ -998,7 +783,7 @@ function printDelta(data){
       }
     }
     deltaURL += "&fareBasis="+data["farebases"].toString().replace(/,/g, ":");
-    deltaURL += "&price="+data["price"];
+    deltaURL += "&price=0";
     deltaURL += "&numOfSegments=" + segcounter.toString() + "&paxCount=" + data["numPax"];
     deltaURL += "&vendorRedirectFlag=true&vendorID=Google";      
     if (mptUsersettings["enableInlinemode"]==1){
@@ -1133,6 +918,7 @@ function printOrbitz(data){
     var selectKey="";
     var orbitzUrl = "/shop/home?type=air&source=GOOGLE_META&searchHost=ITA&ar.type=multiCity&strm=true";
     //Build multi-city search based on legs
+  
     for (var i=0;i<data["itin"].length;i++) {
       // walks each leg
             var iStr = i.toString();
@@ -1142,7 +928,8 @@ function printOrbitz(data){
             orbitzUrl += "&_ar.mc.slc["+iStr+"].destinationRadius=0";
             var twoyear = data["itin"][i]["dep"]["year"]%100;
             orbitzUrl += "&ar.mc.slc["+iStr+"].date=" + data["itin"][i]["dep"]["month"].toString() + "/" + data["itin"][i]["dep"]["day"].toString() + "/" + twoyear.toString();
-            orbitzUrl += "&ar.mc.slc["+iStr+"].time=Anytime";      
+            orbitzUrl += "&ar.mc.slc["+iStr+"].time=Anytime"; 
+        
        for (var j=0;j<data["itin"][i]["seg"].length;j++) {
          //walks each segment of leg
                 var k=0;
@@ -1156,8 +943,9 @@ function printOrbitz(data){
                 selectKey += "_";                      
                 j+=k;
       }
-    }    
-    orbitzUrl += "&ar.mc.numAdult=" + data["numPax"];
+    }
+
+  orbitzUrl += "&ar.mc.numAdult=" + data["numPax"];
     orbitzUrl += "&ar.mc.numSenior=0&ar.mc.numChild=0&ar.mc.child[0]=&ar.mc.child[1]=&ar.mc.child[2]=&ar.mc.child[3]=&ar.mc.child[4]=&ar.mc.child[5]=&ar.mc.child[6]=&ar.mc.child[7]=&search=Search Flights&ar.mc.nonStop=true&_ar.mc.nonStop=0";
     //lets see if we can narrow the carriers  Orbitz supports up to 3
     if (data["carriers"].length <= 3) {
@@ -1171,12 +959,12 @@ function printOrbitz(data){
       }
     } else {
       orbitzUrl += "&_ar.mc.narrowSel=0&ar.mc.narrow=airlines&ar.mc.carriers[0]=&ar.mc.carriers[1]=&ar.mc.carriers[2]=";
-    }   
+    }
     orbitzUrl += "&ar.mc.cabin=C";
-    orbitzUrl += "&selectKey=" + selectKey.substring(0,selectKey.length-1);;
+    orbitzUrl += "&selectKey=" + selectKey.substring(0,selectKey.length-1);
     if (data["cur"]=="USD") {
     //lets do this when USD is cur
-    var priceval = parseFloat(pricing) + 6.99;
+    var priceval = parseFloat(data["price"]) + 6.99;
     orbitzUrl += "&userRate.price=USD|" + priceval.toString();
     }
     if (mptUsersettings["enableInlinemode"]==1){
@@ -1410,22 +1198,19 @@ function getHipmunkCabin(cabin){
           cabin="First";
           break;
       default:
-          cabin="";
+          cabin="Coach";
   }
   return cabin;
 }
 function printHipmunk (data){
-    var url = "https://www.hipmunk.com/flights/";
-    var datestring="#!dates=";
+    var url = "https://www.hipmunk.com/search/flights?";
     var mincabin=3;
     //Build multi-city search based on legs
     for (var i=0;i<data["itin"].length;i++) {
       // walks each leg
-            if (i>0) url +="-and-";
-            url += "" + data["itin"][i]["orig"];
-            datestring+= ( i>0 ? ",":"")+monthnumberToName(data["itin"][i]["dep"]["month"])+ ( Number(data["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +data["itin"][i]["dep"]["day"].toString();      
-       for (var j=0;j<data["itin"][i]["seg"].length;j++) {
-         //walks each segment of leg
+            url += "&from"+i+"=" + data["itin"][i]["orig"];            
+            for (var j=0;j<data["itin"][i]["seg"].length;j++) {
+           //walks each segment of leg
                 var k=0;
                 // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
                 while ((j+k)<data["itin"][i]["seg"].length-1){
@@ -1433,17 +1218,18 @@ function printHipmunk (data){
                      data["itin"][i]["seg"][j+k]["layoverduration"] >= 1440) break;
                  k++;
                 }               
-                url += ( j>0 ? "-"+data["itin"][i]["seg"][j]["orig"]+"-":"::")+data["itin"][i]["seg"][j]["carrier"] + data["itin"][i]["seg"][j]["fnr"];
+                url += ( j>0 ? "%20"+data["itin"][i]["seg"][j]["orig"]+"%20":"%3A%3A")+data["itin"][i]["seg"][j]["carrier"] + data["itin"][i]["seg"][j]["fnr"];
                 if (data["itin"][i]["seg"][j]["cabin"]<mincabin){mincabin=data["itin"][i]["seg"][j]["cabin"];};  
                 j+=k;
       }
-      url += "-to-" + data["itin"][i]["dest"];
+      url += "&date"+i+"="+data["itin"][i]["dep"]["year"]+"-"+( Number(data["itin"][i]["dep"]["month"]) <= 9 ? "0":"") +data["itin"][i]["dep"]["month"].toString()+"-"+ ( Number(data["itin"][i]["dep"]["day"]) <= 9 ? "0":"") +data["itin"][i]["dep"]["day"].toString();  
+      url += "&to"+i+"="+data["itin"][i]["dest"];
     }  
-    datestring += "&pax=" + data["numPax"]+(mincabin>0?"&cabin="+getHipmunkCabin(mincabin):"");    
+    url += "&pax=" + data["numPax"]+"&cabin="+getHipmunkCabin(mincabin)+"&infant_lap=0&infant_seat=0&seniors=0&children=0";    
     if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url+datestring,"Hipmunk","");
+      printUrlInline(url,"Hipmunk","");
     } else {
-      printUrl(url+datestring,"Hipmunk","");
+      printUrl(url,"Hipmunk","");
     } 
 }
 function printPriceline (data){
