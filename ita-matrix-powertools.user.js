@@ -144,23 +144,14 @@ classSettings["mcHeader"]="FNGTPEB-U-b";
 if (window.top != window.self) exit; //don't run on frames or iframes
 
 if (window.addEventListener){
-window.addEventListener('load', startcript, false);
+window.addEventListener('load', startScript, false);
 } else if (window.attachEvent)
-window.attachEvent("onload", startcript);
+window.attachEvent("onload", startScript);
 else {
-window.onload = startcript;
-}
-function startcript(){
-  if (window.location.href!=mptSettings["laststatus"]){
-    setTimeout(function(){getPageLang();}, 100);
-    mptSettings["laststatus"]=window.location.href;
-  }
-  if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
-  }  
+window.onload = startScript;
 }
 
-function startcript(){
+function startScript(){
   if (document.getElementById("mptSettingsContainer")== null ) {
   createUsersettings();
   }
@@ -169,7 +160,7 @@ function startcript(){
     mptSettings["laststatus"]=window.location.href;
   }
   if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
+   setTimeout(function(){startScript();}, 500); 
   }  
 }
 
