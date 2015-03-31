@@ -128,16 +128,16 @@ mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 
 var classSettings = new Object();
-classSettings["itin"]="FNGTPEB-z-d"; // Intinerary
-classSettings["milagecontainer"]="FNGTPEB-z-e"; // Container on the right
+classSettings["itin"]="FNGTPEB-A-d"; // Intinerary
+classSettings["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
 classSettings["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["htbContainer"]="FNGTPEB-D-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
+classSettings["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["htbLeft"]="FNGTPEB-l-m"; // Left column in the "how to buy"-container
 classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
 classSettings["mcDiv"]="FNGTPEB-U-e";
-classSettings["mcLinkList"]="FNGTPEB-x-c";
+classSettings["mcLinkList"]="FNGTPEB-y-c";
 classSettings["mcHeader"]="FNGTPEB-U-b";
 
 // execute language detection and afterwards functions for current page
