@@ -998,7 +998,7 @@ function printAA(data){
   aaUrl +=  'TRIPADVISOR,EN,';
   aaUrl += data.itin.length + ',';
   aaUrl += data.numPax + ',';
-  aaUrl += '0,0,0,DE,';
+  aaUrl += '0,0,0,DE,'; // Possible countires: BE,FI,FR,DE,GR,IE,IL,IT,NL,RU,ES,CH
   
   aaUrl += data.itin.length;
   for (var i=0; i < data.itin.length; i++) {
