@@ -439,6 +439,8 @@ function fePS() {
     if (target!=undefined) target.parentNode.removeChild(target);
     if (mptUsersettings["enablePricebreakdown"]==1) rearrangeprices(data.dist);
     if (mptUsersettings["enableInlinemode"]==1) printCPM(data);
+    
+    printAA(data);
 	 
     printAC(data);
     
@@ -609,7 +611,8 @@ function readItinerary() {
       day: parseInt(dateArr[2]),
       month: parseInt(dateArr[1]),
       year: parseInt(dateArr[0]),
-      time: value.substring(timeIndex + 1, timezoneIndex).replace(/^0/, '')
+      time: value.substring(timeIndex + 1, timezoneIndex).replace(/^0/, ''),
+      iso: value
     };
   };
   
@@ -974,6 +977,41 @@ uaUrl += ', \"trips\": [';
     } else {
       printUrl(uaUrl,"United",desc);
     }
+}
+function printAA(data){
+  var aaUrl = 'http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=1,,';
+  aaUrl += data.cur + new Number(data.price).toFixed(2) + ',';
+  
+  aaUrl += data.itin.length + ',';
+  for (var i=0; i < data.itin.length; i++) {
+    aaUrl += data.itin[i].seg.length + ',';
+    for (var j=0; j < data.itin[i].seg.length; j++) {
+      aaUrl += data.itin[i].seg[j].arr.iso + ',';
+      aaUrl += data.itin[i].seg[j].bookingclass + ',';
+      aaUrl += data.itin[i].seg[j].dep.iso + ',';
+      aaUrl += data.itin[i].seg[j].dest + ',';
+      aaUrl += data.itin[i].seg[j].carrier + data.itin[i].seg[j].fnr + ',';
+      aaUrl += data.itin[i].seg[j].orig + ',';
+    }
+  }
+  
+  aaUrl +=  'TRIPADVISOR,EN,';
+  aaUrl += data.itin.length + ',';
+  aaUrl += data.numPax + ',';
+  aaUrl += '0,0,0,DE,';
+  
+  aaUrl += data.itin.length;
+  for (var i=0; i < data.itin.length; i++) {
+    aaUrl += ',' + data.itin[i].dep.year+'-'+('0'+data.itin[i].dep.month).slice(-2)+'-'+('0'+data.itin[i].dep.day).slice(-2) + ',';
+    aaUrl += data.itin[i].dest + ',,';
+    aaUrl += data.itin[i].orig + ',';
+  }
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(aaUrl,"American","");
+  } else {
+    printUrl(aaUrl,"American","");
+  }
 }
 function printAC(data){
   var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
