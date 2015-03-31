@@ -132,7 +132,7 @@ classSettings["itin"]="FNGTPEB-A-d"; // Intinerary
 classSettings["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
 classSettings["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
 classSettings["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["htbLeft"]="FNGTPEB-l-m"; // Left column in the "how to buy"-container
+classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
 classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
