@@ -5,6 +5,7 @@
 // @version 0.9c
 // @grant GM_getValue
 // @grant GM_setValue
+// @run-at document-start
 // @include http*://matrix.itasoftware.com/*
 // ==/UserScript==
 
@@ -163,6 +164,19 @@ function startScript(){
    setTimeout(function(){startScript();}, 500); 
   }  
 }
+
+// Intercept XHR to read search results
+var searchResponse;
+(function(open) {
+    XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+        this.addEventListener('readystatechange', function() { 
+            if (this.readyState == 4 && this.responseURL == 'http://matrix.itasoftware.com/search') {
+                searchResponse = JSON.parse(this.responseText);
+            }
+        }, false); 
+        open.call(this, method, url, async, user, password);
+    };
+})(XMLHttpRequest.prototype.open);
 
 /**************************************** Settings Stuff *****************************************/
 function createUsersettings(){
@@ -416,6 +430,8 @@ function fePS() {
     if (target!=undefined) target.parentNode.removeChild(target);
     if (mptUsersettings["enablePricebreakdown"]==1) rearrangeprices(data.dist);
     if (mptUsersettings["enableInlinemode"]==1) printCPM(data);
+    
+    printAA(data);
 	 
     printAC(data);
     
@@ -570,226 +586,108 @@ function rearrangeprices(dist){
     }
 }
   //*** Readfunction ****//
-function parseAddInfo(info){
-  var ret= {codeshare:0, layoverduration:0, airportchange:0, arrDate:""};
-  if (info.indexOf("This flight contains airport changes") ==-1){
-               airportchange=1; 
-              }
-  if (info.indexOf("OPERATED BY") ==-1){
-               codeshare=1; 
-              }
-  var temp = new Array();
-  var re=/\,\s*([a-zA-Z]{3})\s*([0-9]{1,2})/g;
-  temp = exRE(info,re);
-  if (temp.length == 2){
-    // Got datechange
-      ret["arrDate"]={};
-      ret["arrDate"]["month"]=monthnameToNumber(temp[0]);
-      ret["arrDate"]["day"]=parseInt(temp[1]);
-      ret["arrDate"]["year"]=getFlightYear(ret["arrDate"]["day"],ret["arrDate"]["month"]);
+function readItinerary() {
+  var search = searchResponse.result[6];
+  var itins = search[3][2];
+  var fares = search[6][0][1][0];
+  var taxes = fares[1][2];
+  var farebases = fares[3];
+  
+  var cur;
+  var getDateTime = function(value) {
+    var timeIndex = value.indexOf('T');
+    var timezoneIndex = value.indexOf('+');
+    var dateArr = value.substring(0, timeIndex).split('-');
+    return {
+      day: parseInt(dateArr[2]),
+      month: parseInt(dateArr[1]),
+      year: parseInt(dateArr[0]),
+      time: value.substring(timeIndex + 1, timezoneIndex).replace(/^0/, ''),
+      iso: value
+    };
+  };
+  
+  var getPrice = function(value) {
+    if (!value) return -1;
+    cur = value.substring(0, 3);
+    return value.substring(3, value.length - 3);
+  };
+  
+  var getCabin = function(value) {
+    switch(value) {
+      case 'FIRST':
+        return 3;
+      case 'BUSINESS':
+        return 2;
+      case 'PREMIUM-COACH':
+        return 1;
+      default:
+        return 0;
     }
-  var temp = new Array();
-  var re=/([0-9]{1,2})h\s([0-9]{1,2})m/g;
-  temp = exRE(info,re);
-  if (temp.length == 2){
-     // Got layover
-      ret["layoverduration"]=parseInt(temp[0])*60 + parseInt(temp[1]);
+  };
+  
+  var fbs = farebases.map(function (fb) {
+    return {
+      carrier: fb[4],
+      farebase: fb[5],
+      seg: fb[2].map(function (s) {
+        return {
+          dest: s[1][1],
+          orig: s[1][2],
+          bookingclass: s[2]
+        };
+      })
+    };
+  });
+  
+  var getFarebase = function (orig, dest, bookingclass) {
+    for (var i = 0; i < fbs.length; i++) {
+      var fb = fbs[i];
+      for (var j = 0; j < fb.seg.length; j++) {
+        var seg = fb.seg[j];
+        if (seg.orig == orig && seg.dest == dest && seg.bookingclass == bookingclass) {
+          return fb.farebase;
+        }
+      }
     }
-  return ret;
-}
-
-function readItinerary(){
-      // the magical part! :-)
-      var replacementsold = new Array();
-      var replacementsnew = new Array();
-      if (mptUsersettings["language"]=="de"){
-       replacementsold.push("Dep:");
-       replacementsnew.push("Abflug:");
-       replacementsold.push("Arr:");
-       replacementsnew.push("Ankunft:");
-       replacementsold.push("Layover in");
-       replacementsnew.push("Umst. in");
-       replacementsold.push(" to ");
-       replacementsnew.push(" nach ");
-        replacementsold.push("Mon,");
-       replacementsnew.push("Mo.,");
-        replacementsold.push("Tue,");
-       replacementsnew.push("Di.,");
-        replacementsold.push("Wed,");
-       replacementsnew.push("Mi.,");
-        replacementsold.push("Thu,");
-       replacementsnew.push("Do.,");
-        replacementsold.push("Fri,");
-       replacementsnew.push("Fr.,");
-        replacementsold.push("Sat,");
-       replacementsnew.push("Sa.,");
-        replacementsold.push("Sun,");
-       replacementsnew.push("So.,");
-         replacementsold.push(" Jan ");
-       replacementsnew.push(" Januar ");
-         replacementsold.push(" Feb ");
-       replacementsnew.push(" Februar ");
-        replacementsold.push(" Mar ");
-       replacementsnew.push(" M&auml;rz ");
-        replacementsold.push(" Apr ");
-       replacementsnew.push(" April ");
-        replacementsold.push(" May ");
-       replacementsnew.push(" Mai ");
-        replacementsold.push(" Jun ");
-       replacementsnew.push(" Juni ");
-        replacementsold.push(" Jul ");
-       replacementsnew.push(" Juli ");
-        replacementsold.push(" Aug ");
-       replacementsnew.push(" August ");
-        replacementsold.push(" Sep ");
-       replacementsnew.push(" September ");
-        replacementsold.push(" Oct ");
-       replacementsnew.push(" Oktober ");
-        replacementsold.push(" Nov ");
-       replacementsnew.push(" November ");
-        replacementsold.push(" Dez ");
-       replacementsnew.push(" Dezember ");
-        replacementsold.push("OPERATED BY ");
-       replacementsnew.push("Durchgef&uuml;hrt von ");        
-      }  
-      var itin= new Array();
-      var carrieruarray= new Array();
-      var html = document.getElementById("contentwrapper").innerHTML;
-      var re=/colspan\=\"5\"[^\(]+\(([\w]{3})[^\(]+\(([\w]{3})/g
-      legs = exRE(html,re);
-      // Got our outer legs now:
-      for(i=0;i<legs.length;i+=2) {
-        var legobj={};
-        // prepare all elements but fill later
-        legobj["arr"]={};
-        legobj["dep"]={};
-        legobj["orig"]=legs[i];
-        legobj["dest"]=legs[i+1];
-        legobj["seg"]= new Array();
-        itin.push(legobj);
-      }
-      // extract basefares
-      var farebases = new Array();
-      var re=/Carrier\s[\w]{2}\s([\w]+).*?Covers\s([\w\(\)\s\-,]+)/g;
-      farebases = exRE(html,re);
-      var fareBaseLegs = { fares :new Array(), legs:new Array()};
-      for(i=0;i<farebases.length;i+=2) {
-        fareBaseLegs["fares"].push(farebases[i]);
-        // find the covered airports
-        fareBaseLegs["legs"].push(exRE(farebases[i+1],/(\w\w\w\-\w\w\w)/g));
-      }
-      var dirtyFare= new Array();  
-      // dirty but handy for later usage since there is no each function
-      for(var i=0;i<fareBaseLegs["legs"].length;i++) {
-              for(var j=0;j<fareBaseLegs["legs"][i].length;j++) {
-               dirtyFare.push(fareBaseLegs["legs"][i][j]+"-"+fareBaseLegs["fares"][i]);
-              }
-        }   
-      var segs = new Array();
-      var re=/35px\/(\w{2}).png[^\(]+\(([A-Z]{3})[^\(]+\(([A-Z]{3})[^\,]*\,\s*([a-zA-Z]{3})\s*([0-9]{1,2}).*?gwt-Label.*?([0-9]*)\<.*?Dep:[^0-9]+(.*?)\<.*?Arr:[^0-9]+(.*?)\<.*?([0-9]{1,2})h\s([0-9]{1,2})m.*?gwt-Label.*?\<.*?gwt-Label\"\>(\w).*?\((\w)\).*?\<.*?tr(.*?)(table|airline_logos)/g;
-      segs = exRE(html,re);
-      // used massive regex to get all our segment-info in one extraction
-      var legnr=0;
-      var segnr=0;
-      for(i=0;i<segs.length;i+=14) {
-            temp={};
-            temp["carrier"]=segs[i];
-            temp["orig"]=segs[i+1];
-            temp["dest"]=segs[i+2];
-            temp["dep"]={};
-            temp["arr"]={};
-            temp["dep"]["month"]=monthnameToNumber(segs[i+3]);
-            temp["dep"]["day"]=parseInt(segs[i+4]);
-            temp["dep"]["year"]=getFlightYear(temp["dep"]["day"],temp["dep"]["month"]);
-            temp["fnr"]=segs[i+5];      
-            if (mptUsersettings["timeformat"]=="24h") {
-                 replacementsold.push(segs[i+6]);
-                 replacementsold.push(segs[i+7]); 
-                }
-            segs[i+6]=return12htime(segs[i+6]);
-            segs[i+7]=return12htime(segs[i+7]);
-            if (mptUsersettings["timeformat"]=="24h") {          
-                  replacementsnew.push((segs[i+6].length==4? "0":"")+segs[i+6]) ;
-                  replacementsnew.push((segs[i+7].length==4? "0":"")+segs[i+7]);
-                }
-            temp["dep"]["time"]=segs[i+6];  
-            temp["arr"]["time"]=segs[i+7];  
-            temp["duration"]=parseInt(segs[i+8])*60 + parseInt(segs[i+9]);
-            temp["cabin"]=getcabincode(segs[i+10]);   
-            temp["bookingclass"]=segs[i+11];
-            var addinformations=parseAddInfo(segs[i+12]);  
-            if (addinformations["arrDate"]!=""){
-            temp["arr"]["day"]=addinformations["arrDate"]["day"];
-            temp["arr"]["month"]=addinformations["arrDate"]["month"];
-            temp["arr"]["year"]=addinformations["arrDate"]["year"]; 
-            } else {
-            temp["arr"]["day"]=temp["dep"]["day"];
-            temp["arr"]["month"]=temp["dep"]["month"];
-            temp["arr"]["year"]=temp["dep"]["year"];
-            }
-            temp["codeshare"]=addinformations["codeshare"];
-            temp["layoverduration"]=addinformations["layoverduration"];  
-            temp["airportchange"]=addinformations["airportchange"];
-            // find farecode for leg
-             for(var j=0;j<dirtyFare.length;j++) {
-                 if (dirtyFare[j].indexOf(temp["orig"]+"-"+temp["dest"]+"-")!= -1) {
-                    //found farebase of this segment
-                     temp["farebase"]=dirtyFare[j].replace(temp["orig"]+"-"+temp["dest"]+"-","");
-                     dirtyFare[j]=temp["farebase"]; // avoid reuse
-                     j=dirtyFare.length;
-                     }
-             }
-            itin[legnr]["seg"].push(temp);     
-            // push carrier
-            if (!inArray(temp["carrier"],carrieruarray)) {carrieruarray.push(temp["carrier"]);};
-            // push dates and times into leg-array
-            if ( segnr == 0 ){
-              itin[legnr]["dep"]["day"]=temp["dep"]["day"];
-              itin[legnr]["dep"]["month"]=temp["dep"]["month"];
-              itin[legnr]["dep"]["year"]=temp["dep"]["year"];
-              itin[legnr]["dep"]["time"]=temp["dep"]["time"];
-            }
-            itin[legnr]["arr"]["day"]=temp["arr"]["day"];
-            itin[legnr]["arr"]["month"]=temp["arr"]["month"];
-            itin[legnr]["arr"]["year"]=temp["arr"]["year"];
-            itin[legnr]["arr"]["time"]=temp["arr"]["time"];
-            segnr++;
-            // check for legchange
-            if(segs[i+13]=="table") {
-              legnr++;
-              segnr=0;
-            }
-
-      }
-      // extract mileage paxcount and total price
-      var milepaxprice = new Array();
-      var re=/Mileage[^0-9]+([0-9,]+).*?Total\scost\sfor\s([0-9])\spassenger[^0-9]+([0-9,.]+)/g;
-      milepaxprice = exRE(html,re);
-      // detect currency
-      itinCur="";
-      var re = /Total\scost\sfor\s[0-9]\spassenger([^0-9]+[^\<]+)/g;
-      var curstring=new Array();
-      curstring = exRE(html,re);
-      curstring=curstring[0].replace(/<[^>]+>/g,"")
-      var searchpatt = /\€/;
-      if (searchpatt.test(curstring)===true){
-            itinCur="EUR";
-                    }
-      var searchpatt = /US\$/;
-      if (searchpatt.test(curstring)===true){
-            itinCur="USD";
-                    }
-      data={itin:itin, price: milepaxprice[2].replace(/\,/g,""), numPax:milepaxprice[1] , carriers:carrieruarray, cur : itinCur, farebases:fareBaseLegs["fares"], dist:milepaxprice[0].replace(/\./g,"").replace(/\,/g,"")}; 
-      //console.log(data); //Remove to see flightstructure 
-      // lets do the replacement
-       if(replacementsold.length>0) {
-         target=findtarget(classSettings["itin"],1).nextSibling.nextSibling;
-         for(i=0;i<replacementsold.length;i++) {
-           re = new RegExp(replacementsold[i],"g");
-           target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
-         }
-       }
-      return data;
+    return '';
+  };
+    
+  var data = { 
+    itin: itins.map(function (i) {
+      return {
+        arr: getDateTime(i[5]),
+        dep: getDateTime(i[6]),
+        dest: i[1][2],
+        orig: i[3][2],
+        seg: i[4].map(function (s) {
+          return {
+            carrier: s[2][1],
+            orig: s[8][2],
+            dest: s[4][2],
+            dep: getDateTime(s[11]),
+            arr: getDateTime(s[9]),
+            fnr: s[6][1],
+            duration: s[12],
+            cabin: getCabin(s[1][5]),
+            bookingclass: s[1][0][4],
+            codeshare: (s[5] !== null && s[5][1] !== null && s[5][1].indexOf("OPERATED BY") != -1) ? 1 : 0,
+              layoverduration: s[3] ? s[3][3] : 0,
+            farebase: getFarebase(s[8][2], s[4][2], s[1][0][4])
+          };
+        })
+      };
+    }),
+    price: getPrice(search[2][1]),
+    numPax: search[9],
+    carriers: fbs.map(function (fb) { return fb.carrier; }),
+    cur: cur,
+    farebases: fbs.map(function (fb) { return fb.farebase; }),
+    dist: search[3][1][2]
+  };
+  
+  console.log(JSON.stringify(data));
+  return data;
 }  
   //*** Printfunctions ****//
 function printCPM(data){
@@ -1070,6 +968,41 @@ uaUrl += ', \"trips\": [';
     } else {
       printUrl(uaUrl,"United",desc);
     }
+}
+function printAA(data){
+  var aaUrl = 'http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=1,,';
+  aaUrl += data.cur + new Number(data.price).toFixed(2) + ',';
+  
+  aaUrl += data.itin.length + ',';
+  for (var i=0; i < data.itin.length; i++) {
+    aaUrl += data.itin[i].seg.length + ',';
+    for (var j=0; j < data.itin[i].seg.length; j++) {
+      aaUrl += data.itin[i].seg[j].arr.iso + ',';
+      aaUrl += data.itin[i].seg[j].bookingclass + ',';
+      aaUrl += data.itin[i].seg[j].dep.iso + ',';
+      aaUrl += data.itin[i].seg[j].dest + ',';
+      aaUrl += data.itin[i].seg[j].carrier + data.itin[i].seg[j].fnr + ',';
+      aaUrl += data.itin[i].seg[j].orig + ',';
+    }
+  }
+  
+  aaUrl +=  'TRIPADVISOR,EN,';
+  aaUrl += data.itin.length + ',';
+  aaUrl += data.numPax + ',';
+  aaUrl += '0,0,0,DE,'; // Possible countires: BE,FI,FR,DE,GR,IE,IL,IT,NL,RU,ES,CH
+  
+  aaUrl += data.itin.length;
+  for (var i=0; i < data.itin.length; i++) {
+    aaUrl += ',' + data.itin[i].dep.year+'-'+('0'+data.itin[i].dep.month).slice(-2)+'-'+('0'+data.itin[i].dep.day).slice(-2) + ',';
+    aaUrl += data.itin[i].dest + ',,';
+    aaUrl += data.itin[i].orig + ',';
+  }
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(aaUrl,"American","");
+  } else {
+    printUrl(aaUrl,"American","");
+  }
 }
 function printAC(data){
   var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
