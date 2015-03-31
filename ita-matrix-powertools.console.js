@@ -126,19 +126,9 @@ classSettings["mcDiv"]="FNGTPEB-U-e";
 classSettings["mcLinkList"]="FNGTPEB-x-c";
 classSettings["mcHeader"]="FNGTPEB-U-b";
 
-startcript();
+startScript();
 
-function startcript(){
-  if (window.location.href!=mptSettings["laststatus"]){
-    setTimeout(function(){getPageLang();}, 100);
-    mptSettings["laststatus"]=window.location.href;
-  }
-  if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
-  }  
-}
-
-function startcript(){
+function startScript(){
   if (document.getElementById("mptSettingsContainer")== null ) {
   createUsersettings();
   }
@@ -147,7 +137,7 @@ function startcript(){
     mptSettings["laststatus"]=window.location.href;
   }
   if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
+   setTimeout(function(){startScript();}, 500); 
   }  
 }
 
