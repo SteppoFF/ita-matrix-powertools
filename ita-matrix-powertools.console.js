@@ -5,6 +5,8 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.10 ****
+# 2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
 **** Version 0.9c ****
 # 2013-03-17 Edited by dja852  (Added options to select Air Canada site edition)
 **** Version 0.9b ****
@@ -114,16 +116,16 @@ mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 
 var classSettings = new Object();
-classSettings["itin"]="FNGTPEB-z-d"; // Intinerary
-classSettings["milagecontainer"]="FNGTPEB-z-e"; // Container on the right
+classSettings["itin"]="FNGTPEB-A-d"; //Container with headline: "Intinerary"
+classSettings["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
 classSettings["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["htbContainer"]="FNGTPEB-D-k"; // full "how to buy"-container inner div (td=>div=>div) 
+classSettings["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
 classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-container
 classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
 classSettings["mcDiv"]="FNGTPEB-U-e";
-classSettings["mcLinkList"]="FNGTPEB-x-c";
+classSettings["mcLinkList"]="FNGTPEB-y-c";
 classSettings["mcHeader"]="FNGTPEB-U-b";
 
 startScript();

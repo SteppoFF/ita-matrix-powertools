@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.9c
+// @version 0.10
 // @grant GM_getValue
 // @grant GM_setValue
 // @run-at document-start
@@ -16,6 +16,8 @@
  Copyright Reserved -- At least share with credit if you do
 
 *********** Changelog **************
+**** Version 0.10 ****
+# 2015-03-31 Edited by IAkH/Steppo (Adapted to new classes)
 **** Version 0.9c ****
 # 2013-03-17 Edited by dja852  (Added options to select Air Canada site edition)
 **** Version 0.9b ****
@@ -129,7 +131,7 @@ mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 
 var classSettings = new Object();
-classSettings["itin"]="FNGTPEB-A-d"; // Intinerary
+classSettings["itin"]="FNGTPEB-A-d"; //Container with headline: "Intinerary"
 classSettings["milagecontainer"]="FNGTPEB-A-e"; // Container on the right
 classSettings["rulescontainer"]="FNGTPEB-l-d"; // First container before rulelinks (the one with Fare X:)
 classSettings["htbContainer"]="FNGTPEB-F-k"; // full "how to buy"-container inner div (td=>div=>div) 
@@ -388,7 +390,7 @@ function hasClass(element, cls) {
 }
 /********************************************* Result page *********************************************/
 //Primary function for extracting flight data from ITA/Matrix
-function fePS() {
+function fePS() { 
     // retry if itin not loaded  
     if (findtarget(classSettings["itin"],1).parentNode.previousSibling.previousSibling.style.display!="none") { 
       mptSettings["retrycount"]++;
@@ -399,7 +401,7 @@ function fePS() {
       setTimeout(function(){fePS();}, 200);    
       return false;
     };
-  
+
     if (mptUsersettings["enableFarerules"]==1) bindRulelinks();
        
     // empty outputcontainer
@@ -425,7 +427,7 @@ function fePS() {
     }
   
     var data = readItinerary();
-
+   
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
