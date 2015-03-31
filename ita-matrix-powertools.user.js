@@ -171,6 +171,7 @@ var searchResponse;
     XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
         this.addEventListener('readystatechange', function() { 
             if (this.readyState == 4 && this.responseURL == 'http://matrix.itasoftware.com/search') {
+              debugger;
                 searchResponse = JSON.parse(this.responseText);
             }
         }, false); 
@@ -680,7 +681,9 @@ function readItinerary() {
     }),
     price: getPrice(search[2][1]),
     numPax: search[9],
-    carriers: fbs.map(function (fb) { return fb.carrier; }),
+    carriers: fbs.map(function (fb) { return fb.carrier; }).filter(function(item, pos, self) {
+        return self.indexOf(item) == pos;
+    }),
     cur: cur,
     farebases: fbs.map(function (fb) { return fb.farebase; }),
     dist: search[3][1][2]
