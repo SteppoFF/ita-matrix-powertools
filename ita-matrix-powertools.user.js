@@ -173,7 +173,6 @@ var searchResponse;
     XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
         this.addEventListener('readystatechange', function() { 
             if (this.readyState == 4 && this.responseURL == 'http://matrix.itasoftware.com/search') {
-              debugger;
                 searchResponse = JSON.parse(this.responseText);
             }
         }, false); 
