@@ -613,7 +613,7 @@ function readItinerary() {
   var getPrice = function(value) {
     if (!value) return -1;
     cur = value.substring(0, 3);
-    return value.substring(3, value.length - 3);
+    return value.substring(3, value.length);
   };
   
   var getCabin = function(value) {
