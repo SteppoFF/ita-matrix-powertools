@@ -590,6 +590,7 @@ function rearrangeprices(dist){
 }
   //*** Readfunction ****//
 function readItinerary() {
+  console.log(JSON.stringify(searchResponse));
   var search = searchResponse.result[6];
   var itins = search[3][2];
   var fares = search[6][0][1][0];
