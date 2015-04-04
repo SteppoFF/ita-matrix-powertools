@@ -139,9 +139,9 @@ classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-conta
 classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["mcDiv"]="FNGTPEB-U-e";
-classSettings["mcLinkList"]="FNGTPEB-y-c";
-classSettings["mcHeader"]="FNGTPEB-U-b";
+classSettings["mcDiv"]="FNGTPEB-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["mcHeader"]="FNGTPEB-U-b"; // Right menu header class ("Mileage", etc.)
+classSettings["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
 
 // execute language detection and afterwards functions for current page
 if (window.top != window.self) exit; //don't run on frames or iframes
@@ -1531,7 +1531,7 @@ function printImageInline(src,url,nth){
    } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcDiv"],nth);
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcHeader"], nth).nextElementSibling;
   return div ||createUrlContainerInline();
 }
 function createUrlContainerInline(){
