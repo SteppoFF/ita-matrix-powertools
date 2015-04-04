@@ -816,6 +816,7 @@ function readItinerary(){
 
 function readItineraryXHR() {
   if (!searchResponse) return null;
+  if (!searchResponse.result || !searchResponse.result[6]) return null;
   
   var search = searchResponse.result[6];
   var itins = search[3][2];
