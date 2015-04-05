@@ -108,7 +108,7 @@
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUsersettings = new Object();
-var mptSavedUsersettings = GM_getValue("mptUsersettings", "") || new Object();
+var mptSavedUsersettings = GM_getValue("mptUsersettings", "");
 if (mptSavedUsersettings) {
  mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
 }
