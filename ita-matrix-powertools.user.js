@@ -5,6 +5,7 @@
 // @version 0.10
 // @grant GM_getValue
 // @grant GM_setValue
+// @run-at document-start
 // @include http*://matrix.itasoftware.com/*
 // ==/UserScript==
 
@@ -138,31 +139,22 @@ classSettings["htbLeft"]="FNGTPEB-l-g"; // Left column in the "how to buy"-conta
 classSettings["htbRight"]="FNGTPEB-l-f"; // Class for normal right column
 classSettings["htbGreyBorder"]="FNGTPEB-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
-classSettings["mcDiv"]="FNGTPEB-U-e";
-classSettings["mcLinkList"]="FNGTPEB-y-c";
-classSettings["mcHeader"]="FNGTPEB-U-b";
+classSettings["mcDiv"]="FNGTPEB-U-e";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+classSettings["mcHeader"]="FNGTPEB-U-b"; // Right menu header class ("Mileage", etc.)
+classSettings["mcLinkList"]="FNGTPEB-y-c"; // Right menu ul list class (immediately following header)
 
 // execute language detection and afterwards functions for current page
 if (window.top != window.self) exit; //don't run on frames or iframes
 
 if (window.addEventListener){
-window.addEventListener('load', startcript, false);
+window.addEventListener('load', startScript, false);
 } else if (window.attachEvent)
-window.attachEvent("onload", startcript);
+window.attachEvent("onload", startScript);
 else {
-window.onload = startcript;
-}
-function startcript(){
-  if (window.location.href!=mptSettings["laststatus"]){
-    setTimeout(function(){getPageLang();}, 100);
-    mptSettings["laststatus"]=window.location.href;
-  }
-  if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
-  }  
+window.onload = startScript;
 }
 
-function startcript(){
+function startScript(){
   if (document.getElementById("mptSettingsContainer")== null ) {
   createUsersettings();
   }
@@ -171,9 +163,22 @@ function startcript(){
     mptSettings["laststatus"]=window.location.href;
   }
   if (mptSettings["scriptrunning"]==1){
-   setTimeout(function(){startcript();}, 500); 
+   setTimeout(function(){startScript();}, 500); 
   }  
 }
+
+// Intercept XHR to read search results
+var searchResponse;
+(function(open) {
+    XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+        this.addEventListener('readystatechange', function() { 
+            if (this.readyState == 4 && this.responseURL == 'http://matrix.itasoftware.com/search' && this.responseText) {
+                searchResponse = JSON.parse(this.responseText);
+            }
+        }, false); 
+        open.call(this, method, url, async, user, password);
+    };
+})(XMLHttpRequest.prototype.open);
 
 /**************************************** Settings Stuff *****************************************/
 function createUsersettings(){
@@ -420,13 +425,15 @@ function fePS() {
       findtarget(classSettings["milagecontainer"],1).setAttribute('rowspan', 2);
     }
   
-    var data = readItinerary();
+    var data = readItineraryXHR() || readItinerary();
    
     // Search - Remove - Add Pricebreakdown
     var target=findtarget('pricebreakdown',1);
     if (target!=undefined) target.parentNode.removeChild(target);
     if (mptUsersettings["enablePricebreakdown"]==1) rearrangeprices(data.dist);
     if (mptUsersettings["enableInlinemode"]==1) printCPM(data);
+    
+    printAA(data);
 	 
     printAC(data);
     
@@ -451,12 +458,16 @@ function fePS() {
     if (data["carriers"].length==1 && data["carriers"][0]=="US"){
       printUS(data);
     }
+    
+    printSeperator();
   
     printOrbitz(data);
 
     printHipmunk (data);
 
     printPriceline (data);
+    
+    printSeperator();
   
     //*** Farefreaksstuff ****//
     printFarefreaks (data,0);
@@ -802,6 +813,114 @@ function readItinerary(){
        }
       return data;
 }  
+
+function readItineraryXHR() {
+  if (!searchResponse) return null;
+  if (!searchResponse.result || !searchResponse.result[6]) return null;
+  
+  var search = searchResponse.result[6];
+  var itins = search[3][2];
+  var fares = search[6][0][1][0];
+  var taxes = fares[1][2];
+  var farebases = fares[3];
+  
+  var cur;
+  var getDateTime = function(value) {
+    var timeIndex = value.indexOf('T');
+    var timezoneIndex = value.indexOf('+');
+    var dateArr = value.substring(0, timeIndex).split('-');
+    return {
+      day: parseInt(dateArr[2]),
+      month: parseInt(dateArr[1]),
+      year: parseInt(dateArr[0]),
+      time: value.substring(timeIndex + 1, timezoneIndex).replace(/^0/, ''),
+      iso: value
+    };
+  };
+  
+  var getPrice = function(value) {
+    if (!value) return -1;
+    cur = value.substring(0, 3);
+    return value.substring(3, value.length);
+  };
+  
+  var getCabin = function(value) {
+    switch(value) {
+      case 'FIRST':
+        return 3;
+      case 'BUSINESS':
+        return 2;
+      case 'PREMIUM-COACH':
+        return 1;
+      default:
+        return 0;
+    }
+  };
+  
+  var fbs = farebases.map(function (fb) {
+    return {
+      carrier: fb[4],
+      farebase: fb[5],
+      seg: fb[2].map(function (s) {
+        return {
+          dest: s[1][1],
+          orig: s[1][2],
+          bookingclass: s[2]
+        };
+      })
+    };
+  });
+  
+  var getFarebase = function (orig, dest, bookingclass) {
+    for (var i = 0; i < fbs.length; i++) {
+      var fb = fbs[i];
+      for (var j = 0; j < fb.seg.length; j++) {
+        var seg = fb.seg[j];
+        if (seg.orig == orig && seg.dest == dest && seg.bookingclass == bookingclass) {
+          return fb.farebase;
+        }
+      }
+    }
+    return '';
+  };
+    
+  var data = { 
+    itin: itins.map(function (i) {
+      return {
+        arr: getDateTime(i[5]),
+        dep: getDateTime(i[6]),
+        dest: i[1][2],
+        orig: i[3][2],
+        seg: i[4].map(function (s) {
+          return {
+            carrier: s[2][1],
+            orig: s[8][2],
+            dest: s[4][2],
+            dep: getDateTime(s[11]),
+            arr: getDateTime(s[9]),
+            fnr: s[6][1],
+            duration: s[12],
+            cabin: getCabin(s[1][5]),
+            bookingclass: s[1][0][4],
+            codeshare: (s[5] !== null && s[5][1] !== null && s[5][1].indexOf("OPERATED BY") != -1) ? 1 : 0,
+              layoverduration: s[3] ? s[3][3] : 0,
+            farebase: getFarebase(s[8][2], s[4][2], s[1][0][4])
+          };
+        })
+      };
+    }),
+    price: getPrice(search[2][1]),
+    numPax: search[9],
+    carriers: fbs.map(function (fb) { return fb.carrier; }).filter(function(item, pos, self) {
+        return self.indexOf(item) == pos;
+    }),
+    cur: cur,
+    farebases: fbs.map(function (fb) { return fb.farebase; }),
+    dist: search[3][1][2]
+  };
+  
+  return data;
+}  
   //*** Printfunctions ****//
 function printCPM(data){
   printItemInline((Number(data.price) / Number(data.dist)).toFixed(4) + ' cpm','',1);
@@ -1082,6 +1201,44 @@ uaUrl += ', \"trips\": [';
       printUrl(uaUrl,"United",desc);
     }
 }
+function printAA(data){
+  var aaUrl = 'http://i11l-services.aa.com/xaa/mseGateway/entryPoint.php?PARAM=1,,';
+  aaUrl += data.cur + new Number(data.price).toFixed(2) + ',';
+  
+  aaUrl += data.itin.length + ',';
+  for (var i=0; i < data.itin.length; i++) {
+    aaUrl += data.itin[i].seg.length + ',';
+    for (var j=0; j < data.itin[i].seg.length; j++) {
+      if (!data.itin[i].seg[j].arr.iso) return;
+      if (!data.itin[i].seg[j].dep.iso) return;
+      
+      aaUrl += data.itin[i].seg[j].arr.iso + ',';
+      aaUrl += data.itin[i].seg[j].bookingclass + ',';
+      aaUrl += data.itin[i].seg[j].dep.iso + ',';
+      aaUrl += data.itin[i].seg[j].dest + ',';
+      aaUrl += data.itin[i].seg[j].carrier + data.itin[i].seg[j].fnr + ',';
+      aaUrl += data.itin[i].seg[j].orig + ',';
+    }
+  }
+  
+  aaUrl +=  'TRIPADVISOR,EN,';
+  aaUrl += data.itin.length + ',';
+  aaUrl += data.numPax + ',';
+  aaUrl += '0,0,0,DE,'; // Possible countires: BE,FI,FR,DE,GR,IE,IL,IT,NL,RU,ES,CH
+  
+  aaUrl += data.itin.length;
+  for (var i=0; i < data.itin.length; i++) {
+    aaUrl += ',' + data.itin[i].dep.year+'-'+('0'+data.itin[i].dep.month).slice(-2)+'-'+('0'+data.itin[i].dep.day).slice(-2) + ',';
+    aaUrl += data.itin[i].dest + ',,';
+    aaUrl += data.itin[i].orig + ',';
+  }
+  
+  if (mptUsersettings["enableInlinemode"]==1){
+    printUrlInline(aaUrl,"American","");
+  } else {
+    printUrl(aaUrl,"American","");
+  }
+}
 function printAC(data){
   var acUrl = 'http://www.aircanada.com/aco/flights.do?AH_IATA_NUMBER=0005118&AVAIL_EMMBEDDED_TRANSACTION=FlexPricerAvailabilityServlet'
     if (mptSettings["itaLanguage"]=="de"||mptUsersettings["language"]=="de"){
@@ -1343,6 +1500,12 @@ function printPriceline (data){
       printUrl(url+pricelineurl+encodeURIComponent(searchparam),"Priceline","");
     }
 }
+function printSeperator() {
+  var container = document.getElementById('powertoolslinkcontainer') || getSidebarContainer();
+  if (container) {
+    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
+  }
+}
 
 // Inline Stuff
 function printUrlInline(url,text,desc,nth){
@@ -1368,7 +1531,7 @@ function printImageInline(src,url,nth){
    } 
 }
 function getSidebarContainer(nth){
-  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcDiv"],nth);
+  var div = !nth || nth >= 4 ? document.getElementById('powertoolslinkinlinecontainer') : findtarget(classSettings["mcHeader"], nth).nextElementSibling;
   return div ||createUrlContainerInline();
 }
 function createUrlContainerInline(){
@@ -1384,7 +1547,7 @@ function printUrl(url,name,desc) {
     createUrlContainer();
     }
 var div = document.getElementById('powertoolslinkcontainer');
-div.innerHTML = div.innerHTML + "<br><br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")" : "");
+div.innerHTML = div.innerHTML + "<br><font size=3><bold><a href=\""+url+ "\" target=_blank>"+ (mptUsersettings["language"]=="de"?"&Ouml;ffne mit":"Open with") +" "+name+"</a></font></bold>"+(desc ? "<br>("+desc+")<br>" : "<br>");
 }
 function createUrlContainer(){
   var newdiv = document.createElement('div');
