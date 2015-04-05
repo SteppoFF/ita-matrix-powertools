@@ -1503,7 +1503,7 @@ function printPriceline (data){
 function printSeperator() {
   var container = document.getElementById('powertoolslinkcontainer') || getSidebarContainer();
   if (container) {
-    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr/>' : '<br/><hr/>');
+    container.innerHTML = container.innerHTML + (mptUsersettings["enableInlinemode"] ? '<hr class="powertoolsitem"/>' : '<br/><hr/>');
   }
 }
 
