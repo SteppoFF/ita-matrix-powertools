@@ -2,7 +2,7 @@
 // @name DL/ORB Itinary Builder
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Builds fare purchase links
-// @version 0.15
+// @version 0.15a
 // @grant GM_getValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
@@ -666,7 +666,6 @@ function fePS() {
     if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="AZ"){ printAZ(); }  
     printDelta();   
     printKL();
-    printUA();
     // we print US if its only on US-flights
     if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="US"){ printUS(); }
   
