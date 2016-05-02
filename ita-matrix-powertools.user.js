@@ -302,8 +302,8 @@ function createUsersettings(){
     str +='</div><div style="clear:both"></div></div>'; 
     str +='<div style="text-align:center;font-weight:bold">**** Provider Editions: ****</div>';
     str +='<div style="margin:5px 0">';
-    str +='<div id="mptaaEdition" style="width:33%;float:left;">American Edition (Amadeus):<label style="cursor:pointer;">'+printSettingsvalue("aaEdition")+'</label></div>';
-    str +='<div id="mptaac1Edition" style="width:33%;float:left;">American Edition (C1&UK):<label style="cursor:pointer;">'+printSettingsvalue("aac1Edition")+'</label></div>';
+    str +='<div id="mptaac1Edition" style="width:33%;float:left;">American Edition (CA/UK/US):<label style="cursor:pointer;">'+printSettingsvalue("aac1Edition")+'</label></div>';
+    str +='<div id="mptaaEdition" style="width:33%;float:left;">American Edition (Other POSs):<label style="cursor:pointer;">'+printSettingsvalue("aaEdition")+'</label></div>';
     str +='<div id="mptacEdition" style="width:33%;float:left;">Air Canada Edition:<label style="cursor:pointer;">'+printSettingsvalue("acEdition")+'</label></div>';
     str +='<div id="mptafEdition" style="width:33%;float:left;">Air France Edition:<label style="cursor:pointer;">'+printSettingsvalue("afEdition")+'</label></div>';
     str +='<div id="mptbaLanguage" style="width:33%;float:left;">British Airways Language:<label style="cursor:pointer;">'+printSettingsvalue("baLanguage")+'</label></div>';
@@ -1117,8 +1117,8 @@ function fePS() {
     if (mptUsersettings["enableInlinemode"]==1) printCPM();
  
     /*** Airlines ***/
-    printAA(); 
     printAAc1();
+    printAA();
     printAC();   
     if (currentItin["itin"].length == 2 &&
         currentItin["itin"][0]["orig"] == currentItin["itin"][1]["dest"] &&
@@ -1852,9 +1852,9 @@ function printAA(){
   extra += '</span></span>';
   
   if (mptUsersettings["enableInlinemode"]==1){
-    printUrlInline(url,"American","",null,extra);
+    printUrlInline(url,"American (Other POSs)","",null,extra);
   } else {
-    printUrl(url,"American","",extra);
+    printUrl(url,"American (Other POSs)","",extra);
   } 
 }
 
@@ -1913,9 +1913,9 @@ function printAAc1(){
     extra += aac1Editions.map(function (edition, i) { return '<a href="' + createUrl(edition.value.toUpperCase()) + '" target="_blank">' + edition.name +'</a>'; }).join('<br/>');
     extra += '</span></span>';  
     if (mptUsersettings["enableInlinemode"]==1){
-      printUrlInline(url,"American (C1)","",null,extra);
+      printUrlInline(url,"American (CA/UK/US)","",null,extra);
     } else {
-      printUrl(url,"American (C1)","",extra);
+      printUrl(url,"American (CA/UK/US)","",extra);
     } 
 }
 
