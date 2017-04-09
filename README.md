@@ -36,6 +36,9 @@ script_minified.txt --  Compact , pastable version of the script for pasting in 
 
 *********** Latest major changes **************
 
+2017-04-09 Edited by mr-C (Added Finland edition for AirFrance, necessary for bookings originating in Lithuania / VNO)
+**** Version 0.24 ****
+Not documented
 **** Version 0.23 ****
 
 2016-12-11 Edited by Steppo (Fixed Alitalia and added editions
