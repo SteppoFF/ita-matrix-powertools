@@ -2296,7 +2296,7 @@ function printDL(){
 // Steppo: What about segmentskipping?    
     var createUrl = function (edition) {
       // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-      var cabins = ['B5-Coach', 'COMFORT-PLUS-PREMIUM-ECONOMY', 'B2-Business', 'B2-Business']; 
+      var cabins = ['MAIN', 'DCP', 'BU', 'FIRST']; 
       var mincabin=3;
       var pax=validatePaxcount({maxPaxcount:9, countInf:true, childAsAdult:12, sepInfSeat:false, childMinAge:2});
       if (pax===false){
