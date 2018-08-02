@@ -2842,7 +2842,7 @@ function printPriceline(){
       printNotification("Error: Failed to validate Passengers in printPriceline");
       return false;
     }
-   pricelineurl+="/details/R_"+searchparam+"_"+(pax.adults+pax.children.length+pax.infLap)+"_USD0.00?refid=0&num-adults="+pax.adults+"&num-children="+pax.children.length+"&num-infants="+pax.infLap+"&num-youths=0";
+   pricelineurl+="/desktop/details/R_"+searchparam+"_"+(pax.adults+pax.children.length+pax.infLap)+"_USD0.00_1-1-1?num-adults="+pax.adults+"&num-children="+pax.children.length+"&num-infants="+pax.infLap+"&num-youths=0";
    if (mptUsersettings["enableInlinemode"]==1){
       printUrlInline(pricelineurl,"Priceline","");
     } else {
