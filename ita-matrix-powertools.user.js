@@ -230,13 +230,12 @@ classSettings["startpage"] = new Object();
 classSettings["startpage"]["maindiv"]="IR6M2QD-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
 classSettings["resultpage"]["itin"]="IR6M2QD-v-d"; //Container with headline: "Intinerary"
-classSettings["resultpage"]["itinRow"]="IR6M2QD-k-i"; // TR in itin with Orig, Dest and date
-classSettings["resultpage"]["milagecontainer"]="IR6M2QD-v-e"; // TD-Container on the right
-classSettings["resultpage"]["rulescontainer"]="IR6M2QD-l-d"; // First container before rulelinks (the one with Fare X:)
-classSettings["resultpage"]["htbContainer"]="IR6M2QD-l-k"; // full "how to buy"-container inner div (td=>div=>div) 
-classSettings["resultpage"]["htbLeft"]="IR6M2QD-l-g"; // Left column in the "how to buy"-container
-classSettings["resultpage"]["htbRight"]="IR6M2QD-l-f"; // Class for normal right column
-classSettings["resultpage"]["htbGreyBorder"]="IR6M2QD-l-l"; // Class for right cell with light grey border (used for subtotal of passenger)
+classSettings["resultpage"]["itinRow"]="IR6M2QD-j-i"; // TR in itin with Orig, Dest and date
+classSettings["resultpage"]["rulescontainer"]="IR6M2QD-k-d"; // First container before rulelinks (the one with Fare X:)
+classSettings["resultpage"]["htbContainer"]="IR6M2QD-k-k"; // full "how to buy"-container inner div (td=>div=>div)
+classSettings["resultpage"]["htbLeft"]="IR6M2QD-k-g"; // Left column in the "how to buy"-container
+classSettings["resultpage"]["htbRight"]="IR6M2QD-k-f"; // Class for normal right column
+classSettings["resultpage"]["htbGreyBorder"]="IR6M2QD-k-l"; // Class for right cell with light grey border (used for subtotal of passenger)
 //inline
 classSettings["resultpage"]["mcDiv"]="IR6M2QD-y-d";  // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
 classSettings["resultpage"]["mcHeader"]="IR6M2QD-y-b"; // Right menu header class ("Mileage", etc.)
