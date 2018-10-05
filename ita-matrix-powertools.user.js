@@ -231,6 +231,7 @@ classSettings["startpage"]["maindiv"]="IR6M2QD-w-d"; //Container of main content
 classSettings["resultpage"] = new Object();
 classSettings["resultpage"]["itin"]="IR6M2QD-v-d"; //Container with headline: "Intinerary"
 classSettings["resultpage"]["itinRow"]="IR6M2QD-j-i"; // TR in itin with Orig, Dest and date
+classSettings["resultpage"]["milagecontainer"]="IR6M2QD-v-e"; // TD-Container on the right
 classSettings["resultpage"]["rulescontainer"]="IR6M2QD-k-d"; // First container before rulelinks (the one with Fare X:)
 classSettings["resultpage"]["htbContainer"]="IR6M2QD-k-k"; // full "how to buy"-container inner div (td=>div=>div)
 classSettings["resultpage"]["htbLeft"]="IR6M2QD-k-g"; // Left column in the "how to buy"-container
