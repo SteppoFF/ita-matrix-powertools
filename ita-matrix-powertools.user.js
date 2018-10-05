@@ -158,54 +158,7 @@ mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
 mptSettings["cabin"]="Auto";
-
-// async for GM4
-(async ()=>{
-
-if (typeof GM.info === "undefined") {
-   mptSettings["scriptEngine"]=0; // console mode
-  }
-else {
-  mptSettings["scriptEngine"]=1; // tamper or grease mode
-  var mptSavedUsersettings = await GM.getValue("mptUsersettings", "");
-  if (mptSavedUsersettings) {
-    mptSavedUsersettings = JSON.parse(mptSavedUsersettings);
-    mptUsersettings["timeformat"] = (mptSavedUsersettings["timeformat"] === undefined ? mptUsersettings["timeformat"] : mptSavedUsersettings["timeformat"]);
-    mptUsersettings["language"] = (mptSavedUsersettings["language"] === undefined ? mptUsersettings["language"] : mptSavedUsersettings["language"]);
-    mptUsersettings["enableDeviders"]=(mptSavedUsersettings["enableDeviders"] === undefined ? mptUsersettings["enableDeviders"] : mptSavedUsersettings["enableDeviders"]);
-    mptUsersettings["enableInlinemode"] = (mptSavedUsersettings["enableInlinemode"] === undefined ? mptUsersettings["enableInlinemode"] : mptSavedUsersettings["enableInlinemode"]);
-    mptUsersettings["enableEditormode"] = (mptSavedUsersettings["enableEditormode"] === undefined ? mptUsersettings["enableEditormode"] : mptSavedUsersettings["enableEditormode"]);
-    mptUsersettings["enableIMGautoload"] = (mptSavedUsersettings["enableIMGautoload"] === undefined ? mptUsersettings["enableIMGautoload"] : mptSavedUsersettings["enableIMGautoload"]);
-    mptUsersettings["enableFarerules"] = (mptSavedUsersettings["enableFarerules"] === undefined ? mptUsersettings["enableFarerules"] : mptSavedUsersettings["enableFarerules"]);
-    mptUsersettings["enablePricebreakdown"] = (mptSavedUsersettings["enablePricebreakdown"] === undefined ? mptUsersettings["enablePricebreakdown"] : mptSavedUsersettings["enablePricebreakdown"]);
-    mptUsersettings["enableMilesbreakdown"] = (mptSavedUsersettings["enableMilesbreakdown"] === undefined ? mptUsersettings["enableMilesbreakdown"] : mptSavedUsersettings["enableMilesbreakdown"]);
-    mptUsersettings["enableMilesbreakdownautoload"] = (mptSavedUsersettings["enableMilesbreakdownautoload"] === undefined ? mptUsersettings["enableMilesbreakdownautoload"] : mptSavedUsersettings["enableMilesbreakdownautoload"]);
-    mptUsersettings["enableMilesInlinemode"] = (mptSavedUsersettings["enableMilesInlinemode"] === undefined ? mptUsersettings["enableMilesInlinemode"] : mptSavedUsersettings["enableMilesInlinemode"]);
-    mptUsersettings["linkFontsize"] = (mptSavedUsersettings["linkFontsize"] === undefined ? mptUsersettings["linkFontsize"] : mptSavedUsersettings["linkFontsize"]);
-    mptUsersettings["enablePlanefinder"] = (mptSavedUsersettings["enablePlanefinder"] === undefined ? mptUsersettings["enablePlanefinder"] : mptSavedUsersettings["enablePlanefinder"]);
-    mptUsersettings["enableSeatguru"] = (mptSavedUsersettings["enableSeatguru"] === undefined ? mptUsersettings["enableSeatguru"] : mptSavedUsersettings["enableSeatguru"]);
-    mptUsersettings["enableWheretocredit"] = (mptSavedUsersettings["enableWheretocredit"] === undefined ? mptUsersettings["enableWheretocredit"] : mptSavedUsersettings["enableWheretocredit"]);
-    mptUsersettings["enableFarefreaks"] = (mptSavedUsersettings["enableFarefreaks"] === undefined ? mptUsersettings["enableFarefreaks"] : mptSavedUsersettings["enableFarefreaks"]);
-    mptUsersettings["acEdition"] = (mptSavedUsersettings["acEdition"] === undefined ? mptUsersettings["acEdition"] : mptSavedUsersettings["acEdition"]);
-    mptUsersettings["aaEdition"] = (mptSavedUsersettings["aaEdition"] === undefined ? mptUsersettings["aaEdition"] : mptSavedUsersettings["aaEdition"]);    
-    mptUsersettings["aac1Edition"] = (mptSavedUsersettings["aac1Edition"] === undefined ? mptUsersettings["aac1Edition"] : mptSavedUsersettings["aac1Edition"]);
-    mptUsersettings["aac1Currency"] = (mptSavedUsersettings["aac1Currency"] === undefined ? mptUsersettings["aac1Currency"] : mptSavedUsersettings["aac1Currency"]);
-    mptUsersettings["afEdition"] = (mptSavedUsersettings["afEdition"] === undefined ? mptUsersettings["afEdition"] : mptSavedUsersettings["afEdition"]);
-    mptUsersettings["azEdition"] = (mptSavedUsersettings["azEdition"] === undefined ? mptUsersettings["azEdition"] : mptSavedUsersettings["azEdition"]);
-    mptUsersettings["baLanguage"] = (mptSavedUsersettings["baLanguage"] === undefined ? mptUsersettings["baLanguage"] : mptSavedUsersettings["baLanguage"]);
-    mptUsersettings["baEdition"] = (mptSavedUsersettings["baEdition"] === undefined ? mptUsersettings["baEdition"] : mptSavedUsersettings["baEdition"]);
-    mptUsersettings["czEdition"] = (mptSavedUsersettings["czEdition"] === undefined ? mptUsersettings["czEdition"] : mptSavedUsersettings["czEdition"]);
-    mptUsersettings["dlEdition"] = (mptSavedUsersettings["dlEdition"] === undefined ? mptUsersettings["dlEdition"] : mptSavedUsersettings["dlEdition"]);
-    mptUsersettings["ibCurrency"] = (mptSavedUsersettings["ibCurrency"] === undefined ? mptUsersettings["ibCurrency"] : mptSavedUsersettings["ibCurrency"]);
-    mptUsersettings["ibEdition"] = (mptSavedUsersettings["ibEdition"] === undefined ? mptUsersettings["ibEdition"] : mptSavedUsersettings["ibEdition"]);    
-    mptUsersettings["klEdition"] = (mptSavedUsersettings["klEdition"] === undefined ? mptUsersettings["klEdition"] : mptSavedUsersettings["klEdition"]);
-    mptUsersettings["laEdition"] = (mptSavedUsersettings["laEdition"] === undefined ? mptUsersettings["laEdition"] : mptSavedUsersettings["laEdition"]);
-    mptUsersettings["lhEdition"] = (mptSavedUsersettings["lhEdition"] === undefined ? mptUsersettings["lhEdition"] : mptSavedUsersettings["lhEdition"]);
-    mptUsersettings["lxEdition"] = (mptSavedUsersettings["lxEdition"] === undefined ? mptUsersettings["lxEdition"] : mptSavedUsersettings["lxEdition"]);
-  }
-}
-
-})(); // end async for GM4
+mptSettings["scriptEngine"]=0; // console mode
 
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
 var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgium"},{value:"en_CN", name:"China"},{value:"en_DK", name:"Denmark"},{value:"en_FI", name:"Finland"},{value:"en_FR", name:"France / English"},{value:"fr_FR", name:"France / French"},{value:"en_DE", name:"Germany / English"},{value:"de_DE", name:"Germany / Deutsch"},{value:"en_GR", name:"Greece"},{value:"en_HK", name:"Hong Kong"},{value:"en_IN", name:"India"},{value:"en_IE", name:"Ireland"},{value:"en_IL", name:"Israel"},{value:"en_IT", name:"Italy"},{value:"en_JP", name:"Japan"},{value:"en_KR", name:"Korea"},{value:"en_NL", name:"Netherlands"},{value:"en_NZ", name:"New Zealand"},{value:"en_NO", name:"Norway"},{value:"en_PT", name:"Portugal"},{value:"en_RU", name:"Russia"},{value:"en_ES", name:"Spain"},{value:"en_SE", name:"Sweden"},{value:"en_CH", name:"Switzerland"}];
@@ -3003,6 +2956,9 @@ function printKayak(method) {
         if(currentItin['numPax']>1){
           KayakUrl += '/' + currentItin['numPax'] + 'adults'; 
         }
+
+        KayakUrl += getKayakCabin();
+
         if (method == 1) {
             if (mptUsersettings["language"] == "de") {
                 desc = "Benutze " + segsize + " Segment(e)";
@@ -3175,19 +3131,27 @@ function printGCM (){
 function getForcedCabin(){
   switch (mptSettings["cabin"]){
        case "Y":
-        return 0;
-          break;     
+        return 0;   
        case "Y+":
-        return 1;
-          break;       
+        return 1;      
        case "C":
         return 2;
-          break;
        case "F":
         return 3;
-          break; 
        default:
         return 0;
+  }
+}
+function getKayakCabin(){
+  switch (mptSettings["cabin"]){
+       case "Y+":
+        return "/premium";      
+       case "C":
+        return "/business";
+       case "F":
+        return "/first";
+       default:
+        return "";
   }
 }
 function bindSeatguru(){
