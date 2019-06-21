@@ -2397,7 +2397,7 @@ function printDL(){
         return false;
       }
 
-      var deltaURL ="http://"+edition[0]+".delta.com/air-shopping/priceTripAction.action?tripType=multiCity";
+      var deltaURL ="http://"+edition[0]+".delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity";
       deltaURL +="&currencyCd=" + (currentItin["cur"]=="EUR" ? "EUR" : "USD");
       deltaURL +="&exitCountry="+edition[1];
       var segcounter=0;
