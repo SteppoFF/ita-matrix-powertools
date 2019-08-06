@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.31
+// @version 0.32
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -16,6 +16,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.32 ****
+# 2019-08-06 Edited by canadiancow (Pass fare basis to Air Canada)
 **** Version 0.31 ****
 # 2019-04-26 Edited by bench-marc (add cabinclass for expedia)
 **** Version 0.30 ****
@@ -1845,6 +1847,7 @@ function getAmadeusUrl(config){
                 url += '&AIRLINE_'      + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['carrier'];
                 url += '&FLIGHT_NUMBER_'+ curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['fnr'];
                 url += '&RBD_'          + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['bookingclass'];
+                url += '&FARE_CLASS_'   + curleg +'_' + curseg + '='+currentItin['itin'][i]['seg'][j]['farebase'];
                 lastdest=currentItin['itin'][i]['seg'][j+k]['dest'];
                 lastcabin=currentItin["itin"][i]["seg"][j]["cabin"];
                 if (currentItin["itin"][i]["seg"][j]["cabin"]>maxcabin) maxcabin=currentItin["itin"][i]["seg"][j]["cabin"];
