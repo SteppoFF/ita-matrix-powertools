@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.32
+// @version 0.33
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -16,6 +16,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.33 ****
+# 2019-10-16 Edited by TechnoTourist (Air Canada promo code input)
 **** Version 0.32 ****
 # 2019-08-06 Edited by canadiancow (Pass fare basis to Air Canada)
 **** Version 0.31 ****
