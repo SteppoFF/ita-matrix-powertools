@@ -2069,6 +2069,44 @@ function printAAc1(){
     }
 }
 
+function addACPromo() {
+  window.addACPromo = function () {
+    var input = document.getElementById("ac-promo-input");
+    input.style.display = "inline";
+    input.addEventListener("change", (event) => {
+      var replacement = (event.target.value != '' ? ('&AUTHORIZATION_ID=' + event.target.value) : '');
+      var link = document.getElementById("ac-promo-link");
+      var match = link.href.match(/(&AUTHORIZATION_ID=.*)/g);
+      if (match == null) {
+        link.href += replacement;
+      } else {
+        link.href = link.href.replace(match, replacement);
+      }
+    });
+
+    var link = document.getElementById("ac-promo-link");
+    link.style.display = "inline";
+  };
+}
+
+function addACPromoControls(url) {
+  var script = document.createElement('script');
+  script.appendChild(document.createTextNode('(' + addACPromo + ')();'));
+  (document.body || document.head || document.documentElement).appendChild(script);
+
+  var label = "Open"
+  if (translations[mptUsersettings["language"]] !== undefined) {
+    if (translations[mptUsersettings["language"]]["open"] !== undefined) {
+      label = translations[mptUsersettings["language"]]["open"];
+    }
+  }
+
+  var extra = '<input type="input" id="ac-promo-input" size="8" style="display:none;margin:0 5px;"></input>';
+  extra += '<label style="font-size:' + Number(mptUsersettings["linkFontsize"]) + '%;">';
+  extra += '<a id="ac-promo-link" style="display:none" target="_blank" href="' + url + '">' + label + '</a></label>';
+  return extra;
+}
+
 function printAC(){
   var createUrl = function (edition) {
     var acUrl = 'https://book.aircanada.com/pl/AConline/en/RedirectionServlet?FareRequest=YES&PRICING_MODE=0&fromThirdParty=YES';
@@ -2100,7 +2138,10 @@ function printAC(){
   }
   var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
   extra += acEditions.map(function (edition, i) { return '<a href="' + createUrl(edition.toUpperCase()) + '" target="_blank">' + edition +'</a>'; }).join('<br/>');
+  extra += '<br/><a href="javascript:addACPromo();">Add Promo Code</a>'
   extra += '</span></span>';
+  extra += addACPromoControls(acUrl);
+
   if (mptUsersettings["enableInlinemode"]==1){
     printUrlInline(acUrl,"Air Canada","",null,extra);
   } else {
