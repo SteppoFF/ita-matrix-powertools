@@ -1,3 +1,7 @@
+**** Version 0.34 ****
+# 2019-10-16 Edited by wylek (Fix farefreaks disable setting; add AA ES_ES; add Qantas deeplink)
+**** Version 0.33 ****
+# 2019-10-16 Edited by TechnoTourist (Air Canada promo code input)
 **** Version 0.32 ****
 # 2019-08-06 Edited by canadiancow (Pass fare basis to Air Canada)
 **** Version 0.26 ****
@@ -17,7 +21,7 @@
 # 2016-09-18 Edited by Steppo (Removed Orbitz/Ebookers
                                 fixed Air Canada
                                 some Kayak tweaking)
-                                
+
 **** Version 0.20 ****
 # 2016-05-31 Edited by elduce (Added Monomdo & Kayak)
 # 2016-06-05 Edited by Steppo (Disabled LAN, Removed invalid Ebookers targets, Regrouped links to Airline/OTA/Meta)
@@ -31,7 +35,7 @@
                                 added pax management -> use with caution!
                                 redesigned settings - added font size for links
                                 added editor mode
-                                reworked/adapted linking functions - added edition support                               
+                                reworked/adapted linking functions - added edition support
                                 tweaked extraction function - bugs removed/shortened/added plane type & fare carrier/improved currency detection
                                 added Amadeus realated functions
                                 added AAc1, BA, CZ, IB, LA, LH, LX, TK
@@ -39,14 +43,14 @@
                                 added flight manager support of FareFreaks)
 **** Version 0.17 ****
 # 2016-04-11 Edited by Steppo (fixed Priceline)
-# 2016-03-24 Edited by tomasdev (Fix Delta booking link like Google does)                                
+# 2016-03-24 Edited by tomasdev (Fix Delta booking link like Google does)
 **** Version 0.16 ****
 # 2015-12-15 Edited by Steppo ( removed UA - Hipmunk,
                                 use textNode for printing (external) messages)
 # 2015-10-12 Edited by IAkH ( added wheretocredit.com calculator )
 **** Version 0.15 ****
 # 2015-09-30 Edited by IAkH ( added additional edition flyout menu,
-                                added Ebookers, 
+                                added Ebookers,
                                 added Etraveli )
 **** Version 0.14 ****
 # 2015-09-25 Edited by Steppo ( added American Airlines )
@@ -72,7 +76,7 @@
 # 2015-04-20 Edited by Steppo (fixed Bug in findItinTarget for one-seg-flights,
                                 fixed typo,
                                 added CSS fix for startpage)
-                                
+
 **** Version 0.11 ****
 # 2015-04-19 Edited by Steppo (added SeatGuru,
                                 added Planefinder,
@@ -84,7 +88,7 @@
                                 moved exit in frames to top,
                                 some cleanups,
                                 moved older changelogitems to separate file on GitHub - no one wants to read such lame stuff :-) )
-                                
+
 **** Version 0.10a ****
 # 2015-04-05 Edited by RizwanK (Attempted to merge functionality from .user. and .console. into one file)
 **** Version 0.10 ****
@@ -103,7 +107,7 @@
 # 2015-02-26 Edited by IAkH   (Added Alitalia,
                                 fixed Air France,
                                 fixed GCM image-width,
-                                introduced local storage)                                
+                                introduced local storage)
 **** Version 0.8 ****
 # 2015-02-19 Edited by Steppo (Added settings menu,
                                 added price breakdown,
@@ -113,7 +117,7 @@
                                 several tweaks and cleanups)
 **** Version 0.7n ****
 # 2015-02-16 Edited by IAkH   (Introduced inline mode,
-                                added CPM,  
+                                added CPM,
                                 added Air Canada,
                                 added KLM,
                                 added Air France)
@@ -134,7 +138,7 @@
                                added support to transform times to 24h-format
                                added german translation,
                                several other tweaks & fixes)
-                               
+
 # 2015-01-01 Edited by Steppo (Quickfix for Matrix 3.0,
                                removed most content. Only linking at the moment,
                                will do the cleanup ASAP)
