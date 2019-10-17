@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.33
+// @version 0.34
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -16,6 +16,8 @@
  Includes contriutions by 18sas
  Copyright Reserved -- At least share with credit if you do
 *********** Latest Changes **************
+**** Version 0.34 ****
+# 2019-10-16 Edited by wylek (Fix farefreaks disable setting; add AA ES_ES; add Qantas deeplink)
 **** Version 0.33 ****
 # 2019-10-16 Edited by TechnoTourist (Air Canada promo code input)
 **** Version 0.32 ****
@@ -43,10 +45,8 @@
                                 added time zone resolving - only affecting links for American Airlines
                                 added on the fly link updates for passengers/cabin - printLinksContainer()
                                 added support for multiple onClick() events in link section)
-
 **** Version 0.22 ****
 # 2016-09-26 Edited by Steppo (Added American US/CA/GB currencies)
-
 **** Version 0.21 ****
 # 2016-09-18 Edited by Steppo (Removed Orbitz/Ebookers
                                 fixed Air Canada
@@ -54,13 +54,10 @@
 **** Version 0.20 ****
 # 2016-05-31 Edited by elduce (Added Monomdo & Kayak)
 # 2016-06-05 Edited by Steppo (Disabled LAN, Removed invalid Ebookers targets, Regrouped links to Airline/OTA/Meta)
-
 **** Version 0.19 ****
 # 2016-05-14 Edited by seththeriault (Specify proper cabin parameter for DL C+/W booking)
-
 **** Version 0.18a ****
 # 2016-05-10 Edited by Steppo (Fixed critical bug in Amadeus function - thx to adam.smith)
-
 **** Version 0.18 ****
 # 2016-05-01 Edited by Steppo (Renamed UserScript
                                 added cabin override
@@ -158,12 +155,14 @@ mptUsersettings["klEdition"] = "us_en"; // sets the local edition of KLM
 mptUsersettings["laEdition"] = "en_us"; // sets the local edition of Lan
 mptUsersettings["lhEdition"] = "US-gb"; // sets the local edition of Lufthansa
 mptUsersettings["lxEdition"] = "us_en"; // sets the local edition of Swiss
+mptUsersettings["qfEdition"] = "en_US"; // sets the local edition of Qantas Airways
+mptUsersettings["qfCurrency"] = "AUD"; // sets the Currency of Qantas
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
 var mptSettings = new Object();
 mptSettings["itaLanguage"]="en";
-mptSettings["version"]="0.31";
+mptSettings["version"]="0.34";
 mptSettings["retrycount"]=1;
 mptSettings["laststatus"]="";
 mptSettings["scriptrunning"]=1;
@@ -212,13 +211,15 @@ else {
     mptUsersettings["laEdition"] = (mptSavedUsersettings["laEdition"] === undefined ? mptUsersettings["laEdition"] : mptSavedUsersettings["laEdition"]);
     mptUsersettings["lhEdition"] = (mptSavedUsersettings["lhEdition"] === undefined ? mptUsersettings["lhEdition"] : mptSavedUsersettings["lhEdition"]);
     mptUsersettings["lxEdition"] = (mptSavedUsersettings["lxEdition"] === undefined ? mptUsersettings["lxEdition"] : mptSavedUsersettings["lxEdition"]);
+    mptUsersettings.qfCurrency = (mptSavedUsersettings.qfCurrency === undefined ? mptUsersettings.qfCurrency : mptSavedUsersettings.qfCurrency);
+    mptUsersettings.qfEdition = (mptSavedUsersettings.qfEdition === undefined ? mptUsersettings.qfEdition : mptSavedUsersettings.qfEdition);
   }
 }
 
 })(); // end async for GM4
 
 var acEditions = ["us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"];
-var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgium"},{value:"en_CN", name:"China"},{value:"en_DK", name:"Denmark"},{value:"en_FI", name:"Finland"},{value:"en_FR", name:"France / English"},{value:"fr_FR", name:"France / French"},{value:"en_DE", name:"Germany / English"},{value:"de_DE", name:"Germany / Deutsch"},{value:"en_GR", name:"Greece"},{value:"en_HK", name:"Hong Kong"},{value:"en_IN", name:"India"},{value:"en_IE", name:"Ireland"},{value:"en_IL", name:"Israel"},{value:"en_IT", name:"Italy"},{value:"en_JP", name:"Japan"},{value:"en_KR", name:"Korea"},{value:"en_NL", name:"Netherlands"},{value:"en_NZ", name:"New Zealand"},{value:"en_NO", name:"Norway"},{value:"en_PT", name:"Portugal"},{value:"en_RU", name:"Russia"},{value:"en_ES", name:"Spain"},{value:"en_SE", name:"Sweden"},{value:"en_CH", name:"Switzerland"}];
+var aaEditions = [{value:"en_AU", name:"Australia"},{value:"en_BE", name:"Belgium"},{value:"en_CN", name:"China"},{value:"en_DK", name:"Denmark"},{value:"en_FI", name:"Finland"},{value:"en_FR", name:"France / English"},{value:"fr_FR", name:"France / French"},{value:"en_DE", name:"Germany / English"},{value:"de_DE", name:"Germany / Deutsch"},{value:"en_GR", name:"Greece"},{value:"en_HK", name:"Hong Kong"},{value:"en_IN", name:"India"},{value:"en_IE", name:"Ireland"},{value:"en_IL", name:"Israel"},{value:"en_IT", name:"Italy"},{value:"en_JP", name:"Japan"},{value:"en_KR", name:"Korea"},{value:"en_NL", name:"Netherlands"},{value:"en_NZ", name:"New Zealand"},{value:"en_NO", name:"Norway"},{value:"en_PT", name:"Portugal"},{value:"en_RU", name:"Russia"},{value:"en_ES", name:"Spain / English"},{value:"es_ES", name:"Spain / Spanish"},{value:"en_SE", name:"Sweden"},{value:"en_CH", name:"Switzerland"}];
 var aac1Editions = [{value:"CA", name:"Canada"},{value:"US", name:"United States"},{value:"GB", name:"United Kingdom"}];
 var aac1Currencies = [{value:"1", name:"USD"},{value:"2", name:"GBP"},{value:"4", name:"CAD"}];
 var afEditions = [{value:"DE/de", name:"Germany / Deutsch"},{value:"DE/en", name:"Germany / English"},{value:"FR/en", name:"France / English"},{value:"FI/en", name:"Finland / English"},{value:"FR/fr", name:"France / French"},{value:"NL/en", name:"Netherlands / English"},{value:"GB/en", name:"United Kingdom / English"},{value:"US/en", name:"US / English"}];
@@ -233,13 +234,15 @@ var klEditions = [{value:"de_de", name:"Germany / Deutsch"},{value:"de_en", name
 var laEditions = [{value:"es_ar", name:"Argentina / Spanish"},{value:"pt_br", name:"Brasil / Portuguese"},{value:"es_cl", name:"Chile / Spanish"},{value:"es_co", name:"Colombia / Spanish"},{value:"es_ec", name:"Ecuador / Spanish"},{value:"es_pe", name:"Peru / Spanish"},{value:"es_uy", name:"Uruguay / Spanish"},{value:"en_us", name:"US / English"},{value:"es_mx", name:"Mexico / Spanish"},{value:"en_ca", name:"Canada / English"},{value:"de_de", name:"Germany / German"},{value:"es_es", name:"Spain / Spanish"},{value:"fr_fr", name:"France / French"},{value:"en_it", name:"Italy / English"},{value:"en_uk", name:"UK / English"},{value:"en_ue", name:"Rest of Europe / English"},{value:"en_au", name:"Australia / English"},{value:"en_nz", name:"New Zealand / English"},{value:"es_un", name:"Other Countries / Spanish"},{value:"en_un", name:"Other Countries / English"}];
 var lhEditions = [{value:"AL-gb", name:"Albania / English"},{value:"DZ-fr", name:"Algeria / Français"},{value:"AO-gb", name:"Angola / English"},{value:"AR-es", name:"Argentina / Español"},{value:"AM-gb", name:"Armenia / English"},{value:"AU-gb", name:"Australia / English"},{value:"AT-de", name:"Austria / Deutsch"},{value:"AT-gb", name:"Austria / English"},{value:"AZ-gb", name:"Azerbaijan / English"},{value:"BH-gb", name:"Bahrain / English"},{value:"BY-gb", name:"Belarus / English"},{value:"BE-gb", name:"Belgium / English"},{value:"BA-gb", name:"Bosnia/Hercegovina / English"},{value:"BR-pt", name:"Brazil / Português"},{value:"BG-gb", name:"Bulgaria / English"},{value:"CA-gb", name:"Canada / English"},{value:"CA-fr", name:"Canada / Français"},{value:"CL-es", name:"Chile / Español"},{value:"CN-gb", name:"China / English"},{value:"CO-es", name:"Colombia / Español"},{value:"HR-gb", name:"Croatia / English"},{value:"CY-gb", name:"Cyprus / English"},{value:"CZ-gb", name:"Czech Republic / English"},{value:"DK-gb", name:"Denmark / English"},{value:"EG-gb", name:"Egypt / English"},{value:"GQ-gb", name:"Equatorial Guinea / English"},{value:"ER-gb", name:"Eritrea / English"},{value:"EE-gb", name:"Estonia / English"},{value:"ET-gb", name:"Ethiopia / English"},{value:"FI-gb", name:"Finland / English"},{value:"FR-gb", name:"France / English"},{value:"FR-fr", name:"France / Français"},{value:"GA-gb", name:"Gabon / English"},{value:"GE-gb", name:"Georgia / English"},{value:"DE-de", name:"Germany / Deutsch"},{value:"DE-gb", name:"Germany / English"},{value:"GH-gb", name:"Ghana / English"},{value:"GR-gb", name:"Greece / English"},{value:"HK-gb", name:"Hong Kong / English"},{value:"HU-gb", name:"Hungary / English"},{value:"IS-gb", name:"Iceland / English"},{value:"IN-gb", name:"India / English"},{value:"ID-gb", name:"Indonesia / English"},{value:"IR-gb", name:"Iran / English"},{value:"IQ-gb", name:"Iraq / English"},{value:"IE-gb", name:"Ireland / English"},{value:"IL-gb", name:"Israel / English"},{value:"IT-it", name:"Italy / Italiano"},{value:"IT-gb", name:"Italy / English"},{value:"JP-gb", name:"Japan / English"},{value:"JO-gb", name:"Jordan / English"},{value:"KZ-gb", name:"Kazakhstan / English"},{value:"KE-gb", name:"Kenya / English"},{value:"KR-gb", name:"Republic of Korea / English"},{value:"KW-gb", name:"Kuwait / English"},{value:"LV-gb", name:"Latvia / English"},{value:"LB-gb", name:"Lebanon / English"},{value:"LY-gb", name:"Libya / English"},{value:"LT-gb", name:"Lithuania / English"},{value:"LU-gb", name:"Luxembourg / English"},{value:"MY-gb", name:"Malaysia / English"},{value:"MV-gb", name:"Maldives / English"},{value:"MT-gb", name:"Malta / English"},{value:"MU-gb", name:"Mauritius / English"},{value:"MX-es", name:"Mexico / Español"},{value:"MD-gb", name:"Moldova / English"},{value:"MA-fr", name:"Morocco / Français"},{value:"NL-gb", name:"Netherlands / English"},{value:"NZ-gb", name:"New Zealand / English"},{value:"NG-gb", name:"Nigeria / English"},{value:"NO-gb", name:"Norway / English"},{value:"OM-gb", name:"Oman / English"},{value:"PK-gb", name:"Pakistan / English"},{value:"PA-es", name:"Panama / Español"},{value:"PH-gb", name:"Philippines / English"},{value:"PL-gb", name:"Poland / English"},{value:"PL-pl", name:"Poland / Polski"},{value:"PT-gb", name:"Portugal / English"},{value:"PT-pt", name:"Portugal / Português"},{value:"QA-gb", name:"Qatar / English"},{value:"CD-gb", name:"Republic of the Congo / English"},{value:"RO-gb", name:"Romania / English"},{value:"RU-gb", name:"Russia / English"},{value:"RU-ru", name:"Russia / Русский"},{value:"SA-gb", name:"Saudi Arabia / English"},{value:"RS-gb", name:"Serbia / English"},{value:"SG-gb", name:"Singapore / English"},{value:"SK-gb", name:"Slovakia / English"},{value:"SI-gb", name:"Slovenia / English"},{value:"ZA-gb", name:"South Africa / English"},{value:"ES-gb", name:"Spain / English"},{value:"ES-es", name:"Spain / Español"},{value:"SD-gb", name:"Sudan / English"},{value:"SE-gb", name:"Sweden / English"},{value:"CH-de", name:"Switzerland / Deutsch"},{value:"CH-gb", name:"Switzerland / English"},{value:"CH-fr", name:"Switzerland / Français"},{value:"TW-gb", name:"Taiwan / English "},{value:"TH-gb", name:"Thailand / English"},{value:"TN-fr", name:"Tunisia / Français"},{value:"TR-gb", name:"Turkey / English"},{value:"TM-gb", name:"Turkmenistan / English"},{value:"UA-gb", name:"Ukraine / English"},{value:"AE-gb", name:"United Arab Emirates / English"},{value:"UK-gb", name:"United Kingdom / English"},{value:"US-gb", name:"United States / English"},{value:"VE-es", name:"Venezuela / Español"},{value:"VN-gb", name:"Vietnam / English"},{value:"XX-gb", name:"Other countries / English"}];
 var lxEditions = [{value:"de_de", name:"Germany"},{value:"us_en", name:"US"}];
+var qfCurrencies = [{value:"AUD", name:"AUD"},{value:"NZD", name:"NZD"},{value:"USD", name:"USD"}];
+var qfEditions = [{value:"en_AU", name:"Australia"},{value:"en_NZ", name:"New Zealand"},{value:"en_US", name:"United States"}];
 
 
 var classSettings = new Object();
 classSettings["startpage"] = new Object();
 classSettings["startpage"]["maindiv"]="IR6M2QD-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
 classSettings["resultpage"] = new Object();
-classSettings["resultpage"]["itin"]="IR6M2QD-v-d"; //Container with headline: "Intinerary"
+classSettings["resultpage"]["itin"]="IR6M2QD-v-d"; //Container with headline: "Itinerary"
 classSettings["resultpage"]["itinRow"]="IR6M2QD-j-i"; // TR in itin with Orig, Dest and date
 classSettings["resultpage"]["milagecontainer"]="IR6M2QD-v-e"; // TD-Container on the right
 classSettings["resultpage"]["rulescontainer"]="IR6M2QD-k-d"; // First container before rulelinks (the one with Fare X:)
@@ -377,6 +380,8 @@ function createUsersettings(){
     str +='<div id="mptlaEdition" style="width:33%;float:left;">LAN Edition:<label style="cursor:pointer;">'+printSettingsvalue("laEdition")+'</label></div>';
     str +='<div id="mptlhEdition" style="width:33%;float:left;">Lufthansa Edition:<label style="cursor:pointer;">'+printSettingsvalue("lhEdition")+'</label></div>';
     str +='<div id="mptlxEdition" style="width:33%;float:left;">Swiss Edition:<label style="cursor:pointer;">'+printSettingsvalue("lxEdition")+'</label></div>';
+    str +='<div id="mptqfCurrency" style="width:33%;float:left;">Qantas Airways Currency:<label style="cursor:pointer;">'+printSettingsvalue("qfCurrency")+'</label></div>';
+    str +='<div id="mptqfEdition" style="width:33%;float:left;">Qantas Airways Edition:<label style="cursor:pointer;">'+printSettingsvalue("qfEdition")+'</label></div>';
     str +='<div style="clear:both"></div></div>';
     str +='<div style="text-align:center;font-weight:bold"><label id="configcloser" style="cursor:pointer;">Close</label><div>';
     target.innerHTML=str;
@@ -412,6 +417,8 @@ function createUsersettings(){
     document.getElementById('mptlaEdition').onclick=function(){toggleSettings("laEdition");};
     document.getElementById('mptlhEdition').onclick=function(){toggleSettings("lhEdition");};
     document.getElementById('mptlxEdition').onclick=function(){toggleSettings("lxEdition");};
+    document.getElementById('mptqfCurrency').onclick=function(){toggleSettings("qfCurrency");};
+    document.getElementById('mptqfEdition').onclick=function(){toggleSettings("qfEdition");};
     document.getElementById('mptCabintoggler').onclick=function(){toggleSettings("cabin");};
     document.getElementById('configcloser').onclick=function(){toggleVis(document.getElementById("mptSettings"));};
     document.getElementById('mptStartparse').onclick=function(){document.getElementById('mptStartparse').style.display="none";setTimeout(function(){fePS();}, 50);};
@@ -641,6 +648,24 @@ function toggleSettings(target){
             mptUsersettings["lxEdition"] = lxEditions[pos]["value"];
           }
         break;
+      case "qfEdition":
+           var pos=findPositionForValue(mptUsersettings.qfEdition,qfEditions);
+           if (pos >= (qfEditions.length - 1) || pos === -1) {
+             mptUsersettings.qfEdition = qfEditions[0].value;
+           } else {
+             pos++;
+             mptUsersettings.qfEdition = qfEditions[pos].value;
+           }
+         break;
+      case "qfCurrency":
+            var pos=findPositionForValue(mptUsersettings.qfCurrency,qfCurrencies);
+            if (pos >= (qfCurrencies.length - 1) || pos === -1) {
+              mptUsersettings.qfCurrency = qfCurrencies[0].value;
+            } else {
+              pos++;
+              mptUsersettings.qfCurrency = qfCurrencies[pos].value;
+            }
+          break;
       case "cabin":
         if (mptSettings["cabin"]==="Auto"){
           mptSettings["cabin"]="Y";
@@ -759,6 +784,12 @@ function printSettingsvalue(target){
           break;
       case "lxEdition":
           ret=findNameForValue(mptUsersettings["lxEdition"],lxEditions);
+          break;
+      case "qfCurrency":
+          ret=findNameForValue(mptUsersettings["qfCurrency"],qfCurrencies);
+          break;
+      case "qfEdition":
+          ret=findNameForValue(mptUsersettings["qfEdition"],qfEditions);
           break;
       default:
           ret=boolToEnabled(mptUsersettings[target]);
@@ -1214,7 +1245,7 @@ function fePS() {
     if(mptUsersettings["enablePlanefinder"]==1) bindPlanefinder();
     if(mptUsersettings["enableMilesbreakdown"]==1 && typeof(JSON) !== "undefined") printMilesbreakdown();
     if(mptUsersettings["enableWheretocredit"]==1) bindWheretocredit();
-    if (mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}
+    if(mptUsersettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}
 }
 
 function printLinksContainer(){
@@ -1251,18 +1282,19 @@ function printLinksContainer(){
          currentItin["carriers"].length === 2 && inArray(currentItin["carriers"][1], ["AS", "VX"]))) {
         printAS();
     }
+    // print IB and BA if either IB or BA flights:
     if (inArray("IB",currentItin["carriers"]) || inArray("BA",currentItin["carriers"])){
        printBA();
+       printIB();
     }
     if (currentItin["itin"].length >= 3 && inArray("CZ",currentItin["carriers"])) {
         printCZ();
     }
     // we print AZ if it's only on AZ-flights
     if (currentItin["carriers"].length==1 && currentItin["carriers"][0]=="AZ"){ printAZ(); }
+    // print DL:
     printDL();
-    if (inArray("IB",currentItin["carriers"]) || inArray("BA",currentItin["carriers"])){
-       printIB();
-    }
+    // print KL:
     printKL();
     // printLA(); // Disabled until further notice
     if (inArray("LH",currentItin["carriers"]) || inArray("OS",currentItin["carriers"])){
@@ -1270,6 +1302,10 @@ function printLinksContainer(){
     }
     if (currentItin["itin"].length <= 2 && inArray("LX",currentItin["carriers"])) {
         printLX();
+    }
+    // print QF if any of: QF, JQ, NZ flights:
+    if (inArray("QF",currentItin["carriers"]) || inArray("JQ",currentItin["carriers"]) || inArray("NZ",currentItin["carriers"])){
+       printQF();
     }
     if (inArray("TK",currentItin["carriers"])){
        printTK();
@@ -1289,8 +1325,10 @@ function printLinksContainer(){
     printSkyscanner();
     if(mptUsersettings["enableDeviders"]==1) printSeperator();
     /*** other stuff ***/
-    printFarefreaks (0);
-    printFarefreaks (1);
+    if(mptUsersettings["enableFarefreaks"]==1) {
+      printFarefreaks (0); // by segment
+      printFarefreaks (1); // by leg
+    }
     printGCM ();
     printWheretocredit();
     /*** attach JS events after building link container  ***/
@@ -1454,37 +1492,41 @@ function retrieveMileages(){
     printMileages();
     return false;
   }
-  doHttpRequest("https://www.farefreaks.com/ajax/calcroutedist.php?"+params,{mode:"get"},function(xmlHttpObject) {
-     var response=false;
-     if (typeof(JSON) !== "undefined"){
-       try {
-          response = JSON.parse(xmlHttpObject.responseText);
-        } catch (e){
-          response=false;
-        }
-     } else {
-       // do not(!) use eval here :-/
-       printNotification("Error: Failed parsing route data - Browser not supporting JSON");
-       return false;
-     }
-     if (typeof(response) !== "object"){
-      printNotification("Error: Failed parsing route data");
-      return false;
-     }
-     if (response["success"]===undefined || response["error"]===undefined || response["data"]===undefined ){
-      printNotification("Error: wrong route data format");
-      return false;
-     }
-     if (response["success"]!=="1"){
-      printNotification("Error: "+response["error"]+" in retrieveMileages function");
-      return false;
-     }
-     // add new routes to distances
-     for (i in response["data"]) {
-        distances[i]=parseFloat(response["data"][i]);
-     }
-     printMileages();
-    });
+  // Calculate route distances using farefreaks.com if (AND ONLY IF!) the user has enabled farefreaks in settings:
+  if(mptUserSettings.enableFarefreaks) {
+    doHttpRequest("https://www.farefreaks.com/ajax/calcroutedist.php?"+params,{mode:"get"},function(xmlHttpObject) {
+       var response=false;
+       if (typeof(JSON) !== "undefined"){
+         try {
+            response = JSON.parse(xmlHttpObject.responseText);
+          } catch (e){
+            response=false;
+          }
+       } else {
+         // do not(!) use eval here :-/
+         printNotification("Error: Failed parsing route data - Browser not supporting JSON");
+         return false;
+       }
+       if (typeof(response) !== "object"){
+        printNotification("Error: Failed parsing route data");
+        return false;
+       }
+       if (response["success"]===undefined || response["error"]===undefined || response["data"]===undefined ){
+        printNotification("Error: wrong route data format");
+        return false;
+       }
+       if (response["success"]!=="1"){
+        printNotification("Error: "+response["error"]+" in retrieveMileages function");
+        return false;
+       }
+       // add new routes to distances
+       for (i in response["data"]) {
+          distances[i]=parseFloat(response["data"][i]);
+       }
+       printMileages();
+      });
+  }
+
 }
 function printMileages(){
   var legdistance=0;
@@ -2782,6 +2824,107 @@ function printLX() {
   } else {
     printUrl(url,"Swiss","",extra);
   }
+}
+
+function printQF() {
+  /* Qantas partner deep-link */
+   var createUrl = function (edition,currency) {
+     // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+     var travelClass = ['ECO', 'PRM', 'BUS', 'FIR'];
+     // Validate the passenger totals first:
+     var pax=validatePaxcount({maxPaxcount:9, countInf:false, childAsAdult:16, sepInfSeat:false, childMinAge:2});
+     if (pax===false){
+       printNotification("Error: Failed to validate Passengers in printQF");
+       return false;
+     }
+     var nbrChildren = pax.children.length;
+     if(!nbrChildren || (typeof nbrChildren === 'undefined') ) {
+       // default to 0 children if undefined:
+       nbrChildren = 0;
+     }
+
+     // Begin deeplink URL construction:
+     var url = "https://book.qantas.com/qf-booking/dyn/air/tripflow.redirect?";
+     var prefixFltNbr = "sdcFlightNumber";
+     var prefixSegRbd = "sdcSegmentRbd";
+     var depAirports = "&depAirports=";
+     var destAirports = "&destAirports=";
+     var tmpTravelDates = "";
+     var mincabin=3;
+     var finalDest = currentItin.itin[0].seg[0].dest;
+     // Build multi-city search based on legs:
+     for (var i=0;i<currentItin.itin.length;i++) {
+       // walks each leg
+
+       // Record the travel date for each leg:
+       if(tmpTravelDates==="" || !tmpTravelDates) {
+         tmpTravelDates += currentItin.itin[i].dep.year.toString()+("0"+currentItin.itin[i].dep.month).slice(-2).toString()+("0"+currentItin.itin[i].dep.day).slice(-2).toString()+"0000";
+       } else {
+         tmpTravelDates += ("%2C" + currentItin.itin[i].dep.year.toString()+("0"+currentItin.itin[i].dep.month).slice(-2).toString()+("0"+currentItin.itin[i].dep.day).slice(-2).toString()+"0000");
+       }
+
+       for (var j=0;j<currentItin.itin[i].seg.length;j++) {
+         // walks each segment of leg
+         var k=0;
+         // Do we need to skip segments? fnr has to be the same and it must be just a layover:
+         while ((j+k)<currentItin.itin[i].seg.length-1) {
+          if (currentItin.itin[i].seg[j+k].fnr != currentItin.itin[i].seg[j+k+1].fnr || currentItin.itin[i].seg[j+k].layoverduration >= 1440) {
+              break;
+          }
+          k++;
+         }
+         // Construct URL for this leg:
+         if(i==0 && j==0) {
+           // do not append '&' on first segment of leg
+           url += prefixFltNbr + (i+1) + (j+1) + "=" + currentItin.itin[i].seg[j].carrier + currentItin.itin[i].seg[j].fnr;
+         } else {
+           url += "&" + prefixFltNbr + (i+1) + (j+1) + "=" + currentItin.itin[i].seg[j].carrier + currentItin.itin[i].seg[j].fnr;
+         }
+         url += "&" + prefixSegRbd + (i+1) + (j+1) + "=" + currentItin.itin[i].seg[j].bookingclass;
+
+         // record the departing and destination airports for this leg:
+         if(depAirports.length>13) depAirports += "%2C";
+         depAirports += currentItin.itin[i].seg[j].orig.toString();
+         if(destAirports.length>14) destAirports += "%2C";
+         destAirports += currentItin.itin[i].seg[j].dest.toString();
+
+         if(currentItin.itin[i].seg[j].cabin<mincabin) {
+           mincabin=currentItin.itin[i].seg[j].cabin;
+         }
+         j+=k;
+       }
+     }
+     // Add airports:
+     url += "&APPLICATION_NAME=SDC" + depAirports + destAirports;
+     // Add travel dates:
+     url += "&travelDates=" + tmpTravelDates;
+     // Add class of service:
+     url += "&travelClass=" + travelClass[(mptSettings.cabin==="Auto" ? mincabin:getForcedCabin())];
+
+     // Add passenger info:
+     url += "&numberOfAdults="+pax.adults+"&numberOfChildren="+nbrChildren.toString()+"&numberOfInfants="+pax.infLap
+     // Add currency and price:
+     url += "&sdcPriceCurrency="+currency+"&sdcTripPriceAmount=0.00"
+     // Add edition / locale:
+     // TODO: default thirdPartyId to meta-kayak-nz-desktop ?
+     url += "&USER_LANG=EN&USER_LOCALE="+edition+"&QFdeviceType=desktop"
+     return url;
+   };
+ // get edition
+ var url = createUrl(mptUsersettings.qfEdition,mptUsersettings.qfCurrency);
+ if (url === false) {
+   return false;
+ }
+
+ var extra = ' <span class="pt-hover-container">[+]<span class="pt-hover-menu">';
+ extra += qfEditions.map(function (obj, i) { return '<a href="' + createUrl(obj.value,mptUsersettings.qfCurrency) + '" target="_blank">' + obj.name +'</a>'; }).join('<br/>');
+ extra += '</span></span>';
+
+ if (mptUsersettings.enableInlinemode==1){
+   printUrlInline(url,"Qantas Airways","",null,extra);
+ } else {
+   printUrl(url,"Qantas Airways","",extra);
+ }
 }
 
 function printTK(){
