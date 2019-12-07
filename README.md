@@ -3,7 +3,7 @@ Script for greasemonkey + ITA Matrix
 
 [Main discussion thread at FlyerTalk Forums](http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-userscript.html)
 
-### Notice ###
+## Notice ##
 
 ```diff
 - Double check your chosen flights before purchasing
@@ -22,9 +22,10 @@ Script for greasemonkey + ITA Matrix
 Either add the script into your preferred userscript manager or copy the the RAW-Text into your debug console.
 Using debug console, you may use the shortened minified version.
 (Note: there is no need to re-execute the script on pagechange unless you reloaded the page)
-(Tip: a userscript manager simplifies saving your settings between sessions)
 
-You can also create a [Bookmarklet](https://support.mozilla.org/en-US/kb/bookmarklets-perform-common-web-page-tasks) by creating a Bookmark or Favorite in your browser with the following code as the URL:
+### Tips ###
+- Installing via a userscript manager simplifies saving your settings between sessions
+- You can also create a [Bookmarklet](https://support.mozilla.org/en-US/kb/bookmarklets-perform-common-web-page-tasks) by creating a Bookmark or Favorite in your browser with the following code as the URL:
 
 ```javascript:var scr=document.createElement('script');scr.src='https://rawgit.com/SteppoFF/ita-matrix-powertools/master/script_minified.js';document.body.appendChild(scr);```
 
@@ -38,4 +39,4 @@ You can also create a [Bookmarklet](https://support.mozilla.org/en-US/kb/bookmar
 
 ### Latest major changes ###
 
-[Refer to the Changelog](./changelog)
+[Refer to the Changelog](./changelog.md)
