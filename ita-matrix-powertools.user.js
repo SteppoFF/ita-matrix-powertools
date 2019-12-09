@@ -359,8 +359,10 @@ function createUsersettings() {
 
 // async retrieval of saved user settings for user script managers (GM4+/TM):
 (async ()=>{
-  if (typeof GM.info === "undefined") {
+  if (typeof GM === "undefined" || typeof GM.info === "undefined") {
      mptSettings.scriptEngine=0; // console mode
+     // now render the settings section:
+     createUsersettings();
     }
   else {
     mptSettings.scriptEngine=1; // tamper or grease mode
@@ -423,7 +425,7 @@ function restoreDefaultSettings() {
   // this function will remove any saved settings and restore default values
   if (window.confirm("Are you sure you want to reset any saved settings to the default values? The page will automatically reload to complete the reset.")) {
     (async ()=>{
-      if (typeof GM.info != "undefined") {
+      if (typeof GM === "undefined" || typeof GM.info != "undefined") {
         await GM.setValue("mptUserSettings", null);
       }
       // Reload the current page:
@@ -784,7 +786,8 @@ function printNotification(text) {
   // display for user:
   var target = document.getElementById('mtpNotification');
   if (target===null){
-    alert("mtp Error: Notification container not Found");
+    //alert("mtp Error: Notification container not Found");
+    console.log("mtp Error: Notification container not Found");
   } else {
    if (text=="empty"){
      target.innerHTML= "";
