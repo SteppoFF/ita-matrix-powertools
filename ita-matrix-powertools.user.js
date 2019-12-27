@@ -1279,6 +1279,14 @@ function printLinksContainer(){
     if (currentItin.itin.length <= 2 && inArray("LX",currentItin.carriers)) {
         printLX();
     }
+    // print OA only if OA/A3 in carriers:
+    if (inArray("OA",currentItin.carriers) || inArray("A3",currentItin.carriers)) {
+       printOA();
+    }
+    // print PS only if PS in carriers:
+    if (inArray("PS",currentItin.carriers)) {
+       printPS();
+    }
     // print QF if any of: QF, JQ, NZ flights:
     if (inArray("QF",currentItin.carriers) || inArray("JQ",currentItin.carriers) || inArray("NZ",currentItin.carriers)){
        printQF();
@@ -2807,6 +2815,93 @@ function printLX() {
     printUrlInline(url,"Swiss","",null,extra);
   } else {
     printUrl(url,"Swiss","",extra);
+  }
+}
+
+function printOA(){
+  var data=currentItin;
+  var curleg=0;
+  var lastcabin=0;
+  var curseg=0;
+  var lastdest="";
+  var url = "https://e-ticket.olympicair.com/A3Responsive/dyn/air/booking/?BOOKING_FLOW=REVENUE&FLEXIBILITY=3&DISPLAY_TYPE=2&FORCE_OVERRIDE=TRUE&PRICING_TYPE=O";
+  var pax=validatePaxcount({maxPaxcount:9, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2});
+  var paxConfig={allowinf:1, youthage:0};
+  var amadeusConfig =  {sepcabin:0,detailed:0,allowpremium:1,inctimes:1};
+  var tmpPax=getAmadeusPax(pax,paxConfig);
+  url += '&TRIP_TYPE=' + getAmadeusTriptype();
+  url += tmpPax.url;
+  url += getAmadeusUrl(amadeusConfig);
+  url += "&SITE=E00KE00K&SKIN=skin_oa&SO_GL=%3CSO_GL%3E%09%3CGLOBAL_LIST%3E%09%09%3CNAME%3ESL_TRAVELLER_TYPE_LIST%3C%2FNAME%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EADT%3C%2FCODE%3E%3CLIST_VALUE%3EAdult%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EADT%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EB15%3C%2FCODE%3E%3CLIST_VALUE%3EYoung+adult%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EB15%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EC07%3C%2FCODE%3E%3CLIST_VALUE%3EYouth%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EC07%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EC03%3C%2FCODE%3E%3CLIST_VALUE%3EChild%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EC03%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%09%3CLIST_ELEMENT%3E%3CCODE%3EINF%3C%2FCODE%3E%3CLIST_VALUE%3EInfant%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EINF%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E++++++++%3CLIST_ELEMENT%3E%3CCODE%3EUNN%3C%2FCODE%3E%3CLIST_VALUE%3EUMNR%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EN%3C%2FLIST_VALUE%3E%3CLIST_VALUE%3EUNN%3C%2FLIST_VALUE%3E%3C%2FLIST_ELEMENT%3E%09%3C%2FGLOBAL_LIST%3E%3C%2FSO_GL%3E&SO_SITE_ETKT_Q_OFFICE_ID=ATHA308OA&SO_SITE_OFFICE_ID=ATHA308OA&SO_SITE_POINT_OF_SALE=ATH&SO_SITE_POINT_OF_TICKETING=ATH&SO_SITE_PREBOOK_DURATION=I180&SO_SITE_QUEUE_OFFICE_ID=ATHA308OA&SO_SITE_SP_QUEUE_OFFICE_ID=ATHA308OA";
+  url += "&LANGUAGE="+(mptUserSettings.language=="oa" || mptUserSettings.language=="de" ? mptUserSettings.language.toUpperCase() : "GB" );
+  url += "&WDS_ADD_BOOK_NOW_BUTTON_EMAF=TRUE&WDS_ADVERTISING_PANEL_CONF_ACTIVATED=true&WDS_AFFILIATE_STATUS=C&WDS_AMOP_DISPLAY_PRIORITY=PAYPAL:SOFORT:KLARNA:EPS:IDEAL:BANCONTACT:ENTERCASH:ALIPAY:CUP&WDS_AMOP_FEE=PAYPAL:0;KLARNA:0;SOFORT:0;ENTERCASH:0;EPS:0;IDEAL:0;BANCONTACT:0;ALIPAY:0;CUP:0;&WDS_AMOP_FEE_APPLY=PER_TRANSACTION&WDS_AMOP_FEE_CALCULATION=PER&WDS_AMOP_LIST_ACTIVATED=PAYPAL;KLARNA;SOFORT;ENTERCASH;EPS;IDEAL;BANCONTACT;ALIPAY;CUP&WDS_AMOP_LIST_DEACTIVATED=&WDS_AMOP_TIME_LIMIT=PAYPAL:48;KLARNA:0;SOFORT:0;ENTERCASH:0;EPS:0;IDEAL:0;BANCONTACT:0;ALIPAY:24;CUP:24;&WDS_ANCILLARY_IN_MILES_ENABLED=TRUE&WDS_ASSISTANCE_REQUEST_ACTIVATED=TRUE&WDS_ATCOM_TIMEOUT=2000&WDS_AVAIL_PRICE_DISPLAY_TYPE=PER_ADT_WITH_TAX_NO_FEE&WDS_BAG_PLACEHOLDER_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_BAG_POLICY_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_BOOKING_LISTENER_URL=https://en.aegeanair.com/BookingListener.axd&WDS_BOUND_INDEX_EXPANDED=1&WDS_BUSINESS_MEAL_FARE_FAMILIES=BUSINESS:BUSINESTES:BUSINESSI&WDS_BUSINESS_MEAL_FREQUENT_FLYER_LEVELS=GOLD:SILVER&WDS_BUSINESS_MEAL_SUPPORTED=true&WDS_BUSINESS_ON_BOARD_DISPLAY_IN_LOGIN_PANEL=TRUE&WDS_BUSINESS_ON_BOARD_ENABLED=TRUE&WDS_BUSINESS_ON_BOARD_PAX_TYPE=ADT&WDS_CABIN_CLASS_DISPLAY=TRUE&WDS_CALENDAR_TO_UPSELL_FLEXIBLE_ACTIVATED=3&WDS_CALLCENTER_EMAIL=res1@aegeanair.com&WDS_CAR_ENABLED=FALSE&WDS_CAR_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_CC_FEE_CARD_TYPE=VI:0;CA:0;MA:0;AX:0;DC:0;TP:;&WDS_CC_FEE_NO_CARD=0&WDS_CC_FEE_ZERO_DISPLAYED=FALSE&WDS_CC_LIST=VI:CA:MA:AX:DC:TP&WDS_CFF_TOUSE=CFF01FEB14&WDS_CHANNEL=B2C&WDS_CLEAR_CONTENT_URL=https://en.aegeanair.com/PlainContent.axd&WDS_DEVICE_NAME=DESKTOP_UNKNOWN&WDS_DEVICE_OS=Windows_10&WDS_DEVICE_VIEWPORT=L&WDS_DISPLAY_EMAIL_IN_BROWSER_URL=https://en.aegeanair.com/ConfirmationEmail.axd&WDS_DISPLAY_FBA_AND_REFUNDABILITY_PER_BOUND_IN_SB=TRUE&WDS_DISPLAY_GREEK_RURAL_ID=FALSE&WDS_DISPLAY_RECEIPT=SHOW&WDS_DISPLAY_REGULATION_CONDITIONS_COUNTRY=FR&WDS_DISPLAY_REGULATION_CONDITIONS_LANG=FR&WDS_DONATION_PANEL_ACTIVATED=FALSE&WDS_DONATION_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_EMAF_BOOK_NOW_URL=https://en.aegeanair.com/PostHandler.axd&WDS_ENABLE_PARKING=FALSE&WDS_ENABLE_TOKEN=true&WDS_ENABLE_TOKEN_FOR_CAR=false&WDS_ENABLE_TOKEN_FOR_HOTEL=false&WDS_EPTS=unknown_call&WDS_EXTERNAL_CSS_URL=https://en.aegeanair.com/css/1A/responsive.css?v=10&WDS_EXTRAS_DEFAULT_PANEL_ORDER=BAGGAGE;MEALS;SPEQ;PETS;FASTTRACK;INSURANCE;PARKING;DONATION&WDS_FARE_COMPARISON_URL=https://en.aegeanair.com/FareFamilyComparison.axd&WDS_FARE_CONDITIONS_URL=https://en.aegeanair.com/ffc.axd&WDS_FASTTRACK_ELIGIBLE_AIRPORTS=LCA;ATH&WDS_FASTTRACK_ENABLED=TRUE&WDS_FASTTRACK_HANDLER_URL=https://en.aegeanair.com/FastTrackHandler.axd&WDS_FREQUENT_FLYER_PROGRAMS_OA_FLIGHTS=A3;AC;UA;MS;TK;NH;LH;SQ&WDS_GDPR_DISPLAY_PROMOS_CONFIRMATION_NO_CONSENT=FALSE&WDS_GDPR_HANDLER_URL=https://en.aegeanair.com/api/v1/members/checkgdpremailstatus&WDS_GO_TO_FINALIZE_URL=https://en.aegeanair.com/FinalizeRedirect.axd&WDS_GO_TO_MY_BOOKING_URL=https://en.aegeanair.com/MyBooking.axd&WDS_GO_TO_SEAT_SELECTION_URL=https://en.aegeanair.com/SeatRedirect.axd&WDS_HANDLE_SOS_AS_RM_FEE=TRUE&WDS_HOTEL_ENABLED=FALSE&WDS_HOTEL_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_HOTEL_POPUP_CONF_ACTIVATED=TRUE&WDS_HOTEL_POPUP_CONF_DELAY=10000&WDS_HOTEL_RECOMMENDATION_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_INSURANCE_ACTIVATED=TRUE&WDS_INSURANCE_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_INSURANCE_PRESELECT=NONE&WDS_LATE_LOGIN_ENABLED=TRUE&WDS_LATE_LOGIN_URL=https://en.aegeanair.com/api/v1/members/loyaltyauth&WDS_MEAL_FORBIDDEN_PAX_TYPE=INF&WDS_MEAL_HANDLER_URL=https://en.aegeanair.com/MealHandler.axd&WDS_MEAL_LIST_PROPOSED=BBML:BLML:CHML:DBML:FPML:GFML:KSML:LCML:LFML:NLML:LSML:MOML:HNML:SFML:VOML:VLML:AVML:VJML:VGML:RVML&WDS_MILES_EARNED_HANDLER_URL=https://en.aegeanair.com/AwardedMiles.axd&WDS_NEW_PROMOTION_TYPE=NONE&WDS_NEW_PROMOTION_WEBSERVICES_ENVIRONMENT=PRODUCTION&WDS_OBFEE_FROM_NEWPOLICY_ACTIVATED=TRUE&WDS_OLYMPIC_TRACKING=true&WDS_ONLY_DIRECT_REQUESTED=FALSE&WDS_PARKING_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_PETS_ENABLED=TRUE&WDS_PHONE_PRESELECT_COUNTRY_CODE=US&WDS_PLUSGRADE_ENABLED=false&WDS_PLUSGRADE_HANDLER_URL=https://en.aegeanair.com/PlusgradeHandler.axd&WDS_PROMO_SLOT_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_PROMOCODE_ROUTE_AUTHORIZED=FALSE&WDS_PROMOTION_RBD_LIST=P&WDS_REBOOKING_HIGHSEASON_DATE=&WDS_RESKIN=TRUE&WDS_SB_HOTEL_TIMEOUT=15000&WDS_SEAT_BANNER_URL=https://en.aegeanair.com/SeatBanner.axd&WDS_SEATMAP_ENABLED=TRUE&WDS_SMS_OPTION=SHOW&WDS_SMS_PROVIDER_EMAIL=aegean_bc@mpassltd.eu&WDS_SMS_SENDER_EMAIL=defineOA@amadeus.com&WDS_SPECIAL_MEAL_LIST=BBML:BLML:CHML:DBML:FPML:GFML:KSML:LCML:LFML:NLML:LSML:MOML:HNML:SFML:VOML:VLML:AVML:VJML:VGML:RVML&WDS_SPECIAL_MEAL_SUPPORTED=TRUE&WDS_SPEQ_ENABLED=TRUE&WDS_TAX_BREAKDOWN_REGULATION_ALLOW_LANG=FR&WDS_TEALEAF_ENABLED=TRUE&WDS_TTT_ENABLED=TRUE&WDS_TTT_PROMO_FARES_REG_EXP=^PR([0-9])+$&WDS_TTT_SELECTION_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_UMNR_ENTRY_OVERRIDE=WDS_HOTEL_ENABLED:FALSE;WDS_CAR_ENABLED:FALSE;WDS_TTT_ENABLED:false;WDS_FASTTRACK_ENABLED:false;WDS_ANCILLARY_IN_MILES:false;WDS_ENABLE_PARKING:false;WDS_ASSISTANCE_REQUEST_ACTIVATED:false;WDS_LATE_LOGIN_ENABLED:false;WDS_BUSINESS_ON_BOARD_ENABLED:false&WDS_URL_FACADE_ERROR=https://www.olympicair.com/en/Travel/Reservations/Tickets&WDS_URL_FACADE_NEWSEARCH=https://www.olympicair.com/en/Travel/Reservations/Tickets&WDS_URL_WAITING_CONTENT=https://en.aegeanair.com/WaitingPage.axd&WDS_USE_A3_SOS_INSURANCE_PANEL=TRUE&WDS_USEFUL_LINKS_PANEL_URL=https://en.aegeanair.com/PromoSlots.axd&WDS_VOUCHER_BANNER_ACTIVATED=TRUE&WDS_VOUCHER_BANNER_URL=https://en.aegeanair.com/PromoSlots.axd";
+    if (mptUserSettings.enableInlineMode==1){
+      printUrlInline(url,"Olympic Air","");
+    } else {
+      printUrl(url,"Olympic Air","");
+    }
+}
+
+function printPS() {
+var createUrl = function (edition, currency) {
+      // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
+      var cabins = ['Economy', 'Economy', 'Business', 'First'];
+      var pax=validatePaxcount({maxPaxcount:9, countInf:false, childAsAdult:12, sepInfSeat:false, childMinAge:2});
+      if (pax===false){
+        printNotification("Error: Failed to validate Passengers in printIB");
+        return false;
+      }
+      var url = "https://bookapi.flyuia.com/flights/metaSearchQuery?Adult="+pax.adults+"&Child="+pax.children.length+"&Infant="+pax.infLap+"&PointOfSaleCountry="+edition[1]+"&UserCurrency="+currency+"&UserLanguage="+edition[0]+"&TripType=";
+      if (currentItin.itin.length == 1){
+       url+="OneWay";
+      } else if (currentItin.itin.length == 2 &&
+          currentItin.itin[0].orig == currentItin.itin[1].dest &&
+          currentItin.itin[0].dest == currentItin.itin[1].orig) {
+       url+="RoundTrip";
+      } else {
+       url+="MultiCity";
+      }
+
+      var seg=0;
+      var slice=1;
+      var slicestr="";
+      //Build multi-city search based on legs
+        for (var i=0;i<currentItin.itin.length;i++) {
+          // walks each leg
+                for (var j=0;j<currentItin.itin[i].seg.length;j++) {
+                seg++;
+               //walks each segment of leg
+                    var k=0;
+                    // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
+                    while ((j+k)<currentItin.itin[i].seg.length-1){
+                     if (currentItin.itin[i].seg[j+k].fnr != currentItin.itin[i].seg[j+k+1].fnr ||
+                         currentItin.itin[i].seg[j+k].layoverduration >= 1440) break;
+                     k++;
+                    }
+                    url += "&Origin"+seg+"="+currentItin.itin[i].seg[j].orig;
+                    url += "&Destination"+seg+"="+currentItin.itin[i].seg[j+k].dest;
+                    url += "&Carrier"+seg+"="+currentItin.itin[i].seg[j].carrier;
+                    url += "&DepartureDate"+seg+"="+currentItin.itin[i].seg[j].dep.year+'-'+('0'+currentItin.itin[i].seg[j].dep.month).slice(-2)+'-'+('0'+currentItin.itin[i].seg[j].dep['day']).slice(-2); ;
+                    url += "&FlightNumber"+seg+"="+currentItin.itin[i].seg[j].fnr;
+                    url += "&BookingCode"+seg+"="+currentItin.itin[i].seg[j].bookingclass;
+                    url += "&Cabin"+seg+"="+ cabins[currentItin.itin[i].seg[j].cabin];
+                    slicestr+=( slicestr === "" ? "":"%2C")+seg;
+                    j+=k;
+          }
+          url += "&Slice"+slice+"="+slicestr;
+          slice++;
+          slicestr="";
+        }
+        return url;
+    };
+  var url = createUrl(["EN","US"], "USD");
+  if (url === false) {
+    return false;
+  }
+  if (mptUserSettings.enableInlineMode==1){
+    printUrlInline(url,"Ukraine International","");
+  } else {
+    printUrl(url,"Ukraine International","");
   }
 }
 
