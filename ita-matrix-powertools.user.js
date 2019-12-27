@@ -39,6 +39,7 @@ var mptUserSettings = new Object();
 mptUserSettings.timeformat = "12h"; // replaces times on resultpage - valid: 12h / 24h
 mptUserSettings.language = "en"; // replaces several items on resultpage - valid: en / de
 mptUserSettings.linkFontsize =  100; // fontsize of links - valid: 50-200
+mptUserSettings.showAllAirlines = 0; // shows all airline links regardless of search results
 
 // booleans to toggle specific settings:
 mptUserSettings.enableDeviders = 1; // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
@@ -220,6 +221,7 @@ function createUsersettings() {
   str +='<div id="mptenablePricebreakdown">Price breakdown: <label style="cursor:pointer;">'+printSettingsvalue("enablePricebreakdown")+'</label></div>';
   str +='</div><div style="float:left;width:25%">';
   str +='<div id="mptlinkFontsize">Link font size: <label style="cursor:pointer;">'+printSettingsvalue("linkFontsize")+'</label>%</div>';
+  str +='<div id="mptshowAllAirlines">All airlines: <label style="cursor:pointer;">'+printSettingsvalue("showAllAirlines")+'</label></div>';
   str +='</div><div style="clear:both"></div></div>';
   str +='<div style="text-align:center;font-weight:bold">**** Feature Settings: ****</div>';
   str +='<div style="margin:5px 0"><div style="float:left;width:25%">';
@@ -276,6 +278,7 @@ function createUsersettings() {
     document.getElementById('mptenablePricebreakdown').onclick=function(){toggleSettings("enablePricebreakdown");};
     document.getElementById('mptenableMilesbreakdown').onclick=function(){toggleSettings("enableMilesbreakdown");};
     document.getElementById('mptlinkFontsize').onclick=function(){toggleSettings("linkFontsize");};
+    document.getElementById('mptshowAllAirlines').onclick=function(){toggleSettings("showAllAirlines");};
     document.getElementById('mptenableMilesbreakdownautoload').onclick=function(){toggleSettings("enableMilesbreakdownautoload");};
     document.getElementById('mptenableMilesInlinemode').onclick=function(){toggleSettings("enableMilesInlinemode");};
     document.getElementById('mptenablePlanefinder').onclick=function(){toggleSettings("enablePlanefinder");};
@@ -382,6 +385,7 @@ function createUsersettings() {
       mptUserSettings.enableMilesbreakdownautoload = (mptSavedUserSettings.enableMilesbreakdownautoload === undefined ? mptUserSettings.enableMilesbreakdownautoload : mptSavedUserSettings.enableMilesbreakdownautoload);
       mptUserSettings.enableMilesInlinemode = (mptSavedUserSettings.enableMilesInlinemode === undefined ? mptUserSettings.enableMilesInlinemode : mptSavedUserSettings.enableMilesInlinemode);
       mptUserSettings.linkFontsize = (mptSavedUserSettings.linkFontsize === undefined ? mptUserSettings.linkFontsize : mptSavedUserSettings.linkFontsize);
+      mptUserSettings.showAllAirlines = (mptSavedUserSettings.showAllAirlines === undefined ? mptUserSettings.showAllAirlines : mptSavedUserSettings.showAllAirlines);
       mptUserSettings.enablePlanefinder = (mptSavedUserSettings.enablePlanefinder === undefined ? mptUserSettings.enablePlanefinder : mptSavedUserSettings.enablePlanefinder);
       mptUserSettings.enableSeatguru = (mptSavedUserSettings.enableSeatguru === undefined ? mptUserSettings.enableSeatguru : mptSavedUserSettings.enableSeatguru);
       mptUserSettings.enableWheretocredit = (mptSavedUserSettings.enableWheretocredit === undefined ? mptUserSettings.enableWheretocredit : mptSavedUserSettings.enableWheretocredit);
@@ -1248,19 +1252,19 @@ function printLinksContainer(){
     }
     // print AS only if AS is one of the carriers:
     // Note: AS may not sell some mixed-carrier tickets!
-    if (inArray("AS", currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || inArray("AS", currentItin.carriers)) {
         printAS();
     }
     // print IB and BA if either IB or BA flights:
-    if (inArray("IB",currentItin.carriers) || inArray("BA",currentItin.carriers)){
+    if (mptUserSettings.showAllAirlines || inArray("IB",currentItin.carriers) || inArray("BA",currentItin.carriers)){
        printBA();
        printIB();
     }
-    if (currentItin.itin.length >= 3 && inArray("CZ",currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || (currentItin.itin.length >= 3 && inArray("CZ",currentItin.carriers))) {
         printCZ();
     }
     // we print AZ if it's only on AZ-flights
-    if (currentItin.carriers.length==1 && inArray("AZ",currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || (currentItin.carriers.length==1 && inArray("AZ",currentItin.carriers))) {
       printAZ();
     }
     // print DL:
@@ -1268,30 +1272,30 @@ function printLinksContainer(){
     // print KL:
     printKL();
     // print LATAM only if LA in carriers:
-    if (inArray("LA",currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || inArray("LA",currentItin.carriers)) {
        printLA();
     }
     // print LH if LH in current itin:
-    if (inArray("LH",currentItin.carriers) || inArray("OS",currentItin.carriers)){
+    if (mptUserSettings.showAllAirlines || inArray("LH",currentItin.carriers) || inArray("OS",currentItin.carriers)){
        printLH();
     }
     // print LX if LX in current itin:
-    if (currentItin.itin.length <= 2 && inArray("LX",currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || (currentItin.itin.length <= 2 && inArray("LX",currentItin.carriers))) {
         printLX();
     }
     // print OA only if OA/A3 in carriers:
-    if (inArray("OA",currentItin.carriers) || inArray("A3",currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || inArray("OA",currentItin.carriers) || inArray("A3",currentItin.carriers)) {
        printOA();
     }
     // print PS only if PS in carriers:
-    if (inArray("PS",currentItin.carriers)) {
+    if (mptUserSettings.showAllAirlines || inArray("PS",currentItin.carriers)) {
        printPS();
     }
     // print QF if any of: QF, JQ, NZ flights:
-    if (inArray("QF",currentItin.carriers) || inArray("JQ",currentItin.carriers) || inArray("NZ",currentItin.carriers)){
+    if (mptUserSettings.showAllAirlines || inArray("QF",currentItin.carriers) || inArray("JQ",currentItin.carriers) || inArray("NZ",currentItin.carriers)){
        printQF();
     }
-    if (inArray("TK",currentItin.carriers)){
+    if (mptUserSettings.showAllAirlines || inArray("TK",currentItin.carriers)){
        printTK();
     }
     if(mptUserSettings.enableDeviders==1) printSeperator();
