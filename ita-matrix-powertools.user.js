@@ -35,59 +35,61 @@ Remember to increment the version number in the following two locations:
 
 /**************************************** Start Script *****************************************/
 // User settings
-var mptUserSettings = new Object();
-mptUserSettings.timeformat = "12h"; // replaces times on resultpage - valid: 12h / 24h
-mptUserSettings.language = "en"; // replaces several items on resultpage - valid: en / de
-mptUserSettings.linkFontsize = 100; // fontsize of links - valid: 50-200
-mptUserSettings.showAllAirlines = 0; // shows all airline links regardless of search results
+var mptUserSettings = {
+  timeformat: "12h", // replaces times on resultpage - valid: 12h / 24h
+  language: "en", // replaces several items on resultpage - valid: en / de
+  linkFontsize: 100, // fontsize of links - valid: 50-200
+  showAllAirlines: 0, // shows all airline links regardless of search results
 
-// booleans to toggle specific settings:
-mptUserSettings.enableDeviders = 1; // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
-mptUserSettings.enableInlineMode = 0; // enables inline mode - valid: 0 / 1
-mptUserSettings.enableEditormode = 0; // prevents the script from automatically parsing the itinerary - valid: 0 / 1
-mptUserSettings.enableIMGautoload = 0; // enables images to auto load - valid: 0 / 1
-mptUserSettings.enableFarerules = 1; // enables fare rule opening in new window - valid: 0 / 1
-mptUserSettings.enablePricebreakdown = 1; // enables price breakdown - valid: 0 / 1
-mptUserSettings.enableMilesbreakdown = 1; // enables miles breakdown - valid: 0 / 1
-mptUserSettings.enableMilesbreakdownautoload = 0; // enables autoload of miles breakdown - valid: 0 / 1
-mptUserSettings.enableMilesInlinemode = 0; // always print miles breakdown inline - valid: 0 / 1
-mptUserSettings.enablePlanefinder = 1; // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
-mptUserSettings.enableSeatguru = 1; // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
-mptUserSettings.enableWheretocredit = 1; // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
-//mptUserSettings.enableFarefreaks =  0; // enables FareFreaks features - valid: 0 / 1
+  // booleans to toggle specific settings:
+  enableDeviders: 1, // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
+  enableInlineMode: 0, // enables inline mode - valid: 0 / 1
+  enableEditormode: 0, // prevents the script from automatically parsing the itinerary - valid: 0 / 1
+  enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
+  enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
+  enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
+  enableMilesbreakdown: 1, // enables miles breakdown - valid: 0 / 1
+  enableMilesbreakdownautoload: 0, // enables autoload of miles breakdown - valid: 0 / 1
+  enableMilesInlinemode: 0, // always print miles breakdown inline - valid: 0 / 1
+  enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
+  enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
+  enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
+  //enableFarefreaks:  0, // enables FareFreaks features - valid: 0 / 1
 
-// Default airline/OTA languages and locale/editions:
-mptUserSettings.acEdition = "us"; // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
-mptUserSettings.aaEdition = "en_DE"; // sets the local edition of AA-Europe/Asia for itinerary pricing - NO US available
-mptUserSettings.aac1Edition = "US"; // sets the local edition of AA-C1 and UK
-mptUserSettings.afEdition = "US/en"; // sets the local edition of Air France
-mptUserSettings.azEdition = "us_en"; // sets the local edition of Alitalia
-mptUserSettings.baLanguage = "en"; // sets the language of British Airways
-mptUserSettings.baEdition = "US"; // sets the local edition of British Airways
-mptUserSettings.czEdition = "US-GB"; // sets the local edition of China Southern
-mptUserSettings.dlEdition = "www_us"; // sets the local edition of Delta
-mptUserSettings.ibEdition = "en-US"; // sets the local edition of Iberia
-mptUserSettings.klEdition = "us_en"; // sets the local edition of KLM
-mptUserSettings.laEdition = "en/us"; // sets the local edition of LATAM
-mptUserSettings.lhEdition = "US-gb"; // sets the local edition of Lufthansa
-mptUserSettings.lxEdition = "us_en"; // sets the local edition of Swiss
-mptUserSettings.qfEdition = "EN_US"; // sets the local edition of Qantas Airways
+  // Default airline/OTA languages and locale/editions:
+  acEdition: "us", // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
+  aaEdition: "en_DE", // sets the local edition of AA-Europe/Asia for itinerary pricing - NO US available
+  aac1Edition: "US", // sets the local edition of AA-C1 and UK
+  afEdition: "US/en", // sets the local edition of Air France
+  azEdition: "us_en", // sets the local edition of Alitalia
+  baLanguage: "en", // sets the language of British Airways
+  baEdition: "US", // sets the local edition of British Airways
+  czEdition: "US-GB", // sets the local edition of China Southern
+  dlEdition: "www_us", // sets the local edition of Delta
+  ibEdition: "en-US", // sets the local edition of Iberia
+  klEdition: "us_en", // sets the local edition of KLM
+  laEdition: "en/us", // sets the local edition of LATAM
+  lhEdition: "US-gb", // sets the local edition of Lufthansa
+  lxEdition: "us_en", // sets the local edition of Swiss
+  qfEdition: "EN_US", // sets the local edition of Qantas Airways
 
-// Default airline/OTA currencies:
-mptUserSettings.aac1Currency = "1"; // sets the currency of AA-C1 and UK
-mptUserSettings.ibCurrency = "USD"; // sets the Currency of Iberia (not supported)
-mptUserSettings.laCurrency = "USD"; // sets the Currency of LATAM (not supported)
-mptUserSettings.qfCurrency = "USD"; // sets the Currency of Qantas
+  // Default airline/OTA currencies:
+  aac1Currency: "1", // sets the currency of AA-C1 and UK
+  ibCurrency: "USD", // sets the Currency of Iberia (not supported)
+  laCurrency: "USD", // sets the Currency of LATAM (not supported)
+  qfCurrency: "USD" // sets the Currency of Qantas
+};
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
-var mptSettings = new Object();
-mptSettings.itaLanguage = "en";
-mptSettings.version = "0.35";
-mptSettings.retrycount = 1;
-mptSettings.laststatus = "";
-mptSettings.scriptrunning = 1;
-mptSettings.cabin = "Auto";
+var mptSettings = {
+  itaLanguage: "en",
+  version: "0.35",
+  retrycount: 1,
+  laststatus: "",
+  scriptrunning: 1,
+  cabin: "Auto"
+};
 
 // Airline / OTA locale (edition) arrays:
 var acEditions = [
@@ -757,22 +759,25 @@ var qfEditions = [
 ];
 
 // ITA Matrix CSS class definitions:
-var classSettings = new Object();
-classSettings.startpage = new Object();
-classSettings.startpage["maindiv"] = "IR6M2QD-w-d"; //Container of main content. Unfortunately id "contentwrapper" is used twice
-classSettings.resultpage = new Object();
-classSettings.resultpage["itin"] = "IR6M2QD-v-d"; //Container with headline: "Itinerary"
-classSettings.resultpage["itinRow"] = "IR6M2QD-j-i"; // TR in itin with Orig, Dest and date
-classSettings.resultpage.milagecontainer = "IR6M2QD-v-e"; // TD-Container on the right
-classSettings.resultpage["rulescontainer"] = "IR6M2QD-k-d"; // First container before rulelinks (the one with Fare X:)
-classSettings.resultpage["htbContainer"] = "IR6M2QD-k-k"; // full "how to buy"-container inner div (td=>div=>div)
-classSettings.resultpage.htbLeft = "IR6M2QD-k-g"; // Left column in the "how to buy"-container
-classSettings.resultpage["htbRight"] = "IR6M2QD-k-f"; // Class for normal right column
-classSettings.resultpage["htbGreyBorder"] = "IR6M2QD-k-l"; // Class for right cell with light grey border (used for subtotal of passenger)
-//inline
-classSettings.resultpage["mcDiv"] = "IR6M2QD-y-d"; // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-classSettings.resultpage["mcHeader"] = "IR6M2QD-y-b"; // Right menu header class ("Mileage", etc.)
-classSettings.resultpage["mcLinkList"] = "IR6M2QD-y-c"; // Right menu ul list class (immediately following header)
+var classSettings = {
+  startpage: {
+    maindiv: "IR6M2QD-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+  },
+  resultpage: {
+    itin: "IR6M2QD-v-d", //Container with headline: "Itinerary"
+    itinRow: "IR6M2QD-j-i", // TR in itin with Orig, Dest and date
+    milagecontainer: "IR6M2QD-v-e", // TD-Container on the right
+    rulescontainer: "IR6M2QD-k-d", // First container before rulelinks (the one with Fare X:)
+    htbContainer: "IR6M2QD-k-k", // full "how to buy"-container inner div (td=>div=>div)
+    htbLeft: "IR6M2QD-k-g", // Left column in the "how to buy"-container
+    htbRight: "IR6M2QD-k-f", // Class for normal right column
+    htbGreyBorder: "IR6M2QD-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
+    //inline
+    mcDiv: "IR6M2QD-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+    mcHeader: "IR6M2QD-y-b", // Right menu header class ("Mileage", etc.)
+    mcLinkList: "IR6M2QD-y-c" // Right menu ul list class (immediately following header)
+  }
+};
 
 var matrixCurrencies = [
   { p: /US\$/, c: "USD" },
@@ -783,38 +788,42 @@ var matrixCurrencies = [
 ];
 
 // Supported translations for the PowerTools interface:
-var translations = new Object();
-translations.de = new Object();
-translations.de["use"] = "&Ouml;ffne ";
-translations.de.resultpage = new Object();
-translations.de.resultpage["Dep:"] = "Abflug:";
-translations.de.resultpage["Arr:"] = "Ankunft:";
-translations.de.resultpage["Layover in"] = "Umst. in";
-translations.de.resultpage[" to "] = " nach ";
-translations.de.resultpage["Mon,"] = "Mo.,";
-translations.de.resultpage["Tue,"] = "Di.,";
-translations.de.resultpage["Wed,"] = "Mi.,";
-translations.de.resultpage["Thu,"] = "Do.,";
-translations.de.resultpage["Fri,"] = "Fr.,";
-translations.de.resultpage["Sat,"] = "Sa.,";
-translations.de.resultpage["Sun,"] = "So.,";
-translations.de.resultpage[" Jan "] = " Januar ";
-translations.de.resultpage[" Feb "] = " Februar ";
-translations.de.resultpage[" Mar "] = " M&auml;rz ";
-translations.de.resultpage[" Apr "] = " April ";
-translations.de.resultpage[" May "] = " Mai ";
-translations.de.resultpage[" Jun "] = " Juni ";
-translations.de.resultpage[" Jul "] = " Juli ";
-translations.de.resultpage[" Aug "] = " August ";
-translations.de.resultpage[" Sep "] = " September ";
-translations.de.resultpage[" Oct "] = " Oktober ";
-translations.de.resultpage[" Nov "] = " November ";
-translations.de.resultpage[" Dec "] = " Dezember ";
-translations.de.resultpage["OPERATED BY "] = "Durchgef&uuml;hrt von ";
+var translations = {
+  de: {
+    use: "&Ouml;ffne ",
+    resultpage: {
+      "Dep:": "Abflug:",
+      "Arr:": "Ankunft:",
+      "Layover in": "Umst. in",
+      " to ": " nach ",
+      "Mon,": "Mo.,",
+      "Tue,": "Di.,",
+      "Wed,": "Mi.,",
+      "Thu,": "Do.,",
+      "Fri,": "Fr.,",
+      "Sat,": "Sa.,",
+      "Sun,": "So.,",
+      " Jan ": " Januar ",
+      " Feb ": " Februar ",
+      " Mar ": " M&auml,rz ",
+      " Apr ": " April ",
+      " May ": " Mai ",
+      " Jun ": " Juni ",
+      " Jul ": " Juli ",
+      " Aug ": " August ",
+      " Sep ": " September ",
+      " Oct ": " Oktober ",
+      " Nov ": " November ",
+      " Dec ": " Dezember ",
+      "OPERATED BY ": "Durchgef&uuml,hrt von "
+    }
+  }
+};
 
 // initialize local storage for resolved distances
 var distances = new Object();
 // initialize local storage for current itin
+/** @type {{ cur?: string; price?: number; basefares?: number; taxes?: number; surcharges?: number; dist?: number; numPax?: number; carriers?: string[]; farebases?: string[]; itin?: { orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; }; arr: { day: number; month: number; year: number; time: string; }; seg?: { carrier: string; orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; }; arr: { day: number; month: number; year: number; time: string; }; fnr: string; duration: number; aircraft: string; cabin: number; bookingclass: string; codeshare: number; layoverduration: number; airportchange: number; farebase: string; farecarrier: string; }[]}[]}} */
 var currentItin = new Object();
 // initialize local storage for passenger details
 var mtpPassengerConfig = {
@@ -829,20 +838,13 @@ if (mptSettings.scriptEngine === 0 && window.top === window.self) {
 } else if (window.top === window.self) {
   // execute language detection and afterwards functions for current page
   if (typeof window.addEventListener !== "undefined") {
-    window.addEventListener("load", startScript(), false);
-  } else if (typeof window.attachEvent !== "undefined") {
-    window.attachEvent("onload", startScript());
+    window.addEventListener("load", () => startScript(), false);
   } else {
-    window.onload = startScript();
+    window.onload = () => startScript();
   }
 }
 
 function startScript() {
-  if (document.getElementById("mptSettingsContainer") === null) {
-    // Create CSS and Settings or anything else that needs to be executed once
-    injectCss();
-    // createUsersettings(); // this now gets called after checking for saved user settings!
-  }
   if (window.location.href !== mptSettings["laststatus"]) {
     setTimeout(function() {
       getPageLang();
@@ -1249,10 +1251,11 @@ function createUsersettings() {
     createUsersettings();
   } else {
     mptSettings.scriptEngine = 1; // tamper or grease mode
-    var mptSavedUserSettings = await GM.getValue("mptUserSettings", "");
-    console.log("mptSavedUserSettings: " + mptSavedUserSettings);
-    if (mptSavedUserSettings) {
-      mptSavedUserSettings = JSON.parse(mptSavedUserSettings);
+    var gmSavedUserSettings = await GM.getValue("mptUserSettings", "");
+    console.log("mptSavedUserSettings: " + gmSavedUserSettings);
+    if (gmSavedUserSettings) {
+      /** @type typeof mptUserSettings */
+      const mptSavedUserSettings = JSON.parse(gmSavedUserSettings);
       mptUserSettings.timeformat =
         mptSavedUserSettings.timeformat === undefined
           ? mptUserSettings.timeformat
@@ -1398,6 +1401,7 @@ function createUsersettings() {
     // now render the settings section with any previously saved values:
     createUsersettings();
   }
+  injectCss();
 })(); // end async for GM4
 
 function toggleVis(target) {
@@ -1656,7 +1660,7 @@ function toggleSettings(target) {
   }
   document.getElementById(
     "mpt" + target
-  ).firstChild.nextSibling.innerHTML = printSettingsvalue(target);
+  ).firstChild.nextSibling.textContent = printSettingsvalue(target);
   if (mptSettings.scriptEngine === 1) {
     GM.setValue("mptUserSettings", JSON.stringify(mptUserSettings));
   }
@@ -1664,8 +1668,7 @@ function toggleSettings(target) {
 
 function processPassengers() {
   var paxText = "";
-  var e = false;
-  e = document.getElementById("numAdults");
+  var e = document.getElementById("numAdults");
   mtpPassengerConfig.adults = Number(e.options[e.selectedIndex].value);
   e = document.getElementById("numInfantsLap");
   mtpPassengerConfig.infantsLap = Number(e.options[e.selectedIndex].value);
@@ -1711,7 +1714,7 @@ function printSettingsvalue(target) {
       ret = mptUserSettings.language;
       break;
     case "linkFontsize":
-      ret = mptUserSettings.linkFontsize;
+      ret = mptUserSettings.linkFontsize.toString();
       break;
     case "acEdition":
       ret = mptUserSettings.acEdition;
@@ -1726,10 +1729,10 @@ function printSettingsvalue(target) {
       ret = findNameForValue(mptUserSettings.aac1Currency, aac1Currencies);
       break;
     case "afEdition":
-      ret = findNameForValue(mptUserSettings["afEdition"], afEditions);
+      ret = findNameForValue(mptUserSettings.afEdition, afEditions);
       break;
     case "azEdition":
-      ret = findNameForValue(mptUserSettings["azEdition"], azEditions);
+      ret = findNameForValue(mptUserSettings.azEdition, azEditions);
       break;
     case "baLanguage":
       ret = findNameForValue(mptUserSettings.baLanguage, baLanguages);
@@ -1786,14 +1789,7 @@ function findNameForValue(needle, haystack) {
   return ret;
 }
 function findPositionForValue(needle, haystack) {
-  var ret = -1;
-  for (var i in haystack) {
-    if (haystack[i].value == needle) {
-      ret = [i];
-      break;
-    }
-  }
-  return ret;
+  return haystack.findIndex(o => o.value == needle);
 }
 function printNotification(text) {
   // log the text to the browser's developer console:
@@ -1847,7 +1843,7 @@ function exRE(str, re) {
     if (m.index === re.lastIndex) {
       re.lastIndex++;
     }
-    for (k = 1; k < m.length; k++) {
+    for (let k = 1; k < m.length; k++) {
       ret[i++] = m[k];
     }
   }
@@ -1950,7 +1946,7 @@ function getcabincode(cabin) {
 function findtarget(tclass, nth) {
   var elems = document.getElementsByTagName("*"),
     i;
-  j = 0;
+  let j = 0;
   for (i in elems) {
     if ((" " + elems[i].className + " ").indexOf(" " + tclass + " ") > -1) {
       j++;
@@ -1982,7 +1978,7 @@ function doHttpRequest(url, options, callback) {
     );
     return false;
   }
-  var xmlHttpObject = false;
+  var xmlHttpObject = null;
   if (typeof XMLHttpRequest !== "undefined") {
     xmlHttpObject = new XMLHttpRequest();
   }
@@ -2014,31 +2010,31 @@ function doHttpRequest(url, options, callback) {
 }
 function findItinTarget(leg, seg, tcell) {
   var target = findtarget(classSettings.resultpage["itin"], 1);
-  if (target === false) {
+  if (!target) {
     printNotification("Error: Itin not found in findItinTarget-function");
-    return false;
+    return;
   }
 
-  target = target.nextSibling.nextSibling;
   // go to leg
-  var target = target.children[leg - 1];
-  if (target === undefined) {
+  var targetLeg = target.nextSibling.nextSibling.childNodes[leg - 1];
+  if (targetLeg === undefined) {
     printNotification("Error: Leg not found in findItinTarget-function");
-    return false;
+    return;
   }
   // go to segments of leg
-  target = target.children[1].children;
-  if (target.length >= 2) {
+  var targetSeg = targetLeg.childNodes[1].childNodes;
+  if (targetSeg.length >= 2) {
     // go to desired segment
     var index = 0;
     var j = 0;
-    for (i = 0; i < target.length; i++) {
-      if (hasClass(target[i], classSettings.resultpage["itinRow"]) == 1) {
+    let i = 0;
+    for (i = 0; i < targetSeg.length; i++) {
+      if (hasClass(targetSeg[i], classSettings.resultpage["itinRow"])) {
         j++;
         if (j >= seg) {
           index = i;
           //special handling for one-seg-legs here
-          if (target.length === 2 || target.length === 3) {
+          if (targetSeg.length === 2 || targetSeg.length === 3) {
             // 1. Headline 2. Flight-details 3. arrival next day..
             index--;
           }
@@ -2046,14 +2042,14 @@ function findItinTarget(leg, seg, tcell) {
         }
       }
     } // end-for
-    if (i == target.length) {
+    if (i == targetSeg.length) {
       //target not found
       printNotification(
         "Error: Call to unreachable Segment in Leg " +
           leg +
           " in findItinTarget-function"
       );
-      return false;
+      return;
     }
     var rowoffset = 0;
     var columnoffset = 0;
@@ -2098,12 +2094,12 @@ function findItinTarget(leg, seg, tcell) {
         break;
       default:
         printNotification("Error: Unknown Target in findItinTarget-function");
-        return false;
+        return;
     }
-    return target[index + rowoffset].children[columnoffset];
+    return targetSeg[index + rowoffset].childNodes[columnoffset];
   } else {
     printNotification("Error: Unknown error in findItinTarget-function");
-    return false;
+    return;
   }
 }
 function validatePaxcount(config) {
@@ -2141,17 +2137,17 @@ function validatePaxcount(config) {
       ret.adults + ret.infLap + ret.infSeat + ret.children.length
     ) {
       console.log("Too many passengers");
-      return false;
+      return;
     }
   } else {
     if (config.maxPaxcount < ret.adults + ret.infSeat + ret.children.length) {
       console.log("Too many passengers");
-      return false;
+      return;
     }
   }
   if (0 === ret.adults + ret.infSeat + ret.children.length) {
     console.log("No passengers");
-    return false;
+    return;
   }
   return ret;
 }
@@ -2163,7 +2159,7 @@ function startPage() {
     return false;
   } else {
     // apply style-fix
-    target = findtarget(classSettings.startpage["maindiv"], 1);
+    const target = findtarget(classSettings.startpage["maindiv"], 1);
     target.children[0].children[0].children[0].children[0].setAttribute(
       "valign",
       "top"
@@ -2179,24 +2175,24 @@ function bindEditorMode(dir) {
       // bind/unbind cabin & BC
       var target = findItinTarget(i + 1, j + 1, "cabin").firstChild;
       if (dir === "create") {
-        var tmp = target.innerHTML;
+        var tmp = target.textContent;
         var bc = tmp.substr(tmp.length - 2, 1);
         var cabin = tmp.substr(0, tmp.length - 4);
-        var tmp = [
+        var cabins = [
           ["Economy", "Y"],
           ["Premium Economy", "Y+"],
           ["Business", "C"],
           ["First", "F"]
         ];
         var str = '<select style="width:40px" class="editoritem">';
-        for (var k = 0; k < tmp.length; k++) {
+        for (var k = 0; k < cabins.length; k++) {
           str +=
             '<option value="' +
-            tmp[k][0] +
+            cabins[k][0] +
             '"' +
-            (tmp[k][0] === cabin ? ' selected="selected"' : "") +
+            (cabins[k][0] === cabin ? ' selected="selected"' : "") +
             ">" +
-            tmp[k][1] +
+            cabins[k][1] +
             "</option>";
         }
         str += "</select>";
@@ -2240,7 +2236,7 @@ function fePS() {
     return false;
   }
   // do some self-testing to prevent crashing on class-changes
-  for (i in classSettings.resultpage) {
+  for (let i in classSettings.resultpage) {
     if (findtarget(classSettings.resultpage[i], 1) === undefined) {
       printNotification(
         "Error: Unable to find class " +
@@ -2264,16 +2260,16 @@ function fePS() {
     elems[i].parentNode.removeChild(elems[i]);
   }
   // S&D price breakdown
-  var target = findtarget("pricebreakdown", 1);
-  if (target != undefined) target.parentNode.removeChild(target);
+  var pbd = findtarget("pricebreakdown", 1);
+  if (pbd != undefined) pbd.parentNode.removeChild(pbd);
 
   // S&D ff-Container
-  var target = findtarget("ff-links", 1);
-  if (target != undefined) target.parentNode.removeChild(target);
-  var target = findtarget("ff-plancontainer", 1);
-  if (target != undefined) target.parentNode.removeChild(target);
-  var target = document.getElementById("ff-routingcodescontainer");
-  if (target != undefined) target.parentNode.removeChild(target);
+  var ffl = findtarget("ff-links", 1);
+  if (ffl != undefined) ffl.parentNode.removeChild(ffl);
+  var ffpc = findtarget("ff-plancontainer", 1);
+  if (ffpc != undefined) ffpc.parentNode.removeChild(ffpc);
+  var ffrcc = document.getElementById("ff-routingcodescontainer");
+  if (ffrcc != undefined) ffrcc.parentNode.removeChild(ffrcc);
 
   // Editor mode?
   if (
@@ -2296,7 +2292,7 @@ function fePS() {
   if (mptUserSettings.enableInlineMode == 1) {
     findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
       "rowspan",
-      10
+      "10"
     );
     //findtarget('GE-ODR-BET',1).setAttribute('class', 'GE-ODR-BBFB');
   } else if (
@@ -2305,12 +2301,12 @@ function fePS() {
   ) {
     findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
       "rowspan",
-      3
+      "3"
     );
   } else {
     findtarget(classSettings.resultpage.milagecontainer, 1).setAttribute(
       "rowspan",
-      2
+      "2"
     );
   }
 
@@ -2326,8 +2322,7 @@ function fePS() {
       findtarget(classSettings.resultpage["itin"], 1).nextSibling.nextSibling
     );
   //Add price breakdown
-  if (mptUserSettings.enablePricebreakdown == 1)
-    rearrangeprices(currentItin.dist);
+  if (mptUserSettings.enablePricebreakdown == 1) rearrangeprices();
 
   if (mptUserSettings.enableInlineMode == 1) printCPM();
 
@@ -2368,9 +2363,11 @@ function printLinksContainer() {
   printAA();
   printAC();
   if (
-    currentItin.itin.length == 2 &&
-    currentItin.itin[0].orig == currentItin.itin[1].dest &&
-    currentItin.itin[0].dest == currentItin.itin[1].orig
+    mptUserSettings.showAllAirlines ||
+    (currentItin.itin &&
+      currentItin.itin.length == 2 &&
+      currentItin.itin[0].orig == currentItin.itin[1].dest &&
+      currentItin.itin[0].dest == currentItin.itin[1].orig)
   ) {
     printAF();
   }
@@ -2477,10 +2474,13 @@ function bindRulelinks() {
   var i = 0;
   var j = 0;
   var t = 1;
-  var target = findtarget(classSettings.resultpage["rulescontainer"], t);
+  let target;
+  target = findtarget(classSettings.resultpage["rulescontainer"], t);
   if (target != undefined) {
     do {
-      var current = Number(target.firstChild.innerHTML.replace(/[^\d]/gi, ""));
+      var current = Number(
+        target.firstChild.textContent.replace(/[^\d]/gi, "")
+      );
       if (i > current) {
         j++;
         i = 0;
@@ -2527,22 +2527,25 @@ function rearrangeprices() {
         basefound = 1;
         //it's a basefare
         var price = Number(
-          target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, "")
+          target.nextSibling.firstChild.textContent.replace(/[^\d]/gi, "")
         );
         if (cur == "")
-          cur = target.nextSibling.firstChild.innerHTML.replace(/[\d,.]/g, "");
+          cur = target.nextSibling.firstChild.textContent.replace(
+            /[\d,.]/g,
+            ""
+          );
         basefares += price;
       } else if (basefound == 1 && type == 3) {
         //its a pricenode
-        var name = target.firstChild.innerHTML;
+        var name = target.firstChild.textContent;
         var price = Number(
-          target.nextSibling.firstChild.innerHTML.replace(/[^\d]/gi, "")
+          target.nextSibling.firstChild.textContent.replace(/[^\d]/gi, "")
         );
         if (
           hasClass(
             target.nextSibling,
             classSettings.resultpage["htbGreyBorder"]
-          ) == 1
+          )
         ) {
           //we are done for this container
           //console.log( "Basefare: "+ basefares);
@@ -2705,7 +2708,7 @@ function printMilesbreakdown() {
   if (mptUserSettings.enableMilesbreakdownautoload == 1) {
     retrieveMileages();
   } else {
-    target = findItinTarget(1, 1, "headline");
+    const target = findItinTarget(1, 1, "headline");
     target.innerHTML =
       target.innerHTML.replace(
         target.firstChild.className,
@@ -2755,7 +2758,7 @@ function retrieveMileages() {
     }
   }
   //build request
-  for (i in routes) {
+  for (let i in routes) {
     params += (params === "" ? "" : "&") + "r[]=" + routes[i];
   }
   if (params === "") {
@@ -2853,10 +2856,9 @@ function printMileages() {
     mptUserSettings.enableInlineMode === 1 ||
     mptUserSettings.enableMilesInlinemode === 1
   ) {
-    var target = "";
     for (var i = 0; i < currentItin.itin.length; i++) {
       // walks each leg
-      target = findItinTarget(i + 1, 1, "headline");
+      let target = findItinTarget(i + 1, 1, "headline");
       target.innerHTML =
         target.innerHTML.replace(
           target.firstChild.className,
@@ -2913,9 +2915,9 @@ function printMileages() {
     output += "</tbody>";
     if (findtarget("pricebreakdown", 1) === undefined) {
       // create container
-      var printtarget = findtarget(classSettings.resultpage["htbContainer"], 1)
+      let printtarget = findtarget(classSettings.resultpage["htbContainer"], 1)
         .parentNode.parentNode.parentNode;
-      var newtr = document.createElement("tr");
+      let newtr = document.createElement("tr");
       newtr.setAttribute("class", "pricebreakdown");
       newtr.innerHTML =
         '<td><div><table style="float:left; margin-right:15px;">' +
@@ -2924,9 +2926,9 @@ function printMileages() {
       printtarget.parentNode.insertBefore(newtr, printtarget);
     } else {
       // add to existing container
-      var printtarget = findtarget("pricebreakdown", 1).firstChild.firstChild
+      let printtarget = findtarget("pricebreakdown", 1).firstChild.firstChild
         .firstChild;
-      var newtable = document.createElement("table");
+      let newtable = document.createElement("table");
       newtable.setAttribute("style", "float:left; margin-right:15px;");
       newtable.innerHTML = output;
       printtarget.parentNode.insertBefore(newtable, printtarget);
@@ -2935,7 +2937,12 @@ function printMileages() {
 }
 //*** Readfunction ****//
 function parseAddInfo(info) {
-  var ret = { codeshare: 0, layoverduration: 0, airportchange: 0, arrDate: "" };
+  var ret = {
+    codeshare: 0,
+    layoverduration: 0,
+    airportchange: 0,
+    arrDate: null
+  };
   var re = /contains\s*airport\s*changes/g;
   if (re.test(info) === true) {
     ret.airportchange = 1;
@@ -2949,13 +2956,13 @@ function parseAddInfo(info) {
   temp = exRE(info, re);
   if (temp.length == 2) {
     // Got datechange
-    ret["arrDate"] = {};
-    ret["arrDate"].month = monthnameToNumber(temp[0]);
-    ret["arrDate"].day = parseInt(temp[1]);
-    ret["arrDate"].year = getFlightYear(
-      ret["arrDate"].day,
-      ret["arrDate"].month
-    );
+    const month = monthnameToNumber(temp[0]);
+    const day = parseInt(temp[1]);
+    ret.arrDate = {
+      month,
+      day,
+      year: getFlightYear(day, month)
+    };
   }
   var temp = new Array();
   var re = /([0-9]{1,2})h\s([0-9]{1,2})m/g;
@@ -2973,9 +2980,7 @@ function readItinerary(doReplace) {
     itin = new Array(),
     carrieruarray = new Array(),
     farebases = new Array(),
-    dirtyFare = new Array(),
-    temp = new Array(),
-    tmp = new Array();
+    dirtyFare = new Array();
   var itinCur = "";
   var html = document.getElementById("contentwrapper").innerHTML;
   var re = /colspan\=\"5\"[^\(]+\(([\w]{3})[^\(]+\(([\w]{3})/g;
@@ -2993,15 +2998,15 @@ function readItinerary(doReplace) {
   }
   // extract basefares
   var re = /Carrier\s([\w]{2})\s([\w]+).*?Covers\s([\w\(\)\s\-,]+)/g;
-  temp = exRE(html, re);
-  tmp = { c: "", f: "", l: new Array() };
-  for (i = 0; i < temp.length; i += 3) {
-    tmp.c = temp[i];
-    tmp.f = temp[i + 1];
-    farebases.push(tmp.f);
-    tmp.l = exRE(temp[i + 2], /(\w\w\w\-\w\w\w)/g);
-    for (j = 0; j < tmp.l.length; j++) {
-      dirtyFare.push(tmp.l[j] + "-" + tmp.f + "-" + tmp.c);
+  var bfs = exRE(html, re);
+  var bf = { c: "", f: "", l: new Array() };
+  for (i = 0; i < bfs.length; i += 3) {
+    bf.c = bfs[i];
+    bf.f = bfs[i + 1];
+    farebases.push(bf.f);
+    bf.l = exRE(bfs[i + 2], /(\w\w\w\-\w\w\w)/g);
+    for (j = 0; j < bf.l.length; j++) {
+      dirtyFare.push(bf.l[j] + "-" + bf.f + "-" + bf.c);
     }
   }
   var segs = new Array();
@@ -3011,16 +3016,6 @@ function readItinerary(doReplace) {
   var legnr = 0;
   var segnr = 0;
   for (i = 0; i < segs.length; i += 15) {
-    temp = {};
-    temp.carrier = segs[i];
-    temp.orig = segs[i + 1];
-    temp.dest = segs[i + 2];
-    temp.dep = {};
-    temp.arr = {};
-    temp.dep.month = monthnameToNumber(segs[i + 3]);
-    temp.dep.day = parseInt(segs[i + 4]);
-    temp.dep.year = getFlightYear(temp.dep.day, temp.dep.month);
-    temp.fnr = segs[i + 5];
     if (mptUserSettings.timeformat == "24h") {
       replacementsold.push(segs[i + 6]);
       replacementsold.push(segs[i + 7]);
@@ -3031,58 +3026,69 @@ function readItinerary(doReplace) {
       replacementsnew.push((segs[i + 6].length == 4 ? "0" : "") + segs[i + 6]);
       replacementsnew.push((segs[i + 7].length == 4 ? "0" : "") + segs[i + 7]);
     }
-    temp.dep.time = segs[i + 6];
-    temp.arr.time = segs[i + 7];
-    temp.duration = parseInt(segs[i + 8]) * 60 + parseInt(segs[i + 9]);
-    temp.aircraft = segs[i + 10];
-    temp.cabin = getcabincode(segs[i + 11]);
-    temp.bookingclass = segs[i + 12];
-    var addinformations = parseAddInfo(segs[i + 13]);
-    if (addinformations["arrDate"] != "") {
-      temp.arr.day = addinformations["arrDate"].day;
-      temp.arr.month = addinformations["arrDate"].month;
-      temp.arr.year = addinformations["arrDate"].year;
-    } else {
-      temp.arr.day = temp.dep.day;
-      temp.arr.month = temp.dep.month;
-      temp.arr.year = temp.dep.year;
-    }
-    temp["codeshare"] = addinformations["codeshare"];
-    temp.layoverduration = addinformations.layoverduration;
-    temp["airportchange"] = addinformations["airportchange"];
-    temp.farebase = "";
-    temp["farecarrier"] = "";
+    const addinformations = parseAddInfo(segs[i + 13]);
+    const day = parseInt(segs[i + 4]);
+    const month = monthnameToNumber(segs[i + 3]);
+    const year = getFlightYear(day, month);
+    let seg = {
+      carrier: segs[i],
+      orig: segs[i + 1],
+      dest: segs[i + 2],
+      dep: {
+        day,
+        month,
+        year,
+        time: segs[i + 6]
+      },
+      arr: {
+        day: addinformations.arrDate ? addinformations.arrDate.day : day,
+        month: addinformations.arrDate ? addinformations.arrDate.month : month,
+        year: addinformations.arrDate ? addinformations.arrDate.year : year,
+        time: segs[i + 7]
+      },
+      fnr: segs[i + 5],
+      duration: parseInt(segs[i + 8]) * 60 + parseInt(segs[i + 9]),
+      aircraft: segs[i + 10],
+      cabin: getcabincode(segs[i + 11]),
+      bookingclass: segs[i + 12],
+      codeshare: addinformations.codeshare,
+      layoverduration: addinformations.layoverduration,
+      airportchange: addinformations.airportchange,
+      farebase: "",
+      farecarrier: ""
+    };
+
     // find farecode for leg
     for (var j = 0; j < dirtyFare.length; j++) {
-      if (dirtyFare[j].indexOf(temp.orig + "-" + temp.dest + "-") != -1) {
+      if (dirtyFare[j].indexOf(seg.orig + "-" + seg.dest + "-") != -1) {
         //found farebase of this segment
         var tmp = dirtyFare[j].split("-");
-        temp.farebase = tmp[2];
-        temp["farecarrier"] = tmp[3];
-        dirtyFare[j] = temp.farebase; // avoid reuse
+        seg.farebase = tmp[2];
+        seg.farecarrier = tmp[3];
+        dirtyFare[j] = seg.farebase; // avoid reuse
         j = dirtyFare.length;
       }
     }
     if (itin[legnr] === undefined) itin[legnr] = new Object();
     if (itin[legnr].seg === undefined) itin[legnr].seg = new Array();
-    itin[legnr].seg.push(temp);
+    itin[legnr].seg.push(seg);
     // push carrier
-    if (!inArray(temp.carrier, carrieruarray)) {
-      carrieruarray.push(temp.carrier);
+    if (!inArray(seg.carrier, carrieruarray)) {
+      carrieruarray.push(seg.carrier);
     }
     // push dates and times into leg-array
     if (segnr == 0) {
       if (itin[legnr].dep === undefined) itin[legnr].dep = new Object();
-      itin[legnr].dep.day = temp.dep.day;
-      itin[legnr].dep.month = temp.dep.month;
-      itin[legnr].dep.year = temp.dep.year;
-      itin[legnr].dep.time = temp.dep.time;
+      itin[legnr].dep.day = seg.dep.day;
+      itin[legnr].dep.month = seg.dep.month;
+      itin[legnr].dep.year = seg.dep.year;
+      itin[legnr].dep.time = seg.dep.time;
     }
     if (itin[legnr].arr === undefined) itin[legnr].arr = new Object();
-    itin[legnr].arr.day = temp.arr.day;
-    itin[legnr].arr.month = temp.arr.month;
-    itin[legnr].arr.year = temp.arr.year;
-    itin[legnr].arr.time = temp.arr.time;
+    itin[legnr].arr.day = seg.arr.day;
+    itin[legnr].arr.month = seg.arr.month;
+    itin[legnr].arr.year = seg.arr.year;
+    itin[legnr].arr.time = seg.arr.time;
     segnr++;
     // check for legchange
     if (segs[i + 14] == "table") {
@@ -3094,7 +3100,7 @@ function readItinerary(doReplace) {
   for (var i = 0; i < dirtyFare.length; i++) {
     var curfare = dirtyFare[i].split("-");
     if (curfare.length > 1) {
-      var tmp = 0;
+      var l = 0;
       //currently unused so walk through itin to find flights
       for (var legnr = 0; legnr < itin.length; legnr++) {
         for (var segnr = 0; segnr < itin[legnr].seg.length; segnr++) {
@@ -3108,7 +3114,7 @@ function readItinerary(doReplace) {
             itin[legnr].seg[segnr]["farecarrier"] = curfare[3];
             dirtyFare[i] = curfare[2];
             segnr = itin[legnr].seg.length;
-            tmp = 1;
+            l = 1;
           } else if (
             itin[legnr].seg[segnr].orig == curfare[0] &&
             itin[legnr].seg[segnr].dest != curfare[1] &&
@@ -3128,7 +3134,7 @@ function readItinerary(doReplace) {
                 }
                 j = itin[legnr].seg.length;
                 segnr = itin[legnr].seg.length;
-                tmp = 1;
+                l = 1;
               } else if (itin[legnr].seg[segnr + j].farebase != "") {
                 //farebase attached - skip
                 j = itin[legnr].seg.length;
@@ -3136,11 +3142,11 @@ function readItinerary(doReplace) {
             }
           }
         }
-        if (tmp == 1) {
+        if (l == 1) {
           legnr = itin.length;
         }
       }
-      if (tmp == 0) {
+      if (l == 0) {
         printNotification("Unused fare:" + dirtyFare[i]);
       }
     }
@@ -3168,7 +3174,7 @@ function readItinerary(doReplace) {
   //console.log(currentItin); //Remove to see flightstructure
   // lets do the time-replacement
   if (replacementsold.length > 0 && doReplace === true) {
-    target = findtarget(classSettings.resultpage["itin"], 1).nextSibling
+    const target = findtarget(classSettings.resultpage["itin"], 1).nextSibling
       .nextSibling;
     for (i = 0; i < replacementsold.length; i++) {
       re = new RegExp(replacementsold[i], "g");
@@ -3188,8 +3194,8 @@ function translate(page, lang, target) {
     );
     return false;
   }
-  for (i in translations[lang][page]) {
-    re = new RegExp(i, "g");
+  for (let i in translations[lang][page]) {
+    const re = new RegExp(i, "g");
     target.innerHTML = target.innerHTML.replace(
       re,
       translations[lang][page][i]
@@ -3397,7 +3403,7 @@ function getAmadeusPax(pax, config) {
   var tmpPax = { c: 0, y: 0 };
   var curPax = 1;
   var url = "&IS_PRIMARY_TRAVELLER_1=True";
-  for (i = 0; i < pax.children.length; i++) {
+  for (let i = 0; i < pax.children.length; i++) {
     if (pax.children[i] >= config["youthage"] && config["youthage"] > 0) {
       tmpPax.y++;
     } else if (pax.children[i] >= 12) {
@@ -3406,7 +3412,7 @@ function getAmadeusPax(pax, config) {
       tmpPax.c++;
     }
   }
-  for (i = 0; i < pax.adults; i++) {
+  for (let i = 0; i < pax.adults; i++) {
     url += "&TRAVELER_TYPE_" + curPax + "=ADT";
     url +=
       "&HAS_INFANT_" +
@@ -3416,13 +3422,13 @@ function getAmadeusPax(pax, config) {
     url += "&IS_YOUTH_" + curPax + "=False";
     curPax++;
   }
-  for (i = 0; i < tmpPax.y; i++) {
+  for (let i = 0; i < tmpPax.y; i++) {
     url += "&TRAVELER_TYPE_" + curPax + "=ADT";
     url += "&HAS_INFANT_" + curPax + "=False";
     url += "&IS_YOUTH_" + curPax + "=True";
     curPax++;
   }
-  for (i = 0; i < tmpPax.c; i++) {
+  for (let i = 0; i < tmpPax.c; i++) {
     url += "&TRAVELER_TYPE_" + curPax + "=CHD";
     url += "&HAS_INFANT_" + curPax + "=False";
     url += "&IS_YOUTH_" + curPax + "=False";
@@ -3532,7 +3538,7 @@ function printAA() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printAA");
       return false;
     }
@@ -3600,7 +3606,7 @@ function printAAc1() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printAAc1");
       return false;
     }
@@ -3799,7 +3805,7 @@ function printAC() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printAC");
       return false;
     }
@@ -3885,7 +3891,7 @@ function printAF() {
           "&firstOutboundHour=" +
           ("0" + currentItin.itin[i].dep["time"]).slice(-5);
 
-        flights = "";
+        let flights = "";
         for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
           if (j > 0) flights += "|";
           flights +=
@@ -3905,7 +3911,7 @@ function printAF() {
           "&firstInboundHour=" +
           ("0" + currentItin.itin[i].dep["time"]).slice(-5);
 
-        flights = "";
+        let flights = "";
         for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
           if (j > 0) flights += "|";
           flights +=
@@ -3928,7 +3934,7 @@ function printAF() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printAF");
       return false;
     }
@@ -4002,7 +4008,7 @@ function printAS() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printAAc1");
       return false;
     }
@@ -4126,7 +4132,7 @@ function printAZ() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printAZ");
       return false;
     }
@@ -4177,7 +4183,7 @@ function printBA() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printBA");
       return false;
     }
@@ -4283,7 +4289,7 @@ function printCZ() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printCZ");
       return false;
     }
@@ -4355,7 +4361,7 @@ function printDL() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printDL");
       return false;
     }
@@ -4471,7 +4477,7 @@ function printIB() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printIB");
       return false;
     }
@@ -4591,7 +4597,7 @@ function printKL() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printKL");
       return false;
     }
@@ -4707,7 +4713,7 @@ function printLA() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printLA");
       return false;
     }
@@ -4824,7 +4830,7 @@ function printLH() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printLH");
       return false;
     }
@@ -4909,7 +4915,7 @@ function printLX() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printLX");
       return false;
     }
@@ -5046,7 +5052,7 @@ function printPS() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printIB");
       return false;
     }
@@ -5148,7 +5154,7 @@ function printQF() {
       sepInfSeat: false,
       childMinAge: 2
     });
-    if (pax === false) {
+    if (!pax) {
       printNotification("Error: Failed to validate Passengers in printQF");
       return false;
     }
@@ -5318,7 +5324,7 @@ function printTK() {
     sepInfSeat: false,
     childMinAge: 2
   });
-  if (pax === false) {
+  if (!pax) {
     printNotification("Error: Failed to validate Passengers in printTK");
     return false;
   }
@@ -5360,7 +5366,7 @@ function printCheapOair() {
     sepInfSeat: true,
     childMinAge: 2
   });
-  if (pax === false) {
+  if (!pax) {
     printNotification("Error: Failed to validate Passengers in printCheapOair");
     return false;
   }
@@ -5483,7 +5489,7 @@ function printPriceline() {
     sepInfSeat: false,
     childMinAge: 2
   });
-  if (pax === false) {
+  if (!pax) {
     printNotification("Error: Failed to validate Passengers in printPriceline");
     return false;
   }
@@ -5631,7 +5637,7 @@ function printExpedia() {
     sepInfSeat: false,
     childMinAge: 2
   });
-  if (pax === false) {
+  if (!pax) {
     printNotification("Error: Failed to validate Passengers in printExpedia");
     return false;
   }
@@ -5753,7 +5759,7 @@ function printHipmunk() {
     sepInfSeat: true,
     childMinAge: 2
   });
-  if (pax === false) {
+  if (!pax) {
     printNotification("Error: Failed to validate Passengers in printHipmunk");
     return false;
   }
@@ -5909,6 +5915,7 @@ function printKayak(method) {
     { name: "Kayak.se", host: "Kayak.se" },
     { name: "Kayak.ru", host: "Kayak.ru" }
   ];
+  let desc;
   var KayakCreateUrl = function(host) {
     var KayakUrl = "https://www." + host + "/flights";
     var segsize = 0;
@@ -6148,7 +6155,7 @@ function bindSeatguru() {
       }
       // build the search to identify flight:
       var target = findItinTarget(i + 1, j + 1, "plane");
-      if (target === false) {
+      if (!target) {
         printNotification("Error: Could not find target in bindSeatguru");
         return false;
       } else {
@@ -6165,11 +6172,11 @@ function bindSeatguru() {
           currentItin.itin[i].seg[j].dep.year +
           "&to=&from=" +
           currentItin.itin[i].seg[j].orig;
-        target.children[0].innerHTML =
+        target.childNodes[0].innerHTML =
           '<a href="' +
           url +
           '" target="_blank" style="text-decoration:none;color:black">' +
-          target.children[0].innerHTML +
+          target.childNodes[0].innerHTML +
           "</a>";
       }
       j += k;
@@ -6194,7 +6201,7 @@ function bindPlanefinder() {
       }
       // build the search to identify flight:
       var target = findItinTarget(i + 1, j + 1, "flight");
-      if (target === false) {
+      if (!target) {
         printNotification("Error: Could not find target in bindPlanefinder");
         return false;
       } else {
@@ -6202,11 +6209,11 @@ function bindPlanefinder() {
           "http://www.planefinder.net/data/flight/" +
           currentItin.itin[i].seg[j].carrier +
           currentItin.itin[i].seg[j].fnr;
-        target.children[0].innerHTML =
+        target.childNodes[0].innerHTML =
           '<a href="' +
           url +
           '" target="_blank" style="text-decoration:none;color:black">' +
-          target.children[0].innerHTML +
+          target.childNodes[0].innerHTML +
           "</a>";
       }
       j += k;
@@ -6218,33 +6225,34 @@ function getTimezoneData(mode) {
   var plan = new Array();
   for (var i = 0; i < currentItin.itin.length; i++) {
     // walks each leg
-    var leg = new Array();
+    var segs = new Array();
     for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
       //walks each segment of leg
-      var temp = new Object();
-      temp.orig = currentItin.itin[i].seg[j].orig;
-      temp.depdatetime =
-        currentItin.itin[i].seg[j].dep.year +
-        "-" +
-        ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
-        "-" +
-        ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
-        "T" +
-        ("00" + currentItin.itin[i].seg[j].dep.time).slice(-5);
-      if (mode === "full") {
-        temp.dest = currentItin.itin[i].seg[j].dest;
-        temp.arrdatetime =
-          currentItin.itin[i].seg[j].arr.year +
+      var seg = {
+        orig: currentItin.itin[i].seg[j].orig,
+        depdatetime:
+          currentItin.itin[i].seg[j].dep.year +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].arr.month).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].arr.day).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
           "T" +
-          ("00" + currentItin.itin[i].seg[j].arr.time).slice(-5);
-      }
-      leg.push(temp);
+          ("00" + currentItin.itin[i].seg[j].dep.time).slice(-5),
+        dest: mode === "full" ? currentItin.itin[i].seg[j].dest : undefined,
+        arrdatetime:
+          mode === "full"
+            ? currentItin.itin[i].seg[j].arr.year +
+              "-" +
+              ("0" + currentItin.itin[i].seg[j].arr.month).slice(-2) +
+              "-" +
+              ("0" + currentItin.itin[i].seg[j].arr.day).slice(-2) +
+              "T" +
+              ("00" + currentItin.itin[i].seg[j].arr.time).slice(-5)
+            : undefined
+      };
+      segs.push(seg);
     }
-    plan.push({ segs: leg });
+    plan.push({ segs });
   }
   return plan;
 }
@@ -6362,7 +6370,7 @@ function bindWheretocredit() {
     for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
       //walks each segment of leg
       var target = findItinTarget(i + 1, j + 1, "cabin");
-      if (target === false) {
+      if (!target) {
         printNotification("Error: Could not find target in bindWheretocredit");
         return false;
       } else {
@@ -6371,7 +6379,7 @@ function bindWheretocredit() {
           currentItin.itin[i].seg[j].carrier.toLowerCase() +
           "/" +
           currentItin.itin[i].seg[j].bookingclass.toLowerCase();
-        target.children[0].innerHTML = target.children[0].innerHTML
+        target.childNodes[0].innerHTML = target.childNodes[0].innerHTML
           .replace(
             /<a.*?\/a>/,
             "(" + currentItin.itin[i].seg[j].bookingclass + ")"
@@ -6430,7 +6438,7 @@ function printUrlInline(url, text, desc, nth, extra) {
   printItemInline(otext, desc, nth);
 }
 function printItemInline(text, desc, nth) {
-  div = getSidebarContainer(nth);
+  const div = getSidebarContainer(nth);
   div.innerHTML =
     div.innerHTML +
     '<li class="powertoolsitem">' +
@@ -6439,7 +6447,7 @@ function printItemInline(text, desc, nth) {
     "</li>";
 }
 function printImageInline(src, url, nth) {
-  div = getSidebarContainer(nth).parentNode;
+  const div = getSidebarContainer(nth).parentNode;
   if (mptUserSettings["enableIMGautoload"] == 1) {
     div.innerHTML =
       div.innerHTML +
@@ -6453,7 +6461,7 @@ function printImageInline(src, url, nth) {
       "/>" +
       (url ? "</a>" : "");
   } else {
-    var id = Math.random();
+    var id = Math.random().toString();
     div.innerHTML =
       div.innerHTML +
       '<div id="' +
