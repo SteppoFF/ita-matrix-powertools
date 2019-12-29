@@ -3,6 +3,9 @@
   "version": "0.36.1",
   "description": "Script for greasemonkey + ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
+  "scripts": {
+    "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js"
+  },
   "dependencies": {
     "@types/greasemonkey": "^4.0.0",
     "husky": "^3.1.0",
@@ -13,7 +16,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && uglifyjs ita-matrix-powertools.user.js -o script_minified.js && git add script_minified.js"
+      "pre-commit": "pretty-quick --staged && npm run minify && git add script_minified.js"
     }
   }
 }

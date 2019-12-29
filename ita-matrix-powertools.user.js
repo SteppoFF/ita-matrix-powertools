@@ -833,17 +833,6 @@ var mtpPassengerConfig = {
   cAges: new Array()
 };
 
-if (mptSettings.scriptEngine === 0 && window.top === window.self) {
-  startScript();
-} else if (window.top === window.self) {
-  // execute language detection and afterwards functions for current page
-  if (typeof window.addEventListener !== "undefined") {
-    window.addEventListener("load", () => startScript(), false);
-  } else {
-    window.onload = () => startScript();
-  }
-}
-
 function startScript() {
   if (window.location.href !== mptSettings.laststatus) {
     setTimeout(function() {
@@ -1402,6 +1391,19 @@ function createUsersettings() {
     createUsersettings();
   }
   injectCss();
+
+  if (window.top === window.self) {
+    if (mptSettings.scriptEngine === 0) {
+      startScript();
+    } else {
+      // execute language detection and afterwards functions for current page
+      if (typeof window.addEventListener !== "undefined") {
+        window.addEventListener("load", () => startScript(), false);
+      } else {
+        window.onload = () => startScript();
+      }
+    }
+  }
 })(); // end async for GM4
 
 function toggleVis(target) {
