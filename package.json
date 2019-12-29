@@ -1,6 +1,6 @@
 {
   "name": "ita-matrix-powertools",
-  "version": "0.36.0",
+  "version": "0.36.1",
   "description": "Script for greasemonkey + ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "dependencies": {

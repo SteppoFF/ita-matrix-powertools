@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.36
+// @version 0.36.1
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -84,7 +84,7 @@ var mptUserSettings = {
 // General settings
 var mptSettings = {
   itaLanguage: "en",
-  version: "0.35",
+  version: "0.36.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
