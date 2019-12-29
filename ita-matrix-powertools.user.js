@@ -823,7 +823,7 @@ var translations = {
 // initialize local storage for resolved distances
 var distances = new Object();
 // initialize local storage for current itin
-/** @type {{ cur?: string; price?: number; basefares?: number; taxes?: number; surcharges?: number; dist?: number; numPax?: number; carriers?: string[]; farebases?: string[]; itin?: { orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; }; arr: { day: number; month: number; year: number; time: string; }; seg?: { carrier: string; orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; }; arr: { day: number; month: number; year: number; time: string; }; fnr: string; duration: number; aircraft: string; cabin: number; bookingclass: string; codeshare: number; layoverduration: number; airportchange: number; farebase: string; farecarrier: string; }[]}[]}} */
+/** @type {{ cur?: string; price?: number; basefares?: number; taxes?: number; surcharges?: number; dist?: number; numPax?: number; carriers?: string[]; farebases?: string[]; itin?: { orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; offset?: string; }; arr: { day: number; month: number; year: number; time: string; offset?: string; }; seg?: { carrier: string; orig: string; dest: string; dist?: number; dep: { day: number; month: number; year: number; time: string; offset?: string; }; arr: { day: number; month: number; year: number; time: string; offset?: string; }; fnr: string; duration: number; aircraft: string; cabin: number; bookingclass: string; codeshare: number; layoverduration: number; airportchange: number; farebase: string; farecarrier: string; }[]}[]}} */
 var currentItin = new Object();
 // initialize local storage for passenger details
 var mtpPassengerConfig = {
@@ -845,7 +845,7 @@ if (mptSettings.scriptEngine === 0 && window.top === window.self) {
 }
 
 function startScript() {
-  if (window.location.href !== mptSettings["laststatus"]) {
+  if (window.location.href !== mptSettings.laststatus) {
     setTimeout(function() {
       getPageLang();
     }, 100);
@@ -1817,7 +1817,7 @@ function getPageLang() {
   // reset Editor Mode
   document.getElementById("mptStartparse").setAttribute("class", "invis");
   document.getElementById("mptStartparse").style.display = "none";
-  mptSettings["itaLanguage"] = "en";
+  mptSettings.itaLanguage = "en";
   mptSettings.retrycount = 1;
   if (window.location.href.indexOf("view-details") != -1) {
     setTimeout(function() {
@@ -2009,7 +2009,7 @@ function doHttpRequest(url, options, callback) {
   }
 }
 function findItinTarget(leg, seg, tcell) {
-  var target = findtarget(classSettings.resultpage["itin"], 1);
+  var target = findtarget(classSettings.resultpage.itin, 1);
   if (!target) {
     printNotification("Error: Itin not found in findItinTarget-function");
     return;
@@ -2029,7 +2029,7 @@ function findItinTarget(leg, seg, tcell) {
     var j = 0;
     let i = 0;
     for (i = 0; i < targetSeg.length; i++) {
-      if (hasClass(targetSeg[i], classSettings.resultpage["itinRow"])) {
+      if (hasClass(targetSeg[i], classSettings.resultpage.itinRow)) {
         j++;
         if (j >= seg) {
           index = i;
@@ -2154,12 +2154,12 @@ function validatePaxcount(config) {
 /********************************************* Start page *********************************************/
 function startPage() {
   // try to get content
-  if (findtarget(classSettings.startpage["maindiv"], 1) === undefined) {
+  if (findtarget(classSettings.startpage.maindiv, 1) === undefined) {
     printNotification("Error: Unable to find content on start page.");
     return false;
   } else {
     // apply style-fix
-    const target = findtarget(classSettings.startpage["maindiv"], 1);
+    const target = findtarget(classSettings.startpage.maindiv, 1);
     target.children[0].children[0].children[0].children[0].setAttribute(
       "valign",
       "top"
@@ -2216,7 +2216,7 @@ function bindEditorMode(dir) {
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
   // try to get content
-  const itin = findtarget(classSettings.resultpage["itin"], 1);
+  const itin = findtarget(classSettings.resultpage.itin, 1);
   if (!itin) {
     printNotification("Error: Unable to find Content on result page.");
     return false;
@@ -2319,7 +2319,7 @@ function fePS() {
     translate(
       "resultpage",
       mptUserSettings.language,
-      findtarget(classSettings.resultpage["itin"], 1).nextElementSibling
+      findtarget(classSettings.resultpage.itin, 1).nextElementSibling
     );
   //Add price breakdown
   if (mptUserSettings.enablePricebreakdown == 1) rearrangeprices();
@@ -2334,7 +2334,6 @@ function fePS() {
   if (mptUserSettings.enableMilesbreakdown == 1 && typeof JSON !== "undefined")
     printMilesbreakdown();
   if (mptUserSettings.enableWheretocredit == 1) bindWheretocredit();
-  //if(mptUserSettings["enableFarefreaks"]==1 && typeof(JSON) !== "undefined"){createFareFreaksContainer();}
 }
 
 function printLinksContainer() {
@@ -2459,11 +2458,6 @@ function printLinksContainer() {
   printKayak(1);
   printSkyscanner();
   if (mptUserSettings.enableDeviders == 1) printSeperator();
-  /*** other stuff ***/
-  /*if(mptUserSettings["enableFarefreaks"]==1) {
-      printFarefreaks (0); // by segment
-      printFarefreaks (1); // by leg
-    }*/
   printGCM();
   printWheretocredit();
   /*** attach JS events after building link container  ***/
@@ -2474,7 +2468,7 @@ function bindRulelinks() {
   var i = 0;
   var j = 0;
   var t = 1;
-  let target = findtarget(classSettings.resultpage["rulescontainer"], t);
+  let target = findtarget(classSettings.resultpage.rulescontainer, t);
   if (target != undefined) {
     do {
       var current = Number(
@@ -2500,7 +2494,7 @@ function bindRulelinks() {
       target.parentElement.replaceChild(newlink, target);
       i++;
       t++;
-      target = findtarget(classSettings.resultpage["rulescontainer"], t);
+      target = findtarget(classSettings.resultpage.rulescontainer, t);
     } while (target != undefined);
   }
 }
@@ -2549,7 +2543,7 @@ function rearrangeprices() {
         if (
           hasClass(
             target.nextElementSibling,
-            classSettings.resultpage["htbGreyBorder"]
+            classSettings.resultpage.htbGreyBorder
           )
         ) {
           //we are done for this container
@@ -2565,7 +2559,7 @@ function rearrangeprices() {
               '"><div class="gwt-Label">Basefare per passenger (' +
               ((basefares / sum) * 100).toFixed(2).toString() +
               '%)</div></td><td class="' +
-              classSettings.resultpage["htbGreyBorder"] +
+              classSettings.resultpage.htbGreyBorder +
               '"><div class="gwt-Label">' +
               cur +
               (basefares / 100)
@@ -2584,7 +2578,7 @@ function rearrangeprices() {
               '"><div class="gwt-Label">Taxes per passenger (' +
               ((taxes / sum) * 100).toFixed(2).toString() +
               '%)</div></td><td class="' +
-              classSettings.resultpage["htbRight"] +
+              classSettings.resultpage.htbRight +
               '"><div class="gwt-Label">' +
               cur +
               (taxes / 100)
@@ -2603,7 +2597,7 @@ function rearrangeprices() {
               '"><div class="gwt-Label">Surcharges per passenger (' +
               ((surcharges / sum) * 100).toFixed(2).toString() +
               '%)</div></td><td class="' +
-              classSettings.resultpage["htbRight"] +
+              classSettings.resultpage.htbRight +
               '"><div class="gwt-Label">' +
               cur +
               (surcharges / 100)
@@ -2622,7 +2616,7 @@ function rearrangeprices() {
               '"><div class="gwt-Label">Basefare + Taxes per passenger (' +
               (((basefares + taxes) / sum) * 100).toFixed(2).toString() +
               '%)</div></td><td class="' +
-              classSettings.resultpage["htbGreyBorder"] +
+              classSettings.resultpage.htbGreyBorder +
               '"><div class="gwt-Label">' +
               cur +
               ((basefares + taxes) / 100)
@@ -2712,7 +2706,7 @@ function rearrangeprices() {
     } while (target != undefined);
   }
   if (mptUserSettings.enableInlineMode == 0) {
-    var printtarget = findtarget(classSettings.resultpage["htbContainer"], 1)
+    var printtarget = findtarget(classSettings.resultpage.htbContainer, 1)
       .parentElement.parentElement.parentElement;
     var newtr = document.createElement("tr");
     newtr.setAttribute("class", "pricebreakdown");
@@ -2783,42 +2777,6 @@ function retrieveMileages() {
     printMileages();
     return false;
   }
-  /*
-  // Calculate route distances using farefreaks.com if (AND ONLY IF!) the user has enabled farefreaks in settings:
-  if(mptUserSettings.enableFarefreaks) {
-    doHttpRequest("https://www.farefreaks.com/ajax/calcroutedist.php?"+params,{mode:"get"},function(xmlHttpObject) {
-       var response=false;
-       if (typeof(JSON) !== "undefined"){
-         try {
-            response = JSON.parse(xmlHttpObject.responseText);
-          } catch (e){
-            response=false;
-          }
-       } else {
-         // do not(!) use eval here :-/
-         printNotification("Error: Failed parsing route data - Browser not supporting JSON");
-         return false;
-       }
-       if (typeof(response) !== "object"){
-        printNotification("Error: Failed parsing route data");
-        return false;
-       }
-       if (response["success"]===undefined || response["error"]===undefined || response["data"]===undefined ){
-        printNotification("Error: wrong route data format");
-        return false;
-       }
-       if (response["success"]!=="1"){
-        printNotification("Error: "+response["error"]+" in retrieveMileages function");
-        return false;
-       }
-       // add new routes to distances
-       for (i in response["data"]) {
-          distances[i]=parseFloat(response["data"][i]);
-       }
-       printMileages();
-      });
-  }
-  */
 }
 function printMileages() {
   var legdistance = 0;
@@ -2933,7 +2891,7 @@ function printMileages() {
     output += "</tbody>";
     if (findtarget("pricebreakdown", 1) === undefined) {
       // create container
-      let printtarget = findtarget(classSettings.resultpage["htbContainer"], 1)
+      let printtarget = findtarget(classSettings.resultpage.htbContainer, 1)
         .parentElement.parentElement.parentElement;
       let newtr = document.createElement("tr");
       newtr.setAttribute("class", "pricebreakdown");
@@ -3192,7 +3150,7 @@ function readItinerary(doReplace) {
   //console.log(currentItin); //Remove to see flightstructure
   // lets do the time-replacement
   if (replacementsold.length > 0 && doReplace === true) {
-    const target = findtarget(classSettings.resultpage["itin"], 1)
+    const target = findtarget(classSettings.resultpage.itin, 1)
       .nextElementSibling;
     for (i = 0; i < replacementsold.length; i++) {
       re = new RegExp(replacementsold[i], "g");
@@ -3231,25 +3189,20 @@ function printCPM() {
 
 // **** START AMADEUS ****
 function getAmadeusUrl(config) {
-  // Do some checks here
-  if (config === null && typeof config !== "object") {
-    config = new Object();
-    config["sepcabin"] = 1;
-    config["detailed"] = 0;
-    config["inctimes"] = 1;
-    config["enablesegskip"] = 1;
-    config["allowpremium"] = 1;
-  }
-  config["sepcabin"] =
-    config["sepcabin"] === undefined ? 1 : config["sepcabin"];
-  config["detailed"] =
-    config["detailed"] === undefined ? 0 : config["detailed"];
-  config["inctimes"] =
-    config["inctimes"] === undefined ? 1 : config["inctimes"];
-  config["enablesegskip"] =
-    config["enablesegskip"] === undefined ? 1 : config["enablesegskip"];
-  config["allowpremium"] =
-    config["allowpremium"] === undefined ? 1 : config["allowpremium"];
+  config = config || {
+    sepcabin: 1,
+    detailed: 0,
+    inctimes: 1,
+    enablesegskip: 1,
+    allowpremium: 1
+  };
+  config.sepcabin = config.sepcabin === undefined ? 1 : config.sepcabin;
+  config.detailed = config.detailed === undefined ? 0 : config.detailed;
+  config.inctimes = config.inctimes === undefined ? 1 : config.inctimes;
+  config.enablesegskip =
+    config.enablesegskip === undefined ? 1 : config.enablesegskip;
+  config.allowpremium =
+    config.allowpremium === undefined ? 1 : config.allowpremium;
   var curleg = 0;
   var lastcabin = 0;
   var curseg = 0;
@@ -3258,7 +3211,7 @@ function getAmadeusUrl(config) {
   var url = "";
   var lastarrtime = "";
   var cabins = ["E", "N", "B", "F"];
-  cabins[1] = config["allowpremium"] != 1 ? cabins[0] : cabins[1];
+  cabins[1] = config.allowpremium != 1 ? cabins[0] : cabins[1];
   //Build multi-city search based on legs
   for (var i = 0; i < currentItin.itin.length; i++) {
     curseg = 3; // need to toggle segskip on first leg
@@ -3273,7 +3226,7 @@ function getAmadeusUrl(config) {
           currentItin.itin[i].seg[j + k].fnr !=
             currentItin.itin[i].seg[j + k + 1].fnr ||
           currentItin.itin[i].seg[j + k].layoverduration >= 1440 ||
-          config["enablesegskip"] == 0
+          config.enablesegskip == 0
         )
           break;
         k++;
@@ -3281,8 +3234,7 @@ function getAmadeusUrl(config) {
       curseg++;
       if (
         curseg > 3 ||
-        (currentItin.itin[i].seg[j].cabin != lastcabin &&
-          config["sepcabin"] == 1)
+        (currentItin.itin[i].seg[j].cabin != lastcabin && config.sepcabin == 1)
       ) {
         if (lastdest != "") {
           //close prior flight
@@ -3299,10 +3251,10 @@ function getAmadeusUrl(config) {
           "=" +
           currentItin.itin[i].seg[j].dep.year +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
-          (config["inctimes"] == 1
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
+          (config.inctimes == 1
             ? (
-                "0" + currentItin.itin[i].seg[j].dep["time"].replace(":", "")
+                "0" + currentItin.itin[i].seg[j].dep.time.replace(":", "")
               ).slice(-4)
             : "0000");
         url +=
@@ -3313,13 +3265,13 @@ function getAmadeusUrl(config) {
       lastarrtime =
         currentItin.itin[i].seg[j + k].arr.year +
         ("0" + currentItin.itin[i].seg[j + k].arr.month).slice(-2) +
-        ("0" + currentItin.itin[i].seg[j + k].arr["day"]).slice(-2) +
-        (config["inctimes"] == 1
+        ("0" + currentItin.itin[i].seg[j + k].arr.day).slice(-2) +
+        (config.inctimes == 1
           ? (
-              "0" + currentItin.itin[i].seg[j + k].arr["time"].replace(":", "")
+              "0" + currentItin.itin[i].seg[j + k].arr.time.replace(":", "")
             ).slice(-4)
           : "0000");
-      if (config["detailed"] === 1) {
+      if (config.detailed === 1) {
         url +=
           "&B_LOCATION_" +
           curleg +
@@ -3342,10 +3294,10 @@ function getAmadeusUrl(config) {
           "=" +
           currentItin.itin[i].seg[j].dep.year +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
-          (config["inctimes"] == 1
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
+          (config.inctimes == 1
             ? (
-                "0" + currentItin.itin[i].seg[j].dep["time"].replace(":", "")
+                "0" + currentItin.itin[i].seg[j].dep.time.replace(":", "")
               ).slice(-4)
             : "0000");
         url +=
@@ -3408,21 +3360,17 @@ function getAmadeusUrl(config) {
   return url;
 }
 function getAmadeusPax(pax, config) {
-  // Do some checks here
-  if (config === null && typeof config !== "object") {
-    config = new Object();
-    config["allowinf"] = 1;
-    config["youthage"] = 0;
-  }
-  config["allowinf"] =
-    config["allowinf"] === undefined ? 1 : config["allowinf"];
-  config["youthage"] =
-    config["sepyouth"] === undefined ? 0 : config["sepyouth"];
+  config = config || {
+    allowinf: 1,
+    youthage: 0
+  };
+  config.allowinf = config.allowinf === undefined ? 1 : config.allowinf;
+  config.youthage = config.sepyouth === undefined ? 0 : config.sepyouth;
   var tmpPax = { c: 0, y: 0 };
   var curPax = 1;
   var url = "&IS_PRIMARY_TRAVELLER_1=True";
   for (let i = 0; i < pax.children.length; i++) {
-    if (pax.children[i] >= config["youthage"] && config["youthage"] > 0) {
+    if (pax.children[i] >= config.youthage && config.youthage > 0) {
       tmpPax.y++;
     } else if (pax.children[i] >= 12) {
       pax.adults++;
@@ -3436,7 +3384,7 @@ function getAmadeusPax(pax, config) {
       "&HAS_INFANT_" +
       curPax +
       "=" +
-      (i < pax.infLap && config["allowinf"] == 1 ? "True" : "False");
+      (i < pax.infLap && config.allowinf == 1 ? "True" : "False");
     url += "&IS_YOUTH_" + curPax + "=False";
     curPax++;
   }
@@ -3503,12 +3451,12 @@ function printAA() {
           "-" +
           ("0" + currentItin.itin[i].seg[j + k].arr.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j + k].arr["day"]).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j + k].arr.day).slice(-2) +
           "T" +
-          ("0" + currentItin.itin[i].seg[j + k].arr["time"]).slice(-5) +
-          (typeof currentItin.itin[i].seg[j + k].arr["offset"] == "undefined"
+          ("0" + currentItin.itin[i].seg[j + k].arr.time).slice(-5) +
+          (typeof currentItin.itin[i].seg[j + k].arr.offset == "undefined"
             ? "+00:00"
-            : currentItin.itin[i].seg[j + k].arr["offset"]) +
+            : currentItin.itin[i].seg[j + k].arr.offset) +
           ",";
         seg += currentItin.itin[i].seg[j].bookingclass + ",";
         seg +=
@@ -3516,12 +3464,12 @@ function printAA() {
           "-" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
           "T" +
-          ("0" + currentItin.itin[i].seg[j].dep["time"]).slice(-5) +
-          (typeof currentItin.itin[i].seg[j].dep["offset"] == "undefined"
+          ("0" + currentItin.itin[i].seg[j].dep.time).slice(-5) +
+          (typeof currentItin.itin[i].seg[j].dep.offset == "undefined"
             ? "+00:00"
-            : currentItin.itin[i].seg[j].dep["offset"]) +
+            : currentItin.itin[i].seg[j].dep.offset) +
           ",";
         seg += currentItin.itin[i].seg[j + k].dest + ",";
         seg +=
@@ -3539,7 +3487,7 @@ function printAA() {
         "-" +
         ("0" + currentItin.itin[i].dep.month).slice(-2) +
         "-" +
-        ("0" + currentItin.itin[i].dep["day"]).slice(-2) +
+        ("0" + currentItin.itin[i].dep.day).slice(-2) +
         ",";
       leg += currentItin.itin[i].dest + ",,";
       leg += currentItin.itin[i].orig + ","; // USE , here!
@@ -3651,7 +3599,7 @@ function printAAc1() {
         dateToEpoch(
           currentItin.itin[i].seg[0].dep.year,
           currentItin.itin[i].seg[0].dep.month,
-          currentItin.itin[i].seg[0].dep["day"]
+          currentItin.itin[i].seg[0].dep.day
         );
     }
 
@@ -3672,7 +3620,7 @@ function printAAc1() {
         addon += dateToEpoch(
           currentItin.itin[i].seg[0].dep.year,
           currentItin.itin[i].seg[0].dep.month,
-          currentItin.itin[i].seg[0].dep["day"]
+          currentItin.itin[i].seg[0].dep.day
         );
       }
       url += encodeURIComponent(addon) + ",";
@@ -3712,13 +3660,13 @@ function printAAc1() {
               "-" +
               ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
               "-" +
-              ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
+              ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
               "T" +
-              ("0" + currentItin.itin[i].seg[j].dep["time"]).slice(-5) +
+              ("0" + currentItin.itin[i].seg[j].dep.time).slice(-5) +
               ":00" +
-              (typeof currentItin.itin[i].seg[j].dep["offset"] === "undefined"
+              (typeof currentItin.itin[i].seg[j].dep.offset === "undefined"
                 ? "+00:00"
-                : currentItin.itin[i].seg[j].dep["offset"])
+                : currentItin.itin[i].seg[j].dep.offset)
           );
         itinseg += "|" + i;
         itinsegs.push(itinseg);
@@ -3812,7 +3760,7 @@ function printAC() {
       edition +
       "&countryOfResidence=" +
       edition +
-      (mptSettings["itaLanguage"] == "de" || mptUserSettings.language == "de"
+      (mptSettings.itaLanguage == "de" || mptUserSettings.language == "de"
         ? "&language=de"
         : "&language=en");
     // validate Passengers here: Max Paxcount = 7 (Infs not included) - >11 = Adult - InfSeat = Child
@@ -3841,7 +3789,7 @@ function printAC() {
         "&departure" +
         (i + 1) +
         "=" +
-        ("0" + currentItin.itin[i].dep["day"]).slice(-2) +
+        ("0" + currentItin.itin[i].dep.day).slice(-2) +
         "/" +
         ("0" + currentItin.itin[i].dep.month).slice(-2) +
         "/" +
@@ -3904,10 +3852,10 @@ function printAF() {
           "-" +
           ("0" + currentItin.itin[i].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].dep.day).slice(-2);
         afUrl +=
           "&firstOutboundHour=" +
-          ("0" + currentItin.itin[i].dep["time"]).slice(-5);
+          ("0" + currentItin.itin[i].dep.time).slice(-5);
 
         let flights = "";
         for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
@@ -3924,10 +3872,9 @@ function printAF() {
           "-" +
           ("0" + currentItin.itin[i].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].dep.day).slice(-2);
         afUrl +=
-          "&firstInboundHour=" +
-          ("0" + currentItin.itin[i].dep["time"]).slice(-5);
+          "&firstInboundHour=" + ("0" + currentItin.itin[i].dep.time).slice(-5);
 
         let flights = "";
         for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
@@ -3989,7 +3936,7 @@ function printAF() {
     return afUrl;
   };
   // get edition
-  var edition = mptUserSettings["afEdition"];
+  var edition = mptUserSettings.afEdition;
   var url = createUrl(edition);
   if (url === false) {
     return false;
@@ -4052,7 +3999,7 @@ function printAS() {
           "|" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "/" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2);
         itinseg += "/" + currentItin.itin[i].seg[j].dep.year;
         itinseg += "|" + currentItin.itin[i].seg[j].fnr + "|";
         itinseg += currentItin.itin[i].seg[j].cabin ? "f" : "c";
@@ -4104,9 +4051,9 @@ function printAZ() {
           "-" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
           ":" +
-          ("0" + currentItin.itin[i].seg[j].dep["time"]).slice(-5);
+          ("0" + currentItin.itin[i].seg[j].dep.time).slice(-5);
         azUrl +=
           "&MetaSearchDestinations[" +
           seg +
@@ -4115,9 +4062,9 @@ function printAZ() {
           "-" +
           ("0" + currentItin.itin[i].seg[j].arr.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].arr["day"]).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].arr.day).slice(-2) +
           ":" +
-          ("0" + currentItin.itin[i].seg[j].arr["time"]).slice(-5);
+          ("0" + currentItin.itin[i].seg[j].arr.time).slice(-5);
         azUrl +=
           "&MetaSearchDestinations[" +
           seg +
@@ -4242,10 +4189,10 @@ function printBA() {
           k++;
         }
         url +=
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           currentItin.itin[i].seg[j].dep.year +
-          ("0" + currentItin.itin[i].seg[j].dep["time"].replace(":", "")).slice(
+          ("0" + currentItin.itin[i].seg[j].dep.time.replace(":", "")).slice(
             -4
           );
         url +=
@@ -4388,7 +4335,7 @@ function printDL() {
       "http://" +
       edition[0] +
       ".delta.com/air-shopping/priceTripAction.action?ftw_reroute=true&tripType=multiCity";
-    deltaURL += "&currencyCd=" + (currentItin["cur"] == "EUR" ? "EUR" : "USD");
+    deltaURL += "&currencyCd=" + (currentItin.cur == "EUR" ? "EUR" : "USD");
     deltaURL += "&exitCountry=" + edition[1];
     var segcounter = 0;
     for (var i = 0; i < currentItin.itin.length; i++) {
@@ -4556,7 +4503,7 @@ function printIB() {
           "-" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2);
         url += "&FlightNumber" + seg + "=" + currentItin.itin[i].seg[j].fnr;
         url +=
           "&BookingCode" + seg + "=" + currentItin.itin[i].seg[j].bookingclass;
@@ -4639,7 +4586,7 @@ function printKL() {
         "-" +
         ("0" + currentItin.itin[i].dep.month).slice(-2) +
         "-" +
-        ("0" + currentItin.itin[i].dep["day"]).slice(-2);
+        ("0" + currentItin.itin[i].dep.day).slice(-2);
       if (i > 0) oper += "..";
       for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
         klUrl +=
@@ -4656,14 +4603,14 @@ function printKL() {
           "-" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2);
         klUrl +=
           "&c[" +
           i +
           "].s[" +
           j +
           "].dt=" +
-          ("0" + currentItin.itin[i].seg[j].dep["time"].replace(":", "")).slice(
+          ("0" + currentItin.itin[i].seg[j].dep.time.replace(":", "")).slice(
             -4
           );
         klUrl +=
@@ -4681,9 +4628,9 @@ function printKL() {
       }
     }
 
-    for (var i = 0; i < currentItin["farebases"].length; i++) {
+    for (var i = 0; i < currentItin.farebases.length; i++) {
       if (i > 0) fb += ",";
-      fb += currentItin["farebases"][i];
+      fb += currentItin.farebases[i];
     }
 
     klUrl += "&ref=fb=" + fb; //+',oper='+oper;
@@ -5131,7 +5078,7 @@ function printPS() {
           "-" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2);
         url += "&FlightNumber" + seg + "=" + currentItin.itin[i].seg[j].fnr;
         url +=
           "&BookingCode" + seg + "=" + currentItin.itin[i].seg[j].bookingclass;
@@ -5872,7 +5819,7 @@ function printMomondo() {
         "-" +
         ("0" + currentItin.itin[i].dep.month).slice(-2) +
         "-" +
-        ("0" + currentItin.itin[i].dep["day"]).slice(-2) +
+        ("0" + currentItin.itin[i].dep.day).slice(-2) +
         "/";
 
       for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
@@ -5947,7 +5894,7 @@ function printKayak(method) {
           "-" +
           ("0" + currentItin.itin[i].dep.month).slice(-2) +
           "-" +
-          ("0" + currentItin.itin[i].dep["day"]).slice(-2);
+          ("0" + currentItin.itin[i].dep.day).slice(-2);
         segsize++;
       }
       for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
@@ -5971,7 +5918,7 @@ function printKayak(method) {
             "-" +
             ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
             "-" +
-            ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2);
+            ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2);
           j += k;
           segsize++;
         }
@@ -6185,7 +6132,7 @@ function bindSeatguru() {
           "&date=" +
           ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
           "%2F" +
-          ("0" + currentItin.itin[i].seg[j].dep["day"]).slice(-2) +
+          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
           "%2F" +
           currentItin.itin[i].seg[j].dep.year +
           "&to=&from=" +
@@ -6425,7 +6372,7 @@ function bindLinkClicks() {
   }
   var links = container.getElementsByTagName("a");
   /*
-  if (typeof(currentItin.itin[0].dep["offset"])==="undefined") {
+  if (typeof(currentItin.itin[0].dep.offset)==="undefined") {
     links[linkid].onclick=function () {
       resolveTimezones();
     };
@@ -6466,7 +6413,7 @@ function printItemInline(text, desc, nth) {
 }
 function printImageInline(src, url, nth) {
   const div = getSidebarContainer(nth).parentElement;
-  if (mptUserSettings["enableIMGautoload"] == 1) {
+  if (mptUserSettings.enableIMGautoload == 1) {
     div.innerHTML =
       div.innerHTML +
       (url
@@ -6506,20 +6453,19 @@ function getSidebarContainer(nth) {
   var div =
     !nth || nth >= 4
       ? document.getElementById("powertoolslinkinlinecontainer")
-      : findtarget(classSettings.resultpage["mcHeader"], nth)
-          .nextElementSibling;
+      : findtarget(classSettings.resultpage.mcHeader, nth).nextElementSibling;
   return div || createUrlContainerInline();
 }
 function createUrlContainerInline() {
   var newdiv = document.createElement("div");
-  newdiv.setAttribute("class", classSettings.resultpage["mcDiv"]);
+  newdiv.setAttribute("class", classSettings.resultpage.mcDiv);
   newdiv.innerHTML =
     '<div class="' +
-    classSettings.resultpage["mcHeader"] +
+    classSettings.resultpage.mcHeader +
     '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
-    classSettings.resultpage["mcLinkList"] +
+    classSettings.resultpage.mcLinkList +
     '"></ul>';
-  findtarget(classSettings.resultpage["mcDiv"], 1).parentElement.appendChild(
+  findtarget(classSettings.resultpage.mcDiv, 1).parentElement.appendChild(
     newdiv
   );
   return document.getElementById("powertoolslinkinlinecontainer");
@@ -6564,7 +6510,7 @@ function createUrlContainer() {
   newdiv.setAttribute("id", "powertoolslinkcontainer");
   newdiv.setAttribute("style", "margin:15px 0px 0px 10px");
   findtarget(
-    classSettings.resultpage["htbContainer"],
+    classSettings.resultpage.htbContainer,
     1
   ).parentElement.parentElement.parentElement.appendChild(newdiv);
 }
