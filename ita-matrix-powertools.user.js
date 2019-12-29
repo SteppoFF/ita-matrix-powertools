@@ -869,7 +869,7 @@ function createUsersettings() {
     mptSettings.version +
     ') <div id="mptCabintoggler" style="display:inline-block;">(Cabin: <label id="mptCabinMode" style="width:30px;text-align:center;cursor:pointer;display:inline-block">Auto</label>)</div></div><div id="mptSettings" class="invis" style="display:none;border-top: 1px dotted grey;"></div><div id="mptPassengers" class="invis" style="display:none;border-top: 1px dotted grey;"></div>';
   var target = document.getElementById("contentwrapper");
-  target.parentNode.insertBefore(settingscontainer, target);
+  target.parentElement.insertBefore(settingscontainer, target);
   document.getElementById("settingsVisToggler").onclick = function() {
     toggleVis(document.getElementById("mptSettings"));
   };
@@ -1500,21 +1500,21 @@ function toggleSettings(target) {
       }
       break;
     case "afEdition":
-      var pos = findPositionForValue(mptUserSettings["afEdition"], afEditions);
+      var pos = findPositionForValue(mptUserSettings.afEdition, afEditions);
       if (pos >= afEditions.length - 1 || pos === -1) {
-        mptUserSettings["afEdition"] = afEditions[0].value;
+        mptUserSettings.afEdition = afEditions[0].value;
       } else {
         pos++;
-        mptUserSettings["afEdition"] = afEditions[pos].value;
+        mptUserSettings.afEdition = afEditions[pos].value;
       }
       break;
     case "azEdition":
-      var pos = findPositionForValue(mptUserSettings["azEdition"], azEditions);
+      var pos = findPositionForValue(mptUserSettings.azEdition, azEditions);
       if (pos >= azEditions.length - 1 || pos === -1) {
-        mptUserSettings["azEdition"] = azEditions[0].value;
+        mptUserSettings.azEdition = azEditions[0].value;
       } else {
         pos++;
-        mptUserSettings["azEdition"] = azEditions[pos].value;
+        mptUserSettings.azEdition = azEditions[pos].value;
       }
       break;
     case "baLanguage":
@@ -1660,7 +1660,7 @@ function toggleSettings(target) {
   }
   document.getElementById(
     "mpt" + target
-  ).firstChild.nextSibling.textContent = printSettingsvalue(target);
+  ).firstElementChild.innerHTML = printSettingsvalue(target);
   if (mptSettings.scriptEngine === 1) {
     GM.setValue("mptUserSettings", JSON.stringify(mptUserSettings));
   }
@@ -1793,7 +1793,7 @@ function findPositionForValue(needle, haystack) {
 }
 function printNotification(text) {
   // log the text to the browser's developer console:
-  console.log(text);
+  text !== "empty" && console.log(text);
   // display for user:
   var target = document.getElementById("mtpNotification");
   if (target === null) {
@@ -2016,13 +2016,13 @@ function findItinTarget(leg, seg, tcell) {
   }
 
   // go to leg
-  var targetLeg = target.nextSibling.nextSibling.childNodes[leg - 1];
+  var targetLeg = target.nextElementSibling.children[leg - 1];
   if (targetLeg === undefined) {
     printNotification("Error: Leg not found in findItinTarget-function");
     return;
   }
   // go to segments of leg
-  var targetSeg = targetLeg.childNodes[1].childNodes;
+  var targetSeg = targetLeg.children[1].children;
   if (targetSeg.length >= 2) {
     // go to desired segment
     var index = 0;
@@ -2096,7 +2096,7 @@ function findItinTarget(leg, seg, tcell) {
         printNotification("Error: Unknown Target in findItinTarget-function");
         return;
     }
-    return targetSeg[index + rowoffset].childNodes[columnoffset];
+    return targetSeg[index + rowoffset].children[columnoffset];
   } else {
     printNotification("Error: Unknown error in findItinTarget-function");
     return;
@@ -2173,9 +2173,9 @@ function bindEditorMode(dir) {
     // walks each leg
     for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
       // bind/unbind cabin & BC
-      var target = findItinTarget(i + 1, j + 1, "cabin").firstChild;
+      var target = findItinTarget(i + 1, j + 1, "cabin").firstElementChild;
       if (dir === "create") {
-        var tmp = target.textContent;
+        var tmp = target.innerHTML;
         var bc = tmp.substr(tmp.length - 2, 1);
         var cabin = tmp.substr(0, tmp.length - 4);
         var cabins = [
@@ -2202,8 +2202,10 @@ function bindEditorMode(dir) {
           '" style="width:20px;text-align:center">)';
       } else {
         var cabin =
-          target.firstChild.options[target.firstChild.selectedIndex].value;
-        var bc = target.firstChild.nextSibling.nextSibling.value;
+          target.firstElementChild.options[
+            target.firstElementChild.selectedIndex
+          ].value;
+        var bc = target.firstElementChild.nextElementSibling.value;
         var str = cabin + " (" + bc + ")";
       }
       target.innerHTML = str;
@@ -2214,15 +2216,13 @@ function bindEditorMode(dir) {
 //Primary function for extracting flight data from ITA/Matrix
 function fePS() {
   // try to get content
-  if (findtarget(classSettings.resultpage["itin"], 1) === undefined) {
+  const itin = findtarget(classSettings.resultpage["itin"], 1);
+  if (!itin) {
     printNotification("Error: Unable to find Content on result page.");
     return false;
   }
   // retry if itin not loaded
-  if (
-    findtarget(classSettings.resultpage["itin"], 1).parentNode.previousSibling
-      .previousSibling.style.display != "none"
-  ) {
+  if (itin.parentElement.previousElementSibling.style.display != "none") {
     mptSettings.retrycount++;
     if (mptSettings.retrycount > 50) {
       printNotification(
@@ -2257,19 +2257,19 @@ function fePS() {
   //  S&D powertool items
   var elems = findtargets("powertoolsitem");
   for (var i = elems.length - 1; i >= 0; i--) {
-    elems[i].parentNode.removeChild(elems[i]);
+    elems[i].parentElement.removeChild(elems[i]);
   }
   // S&D price breakdown
   var pbd = findtarget("pricebreakdown", 1);
-  if (pbd != undefined) pbd.parentNode.removeChild(pbd);
+  if (pbd != undefined) pbd.parentElement.removeChild(pbd);
 
   // S&D ff-Container
   var ffl = findtarget("ff-links", 1);
-  if (ffl != undefined) ffl.parentNode.removeChild(ffl);
+  if (ffl != undefined) ffl.parentElement.removeChild(ffl);
   var ffpc = findtarget("ff-plancontainer", 1);
-  if (ffpc != undefined) ffpc.parentNode.removeChild(ffpc);
+  if (ffpc != undefined) ffpc.parentElement.removeChild(ffpc);
   var ffrcc = document.getElementById("ff-routingcodescontainer");
-  if (ffrcc != undefined) ffrcc.parentNode.removeChild(ffrcc);
+  if (ffrcc != undefined) ffrcc.parentElement.removeChild(ffrcc);
 
   // Editor mode?
   if (
@@ -2319,7 +2319,7 @@ function fePS() {
     translate(
       "resultpage",
       mptUserSettings.language,
-      findtarget(classSettings.resultpage["itin"], 1).nextSibling.nextSibling
+      findtarget(classSettings.resultpage["itin"], 1).nextElementSibling
     );
   //Add price breakdown
   if (mptUserSettings.enablePricebreakdown == 1) rearrangeprices();
@@ -2350,7 +2350,7 @@ function printLinksContainer() {
   //  S&D powertool items
   var elems = findtargets("powertoolsitem");
   for (var i = elems.length - 1; i >= 1; i--) {
-    elems[i].parentNode.removeChild(elems[i]);
+    elems[i].parentElement.removeChild(elems[i]);
   }
   /*** Print Timezone***/
   /*
@@ -2474,18 +2474,17 @@ function bindRulelinks() {
   var i = 0;
   var j = 0;
   var t = 1;
-  let target;
-  target = findtarget(classSettings.resultpage["rulescontainer"], t);
+  let target = findtarget(classSettings.resultpage["rulescontainer"], t);
   if (target != undefined) {
     do {
       var current = Number(
-        target.firstChild.textContent.replace(/[^\d]/gi, "")
+        target.firstElementChild.innerHTML.replace(/[^\d]/gi, "")
       );
       if (i > current) {
         j++;
         i = 0;
       }
-      target = target.nextSibling.nextSibling.nextSibling;
+      target = target.nextElementSibling.nextElementSibling.nextElementSibling;
       var targeturl =
         window.location.href.replace(/view-details/, "view-rules") +
         ";fare-key=" +
@@ -2498,7 +2497,7 @@ function bindRulelinks() {
       newlink.setAttribute("target", "_blank");
       var linkText = document.createTextNode("rules");
       newlink.appendChild(linkText);
-      target.parentNode.replaceChild(newlink, target);
+      target.parentElement.replaceChild(newlink, target);
       i++;
       t++;
       target = findtarget(classSettings.resultpage["rulescontainer"], t);
@@ -2527,23 +2526,29 @@ function rearrangeprices() {
         basefound = 1;
         //it's a basefare
         var price = Number(
-          target.nextSibling.firstChild.textContent.replace(/[^\d]/gi, "")
+          target.nextElementSibling.firstElementChild.innerHTML.replace(
+            /[^\d]/gi,
+            ""
+          )
         );
         if (cur == "")
-          cur = target.nextSibling.firstChild.textContent.replace(
+          cur = target.nextElementSibling.firstElementChild.innerHTML.replace(
             /[\d,.]/g,
             ""
           );
         basefares += price;
       } else if (basefound == 1 && type == 3) {
         //its a pricenode
-        var name = target.firstChild.textContent;
+        var name = target.firstElementChild.innerHTML;
         var price = Number(
-          target.nextSibling.firstChild.textContent.replace(/[^\d]/gi, "")
+          target.nextElementSibling.firstElementChild.innerHTML.replace(
+            /[^\d]/gi,
+            ""
+          )
         );
         if (
           hasClass(
-            target.nextSibling,
+            target.nextElementSibling,
             classSettings.resultpage["htbGreyBorder"]
           )
         ) {
@@ -2568,7 +2573,10 @@ function rearrangeprices() {
                 .toString()
                 .replace(/\d(?=(\d{3})+\.)/g, "$&,") +
               "</div></td>";
-            target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
+            target.parentElement.parentElement.insertBefore(
+              newtr,
+              target.parentElement
+            );
             var newtr = document.createElement("tr");
             newtr.innerHTML =
               '<td class="' +
@@ -2584,7 +2592,10 @@ function rearrangeprices() {
                 .toString()
                 .replace(/\d(?=(\d{3})+\.)/g, "$&,") +
               "</div></td>";
-            target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
+            target.parentElement.parentElement.insertBefore(
+              newtr,
+              target.parentElement
+            );
             var newtr = document.createElement("tr");
             newtr.innerHTML =
               '<td class="' +
@@ -2600,7 +2611,10 @@ function rearrangeprices() {
                 .toString()
                 .replace(/\d(?=(\d{3})+\.)/g, "$&,") +
               "</div></td>";
-            target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
+            target.parentElement.parentElement.insertBefore(
+              newtr,
+              target.parentElement
+            );
             var newtr = document.createElement("tr");
             newtr.innerHTML =
               '<td class="' +
@@ -2616,7 +2630,10 @@ function rearrangeprices() {
                 .toString()
                 .replace(/\d(?=(\d{3})+\.)/g, "$&,") +
               "</div></td>";
-            target.parentNode.parentNode.insertBefore(newtr, target.parentNode);
+            target.parentElement.parentElement.insertBefore(
+              newtr,
+              target.parentElement
+            );
           } else {
             count++;
             output += '<table style="float:left; margin-right:15px;"><tbody>';
@@ -2696,11 +2713,11 @@ function rearrangeprices() {
   }
   if (mptUserSettings.enableInlineMode == 0) {
     var printtarget = findtarget(classSettings.resultpage["htbContainer"], 1)
-      .parentNode.parentNode.parentNode;
+      .parentElement.parentElement.parentElement;
     var newtr = document.createElement("tr");
     newtr.setAttribute("class", "pricebreakdown");
     newtr.innerHTML = "<td><div>" + output + "</div></td>";
-    printtarget.parentNode.insertBefore(newtr, printtarget);
+    printtarget.parentElement.insertBefore(newtr, printtarget);
   }
 }
 //*** Mileage breakdown ****//
@@ -2711,16 +2728,16 @@ function printMilesbreakdown() {
     const target = findItinTarget(1, 1, "headline");
     target.innerHTML =
       target.innerHTML.replace(
-        target.firstChild.className,
-        target.firstChild.className + '" style="display:inline-block'
+        target.firstElementChild.className,
+        target.firstElementChild.className + '" style="display:inline-block'
       ) +
       '<div id="loadmileage" class="' +
-      target.firstChild.className +
+      target.firstElementChild.className +
       '" style="display:inline-block;cursor:pointer;float:right;">Load mileage</div>';
     document.getElementById("loadmileage").onclick = function() {
       document
         .getElementById("loadmileage")
-        .parentNode.removeChild(document.getElementById("loadmileage"));
+        .parentElement.removeChild(document.getElementById("loadmileage"));
       retrieveMileages();
     };
   }
@@ -2861,8 +2878,8 @@ function printMileages() {
       let target = findItinTarget(i + 1, 1, "headline");
       target.innerHTML =
         target.innerHTML.replace(
-          target.firstChild.className,
-          target.firstChild.className + '" style="display:inline-block'
+          target.firstElementChild.className,
+          target.firstElementChild.className + '" style="display:inline-block'
         ) +
         '<div style="display:inline-block;float:right;"> ' +
         currentItin.itin[i].dist +
@@ -2873,8 +2890,9 @@ function printMileages() {
           target = findItinTarget(i + 1, j + 1, "airportsdate");
           target.innerHTML =
             target.innerHTML.replace(
-              target.firstChild.className,
-              target.firstChild.className + '" style="display:inline-block'
+              target.firstElementChild.className,
+              target.firstElementChild.className +
+                '" style="display:inline-block'
             ) +
             '<div style="display:inline-block;float:right;margin-right:110px;"> ' +
             currentItin.itin[i].seg[j].dist +
@@ -2916,22 +2934,22 @@ function printMileages() {
     if (findtarget("pricebreakdown", 1) === undefined) {
       // create container
       let printtarget = findtarget(classSettings.resultpage["htbContainer"], 1)
-        .parentNode.parentNode.parentNode;
+        .parentElement.parentElement.parentElement;
       let newtr = document.createElement("tr");
       newtr.setAttribute("class", "pricebreakdown");
       newtr.innerHTML =
         '<td><div><table style="float:left; margin-right:15px;">' +
         output +
         "</table></div></td>";
-      printtarget.parentNode.insertBefore(newtr, printtarget);
+      printtarget.parentElement.insertBefore(newtr, printtarget);
     } else {
       // add to existing container
-      let printtarget = findtarget("pricebreakdown", 1).firstChild.firstChild
-        .firstChild;
+      let printtarget = findtarget("pricebreakdown", 1).firstElementChild
+        .firstElementChild.firstElementChild;
       let newtable = document.createElement("table");
       newtable.setAttribute("style", "float:left; margin-right:15px;");
       newtable.innerHTML = output;
-      printtarget.parentNode.insertBefore(newtable, printtarget);
+      printtarget.parentElement.insertBefore(newtable, printtarget);
     }
   }
 }
@@ -3111,7 +3129,7 @@ function readItinerary(doReplace) {
           ) {
             // found seg for fare
             itin[legnr].seg[segnr].farebase = curfare[2];
-            itin[legnr].seg[segnr]["farecarrier"] = curfare[3];
+            itin[legnr].seg[segnr].farecarrier = curfare[3];
             dirtyFare[i] = curfare[2];
             segnr = itin[legnr].seg.length;
             l = 1;
@@ -3129,7 +3147,7 @@ function readItinerary(doReplace) {
                 //found end attach fares
                 for (var k = segnr; k <= j; k++) {
                   itin[legnr].seg[k].farebase = curfare[2];
-                  itin[legnr].seg[k]["farecarrier"] = curfare[3];
+                  itin[legnr].seg[k].farecarrier = curfare[3];
                   dirtyFare[i] = curfare[2];
                 }
                 j = itin[legnr].seg.length;
@@ -3174,8 +3192,8 @@ function readItinerary(doReplace) {
   //console.log(currentItin); //Remove to see flightstructure
   // lets do the time-replacement
   if (replacementsold.length > 0 && doReplace === true) {
-    const target = findtarget(classSettings.resultpage["itin"], 1).nextSibling
-      .nextSibling;
+    const target = findtarget(classSettings.resultpage["itin"], 1)
+      .nextElementSibling;
     for (i = 0; i < replacementsold.length; i++) {
       re = new RegExp(replacementsold[i], "g");
       target.innerHTML = target.innerHTML.replace(re, replacementsnew[i]);
@@ -4146,7 +4164,7 @@ function printAZ() {
     return azUrl;
   };
   // get edition
-  var edition = mptUserSettings["azEdition"];
+  var edition = mptUserSettings.azEdition;
   var azUrl = createUrl(edition);
   if (azUrl === false) {
     return false;
@@ -6172,11 +6190,11 @@ function bindSeatguru() {
           currentItin.itin[i].seg[j].dep.year +
           "&to=&from=" +
           currentItin.itin[i].seg[j].orig;
-        target.childNodes[0].innerHTML =
+        target.children[0].innerHTML =
           '<a href="' +
           url +
           '" target="_blank" style="text-decoration:none;color:black">' +
-          target.childNodes[0].innerHTML +
+          target.children[0].innerHTML +
           "</a>";
       }
       j += k;
@@ -6209,11 +6227,11 @@ function bindPlanefinder() {
           "http://www.planefinder.net/data/flight/" +
           currentItin.itin[i].seg[j].carrier +
           currentItin.itin[i].seg[j].fnr;
-        target.childNodes[0].innerHTML =
+        target.children[0].innerHTML =
           '<a href="' +
           url +
           '" target="_blank" style="text-decoration:none;color:black">' +
-          target.childNodes[0].innerHTML +
+          target.children[0].innerHTML +
           "</a>";
       }
       j += k;
@@ -6379,7 +6397,7 @@ function bindWheretocredit() {
           currentItin.itin[i].seg[j].carrier.toLowerCase() +
           "/" +
           currentItin.itin[i].seg[j].bookingclass.toLowerCase();
-        target.childNodes[0].innerHTML = target.childNodes[0].innerHTML
+        target.children[0].innerHTML = target.children[0].innerHTML
           .replace(
             /<a.*?\/a>/,
             "(" + currentItin.itin[i].seg[j].bookingclass + ")"
@@ -6447,7 +6465,7 @@ function printItemInline(text, desc, nth) {
     "</li>";
 }
 function printImageInline(src, url, nth) {
-  const div = getSidebarContainer(nth).parentNode;
+  const div = getSidebarContainer(nth).parentElement;
   if (mptUserSettings["enableIMGautoload"] == 1) {
     div.innerHTML =
       div.innerHTML +
@@ -6480,7 +6498,7 @@ function printImageInline(src, url, nth) {
         (url ? "</a>" : "");
       document
         .getElementById(id)
-        .parentNode.replaceChild(newdiv, document.getElementById(id));
+        .parentElement.replaceChild(newdiv, document.getElementById(id));
     };
   }
 }
@@ -6501,7 +6519,7 @@ function createUrlContainerInline() {
     '">Powertools</div><ul id="powertoolslinkinlinecontainer" class="' +
     classSettings.resultpage["mcLinkList"] +
     '"></ul>';
-  findtarget(classSettings.resultpage["mcDiv"], 1).parentNode.appendChild(
+  findtarget(classSettings.resultpage["mcDiv"], 1).parentElement.appendChild(
     newdiv
   );
   return document.getElementById("powertoolslinkinlinecontainer");
@@ -6548,7 +6566,7 @@ function createUrlContainer() {
   findtarget(
     classSettings.resultpage["htbContainer"],
     1
-  ).parentNode.parentNode.parentNode.appendChild(newdiv);
+  ).parentElement.parentElement.parentElement.appendChild(newdiv);
 }
 function printSeperator() {
   var container =
@@ -6571,11 +6589,7 @@ function injectCss() {
     ".pt-hover-menu { position:absolute; padding: 8px; background-color: #FFF; border: 1px solid #808080; display:none; }";
   css += ".pt-hover-container:hover .pt-hover-menu { display:inline; }";
 
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
+  style.appendChild(document.createTextNode(css));
 
   head.appendChild(style);
 }
