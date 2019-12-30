@@ -4,6 +4,5 @@
     "checkJs": true,
     "allowJs": true
   },
-  "include": ["ita-matrix-powertools.user.js"],
-  "exclude": ["node_modules", "script_minified.js"]
+  "include": ["./src/**/*"]
 }

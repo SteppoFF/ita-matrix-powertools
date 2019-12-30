@@ -1,38 +1,3 @@
-// ==UserScript==
-// @name ITA-Matrix-Powertools
-// @namespace https://github.com/SteppoFF/ita-matrix-powertools
-// @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.36.1
-// @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @grant GM.getValue
-// @grant GM_setValue
-// @grant GM.setValue
-// @grant GM_setValue
-// @include http*://matrix.itasoftware.com/*
-// ==/UserScript==
-/*
- Written by paul21, Steppo & IAkH of FlyerTalk.com
- http://www.flyertalk.com/forum/members/paul21.html
- Includes contriutions by 18sas
- Copyright Reserved -- At least share with credit if you do
-*********** Updating this script **************
-Remember to increment the version number in the following two locations:
-1) @version 0.00 (in the userscript header above)
-2) mptSettings.version="0.00" (in the settings section below)
-**** Refer to the changelog file for latest changes ****
-*********** About **************
- --- Resultpage ---
-  # collecting a lot of information in data-var
-  # based on gathered data-var: creating links to different OTAs and other pages
-  # able to transform timeformat into 24h format
-  # able to translate some things
- *********** Hints ***********
-  Unsure about handling of different fares/pax.
-  Unsure about correct usage of cabins while creating links.
-  Unsure about correct usage of farebase-per-leg - usage in order of appearance.
-  Unsure about segment-skipping - should be fine but needs heavy testing.
-*/
-
 /**************************************** Start Script *****************************************/
 // User settings
 var mptUserSettings = {
@@ -84,7 +49,7 @@ var mptUserSettings = {
 // General settings
 var mptSettings = {
   itaLanguage: "en",
-  version: "0.36.1",
+  version: __VERSION__,
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,

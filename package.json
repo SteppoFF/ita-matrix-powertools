@@ -4,19 +4,26 @@
   "description": "Script for greasemonkey + ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
+    "prettier": "pretty-quick --staged",
+    "type-check": "tsc --noEmit",
+    "build": "webpack && npm run minify",
     "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js"
   },
   "dependencies": {
     "@types/greasemonkey": "^4.0.0",
+    "fs": "0.0.1-security",
     "husky": "^3.1.0",
+    "path": "^0.12.7",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
     "typescript": "^3.7.4",
-    "uglify-es": "^3.3.9"
+    "uglify-es": "^3.3.9",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && npm run minify && git add script_minified.js"
+      "pre-commit": "npm run prettier"
     }
   }
 }
