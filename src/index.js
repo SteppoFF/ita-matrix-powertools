@@ -1,49 +1,8 @@
+import { userSettings as mptUserSettings } from "./settings/userSettings";
+import { classSettings } from "./settings/itaSettings";
+import translations from "./settings/translations";
+
 /**************************************** Start Script *****************************************/
-// User settings
-var mptUserSettings = {
-  timeformat: "12h", // replaces times on resultpage - valid: 12h / 24h
-  language: "en", // replaces several items on resultpage - valid: en / de
-  linkFontsize: 100, // fontsize of links - valid: 50-200
-  showAllAirlines: 0, // shows all airline links regardless of search results
-
-  // booleans to toggle specific settings:
-  enableDeviders: 1, // Print deviders in links after group (airlines/otas/other stuff) - valid: 0 / 1
-  enableInlineMode: 0, // enables inline mode - valid: 0 / 1
-  enableEditormode: 0, // prevents the script from automatically parsing the itinerary - valid: 0 / 1
-  enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
-  enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
-  enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
-  enableMilesbreakdown: 1, // enables miles breakdown - valid: 0 / 1
-  enableMilesbreakdownautoload: 0, // enables autoload of miles breakdown - valid: 0 / 1
-  enableMilesInlinemode: 0, // always print miles breakdown inline - valid: 0 / 1
-  enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
-  enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
-  enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
-  //enableFarefreaks:  0, // enables FareFreaks features - valid: 0 / 1
-
-  // Default airline/OTA languages and locale/editions:
-  acEdition: "us", // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"
-  aaEdition: "en_DE", // sets the local edition of AA-Europe/Asia for itinerary pricing - NO US available
-  aac1Edition: "US", // sets the local edition of AA-C1 and UK
-  afEdition: "US/en", // sets the local edition of Air France
-  azEdition: "us_en", // sets the local edition of Alitalia
-  baLanguage: "en", // sets the language of British Airways
-  baEdition: "US", // sets the local edition of British Airways
-  czEdition: "US-GB", // sets the local edition of China Southern
-  dlEdition: "www_us", // sets the local edition of Delta
-  ibEdition: "en-US", // sets the local edition of Iberia
-  klEdition: "us_en", // sets the local edition of KLM
-  laEdition: "en/us", // sets the local edition of LATAM
-  lhEdition: "US-gb", // sets the local edition of Lufthansa
-  lxEdition: "us_en", // sets the local edition of Swiss
-  qfEdition: "EN_US", // sets the local edition of Qantas Airways
-
-  // Default airline/OTA currencies:
-  aac1Currency: "1", // sets the currency of AA-C1 and UK
-  ibCurrency: "USD", // sets the Currency of Iberia (not supported)
-  laCurrency: "USD", // sets the Currency of LATAM (not supported)
-  qfCurrency: "USD" // sets the Currency of Qantas
-};
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 // General settings
@@ -723,27 +682,6 @@ var qfEditions = [
   { value: "EN_US", name: "United States" }
 ];
 
-// ITA Matrix CSS class definitions:
-var classSettings = {
-  startpage: {
-    maindiv: "IR6M2QD-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
-  },
-  resultpage: {
-    itin: "IR6M2QD-v-d", //Container with headline: "Itinerary"
-    itinRow: "IR6M2QD-j-i", // TR in itin with Orig, Dest and date
-    milagecontainer: "IR6M2QD-v-e", // TD-Container on the right
-    rulescontainer: "IR6M2QD-k-d", // First container before rulelinks (the one with Fare X:)
-    htbContainer: "IR6M2QD-k-k", // full "how to buy"-container inner div (td=>div=>div)
-    htbLeft: "IR6M2QD-k-g", // Left column in the "how to buy"-container
-    htbRight: "IR6M2QD-k-f", // Class for normal right column
-    htbGreyBorder: "IR6M2QD-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
-    //inline
-    mcDiv: "IR6M2QD-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-    mcHeader: "IR6M2QD-y-b", // Right menu header class ("Mileage", etc.)
-    mcLinkList: "IR6M2QD-y-c" // Right menu ul list class (immediately following header)
-  }
-};
-
 var matrixCurrencies = [
   { p: /US\$/, c: "USD" },
   { p: /\€/, c: "EUR" },
@@ -751,39 +689,6 @@ var matrixCurrencies = [
   { p: /CA\$/, c: "CAD" },
   { p: /RS\./, c: "INR" }
 ];
-
-// Supported translations for the PowerTools interface:
-var translations = {
-  de: {
-    use: "&Ouml;ffne ",
-    resultpage: {
-      "Dep:": "Abflug:",
-      "Arr:": "Ankunft:",
-      "Layover in": "Umst. in",
-      " to ": " nach ",
-      "Mon,": "Mo.,",
-      "Tue,": "Di.,",
-      "Wed,": "Mi.,",
-      "Thu,": "Do.,",
-      "Fri,": "Fr.,",
-      "Sat,": "Sa.,",
-      "Sun,": "So.,",
-      " Jan ": " Januar ",
-      " Feb ": " Februar ",
-      " Mar ": " M&auml,rz ",
-      " Apr ": " April ",
-      " May ": " Mai ",
-      " Jun ": " Juni ",
-      " Jul ": " Juli ",
-      " Aug ": " August ",
-      " Sep ": " September ",
-      " Oct ": " Oktober ",
-      " Nov ": " November ",
-      " Dec ": " Dezember ",
-      "OPERATED BY ": "Durchgef&uuml,hrt von "
-    }
-  }
-};
 
 // initialize local storage for resolved distances
 var distances = new Object();
