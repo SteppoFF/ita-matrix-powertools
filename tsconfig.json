@@ -2,7 +2,8 @@
   "compilerOptions": {
     "lib": ["dom", "es2015"],
     "checkJs": true,
-    "allowJs": true
+    "allowJs": true,
+    "noEmit": true
   },
   "include": ["./src/**/*"]
 }

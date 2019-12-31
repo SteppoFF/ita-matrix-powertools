@@ -5,7 +5,7 @@
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
     "prettier": "pretty-quick --staged",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc",
     "build": "webpack && npm run minify",
     "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js"
   },
