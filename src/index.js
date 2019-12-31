@@ -1715,43 +1715,6 @@ function findtargets(tclass) {
 function hasClass(element, cls) {
   return (" " + element.className + " ").indexOf(" " + cls + " ") > -1;
 }
-function doHttpRequest(url, options, callback) {
-  if (typeof callback !== "function") {
-    printNotification(
-      "Error: Invalid callback in doHttpRequest -> not a function"
-    );
-    return false;
-  }
-  var xmlHttpObject = null;
-  if (typeof XMLHttpRequest !== "undefined") {
-    xmlHttpObject = new XMLHttpRequest();
-  }
-  if (!xmlHttpObject) {
-    printNotification("Error: Failed to initialize http request");
-    return false;
-  }
-  xmlHttpObject.onreadystatechange = function() {
-    if (xmlHttpObject.readyState == 4 && xmlHttpObject.status == 200) {
-      callback(xmlHttpObject);
-    } else if (xmlHttpObject.readyState == 4 && xmlHttpObject.status != 200) {
-      printNotification("Error: Failed to complete http request");
-      return false;
-    }
-  };
-  if (options.mode == "get") {
-    xmlHttpObject.open("GET", url, true);
-    xmlHttpObject.send();
-  } else if (options.mode == "post") {
-    xmlHttpObject.open("POST", url, true);
-    for (var i = 0; i < options.headers.length; i++) {
-      xmlHttpObject.setRequestHeader(
-        options.headers[i].name,
-        options.headers[i].val
-      );
-    }
-    xmlHttpObject.send(options.data);
-  }
-}
 function findItinTarget(leg, seg, tcell) {
   var target = findtarget(classSettings.resultpage.itin, 1);
   if (!target) {
@@ -5707,42 +5670,6 @@ function bindPlanefinder() {
       j += k;
     }
   }
-}
-
-function getTimezoneData(mode) {
-  var plan = new Array();
-  for (var i = 0; i < currentItin.itin.length; i++) {
-    // walks each leg
-    var segs = new Array();
-    for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-      //walks each segment of leg
-      var seg = {
-        orig: currentItin.itin[i].seg[j].orig,
-        depdatetime:
-          currentItin.itin[i].seg[j].dep.year +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2) +
-          "T" +
-          ("00" + currentItin.itin[i].seg[j].dep.time).slice(-5),
-        dest: mode === "full" ? currentItin.itin[i].seg[j].dest : undefined,
-        arrdatetime:
-          mode === "full"
-            ? currentItin.itin[i].seg[j].arr.year +
-              "-" +
-              ("0" + currentItin.itin[i].seg[j].arr.month).slice(-2) +
-              "-" +
-              ("0" + currentItin.itin[i].seg[j].arr.day).slice(-2) +
-              "T" +
-              ("00" + currentItin.itin[i].seg[j].arr.time).slice(-5)
-            : undefined
-      };
-      segs.push(seg);
-    }
-    plan.push({ segs });
-  }
-  return plan;
 }
 
 function openWheretocredit(link) {
