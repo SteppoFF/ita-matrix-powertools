@@ -1,4 +1,4 @@
-export const userSettings = {
+export default {
   timeformat: "12h", // replaces times on resultpage - valid: 12h / 24h
   language: "en", // replaces several items on resultpage - valid: en / de
   linkFontsize: 100, // fontsize of links - valid: 50-200

@@ -1,3 +1,34 @@
+export function findtarget(tclass, nth) {
+  var elems = document.getElementsByTagName("*"),
+    i;
+  let j = 0;
+  for (i in elems) {
+    if ((" " + elems[i].className + " ").indexOf(" " + tclass + " ") > -1) {
+      j++;
+      if (j == nth) {
+        return elems[i];
+        break;
+      }
+    }
+  }
+}
+
+export function findtargets(tclass) {
+  var elems = document.getElementsByTagName("*"),
+    i;
+  var ret = new Array();
+  for (i in elems) {
+    if ((" " + elems[i].className + " ").indexOf(" " + tclass + " ") > -1) {
+      ret.push(elems[i]);
+    }
+  }
+  return ret;
+}
+
+export function hasClass(element, cls) {
+  return (" " + element.className + " ").indexOf(" " + cls + " ") > -1;
+}
+
 export function printNotification(text) {
   // log the text to the browser's developer console:
   text !== "empty" && console.log(text);

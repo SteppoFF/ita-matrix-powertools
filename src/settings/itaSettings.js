@@ -1,5 +1,5 @@
 // ITA Matrix CSS class definitions:
-export const classSettings = {
+export default {
   startpage: {
     maindiv: "IR6M2QD-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
   },
