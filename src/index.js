@@ -18,7 +18,7 @@ import { klEditions } from "./links/airlines/kl";
 import { laEditions } from "./links/airlines/la";
 import { lhEditions } from "./links/airlines/lh";
 import { lxEditions } from "./links/airlines/lx";
-import { qfEditions } from "./links/airlines/qf";
+import { qfEditions, qfCurrencies } from "./links/airlines/qf";
 
 /**************************************** Start Script *****************************************/
 
@@ -194,12 +194,6 @@ function createUsersettings() {
     '<div style="text-align:center;font-weight:bold">**** Airline Currency: ****</div>';
   str += '<div style="margin:5px 0">';
   str +=
-    '<div id="mptaac1Currency" style="width:33%;float:left;">American (America/UK): <label style="cursor:pointer;">' +
-    printSettingsvalue("aac1Currency") +
-    "</label></div>";
-  //str +='<div id="mptibCurrency" style="width:33%;float:left;">Iberia: <label style="cursor:pointer;">'+printSettingsvalue("ibCurrency")+'</label></div>'; // not supported
-  //str +='<div id="mptlaCurrency" style="width:33%;float:left;">LATAM: <label style="cursor:pointer;">'+printSettingsvalue("laCurrency")+'</label></div>'; // not supported
-  str +=
     '<div id="mptqfCurrency" style="width:33%;float:left;">Qantas Airways: <label style="cursor:pointer;">' +
     printSettingsvalue("qfCurrency") +
     "</label></div>";
@@ -256,9 +250,6 @@ function createUsersettings() {
   };
   document.getElementById("mptaac1Edition").onclick = function() {
     toggleSettings("aac1Edition");
-  };
-  document.getElementById("mptaac1Currency").onclick = function() {
-    toggleSettings("aac1Currency");
   };
   document.getElementById("mptacEdition").onclick = function() {
     toggleSettings("acEdition");
@@ -475,10 +466,6 @@ function createUsersettings() {
         mptSavedUserSettings.aac1Edition === undefined
           ? mptUserSettings.aac1Edition
           : mptSavedUserSettings.aac1Edition;
-      mptUserSettings.aac1Currency =
-        mptSavedUserSettings.aac1Currency === undefined
-          ? mptUserSettings.aac1Currency
-          : mptSavedUserSettings.aac1Currency;
       mptUserSettings.afEdition =
         mptSavedUserSettings.afEdition === undefined
           ? mptUserSettings.afEdition
@@ -730,6 +717,15 @@ function toggleSettings(target) {
         mptUserSettings.qfEdition = qfEditions[pos].value;
       }
       break;
+    case "qfCurrency":
+      var pos = findPositionForValue(mptUserSettings.qfCurrency, qfCurrencies);
+      if (pos >= qfCurrencies.length - 1 || pos === -1) {
+        mptUserSettings.qfCurrency = qfCurrencies[0].value;
+      } else {
+        pos++;
+        mptUserSettings.qfCurrency = qfCurrencies[pos].value;
+      }
+      break;
     case "cabin":
       if (mptSettings.cabin === "Auto") {
         mptSettings.cabin = "Y";
@@ -853,6 +849,9 @@ function printSettingsvalue(target) {
       break;
     case "qfEdition":
       ret = findNameForValue(mptUserSettings.qfEdition, qfEditions);
+      break;
+    case "qfCurrency":
+      ret = findNameForValue(mptUserSettings.qfCurrency, qfCurrencies);
       break;
     default:
       ret = boolToEnabled(mptUserSettings[target]);

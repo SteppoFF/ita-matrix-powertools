@@ -208,7 +208,7 @@ function printIB() {
   };
   // get edition
   var edition = mptUserSettings.ibEdition.split("-");
-  var url = createUrl(edition, mptUserSettings.ibCurrency);
+  var url = createUrl(edition, "USD");
   if (!url) {
     return;
   }
@@ -218,7 +218,7 @@ function printIB() {
     .map(function(obj, i) {
       return (
         '<a href="' +
-        createUrl(obj.value.split("-"), mptUserSettings.ibCurrency) +
+        createUrl(obj.value.split("-"), "USD") +
         '" target="_blank">' +
         obj.name +
         "</a>"

@@ -54,7 +54,7 @@ function printLA() {
         '{"amount":"' +
         currentItin.price +
         '","currency":"' +
-        mptUserSettings.laCurrency +
+        "USD" +
         '","segments":[';
       var mincabin = 3;
       // walks each leg

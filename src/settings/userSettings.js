@@ -33,8 +33,5 @@ export default {
   qfEdition: "EN_US", // sets the local edition of Qantas Airways
 
   // Default airline/OTA currencies:
-  aac1Currency: "1", // sets the currency of AA-C1 and UK
-  ibCurrency: "USD", // sets the Currency of Iberia (not supported)
-  laCurrency: "USD", // sets the Currency of LATAM (not supported)
   qfCurrency: "USD" // sets the Currency of Qantas
 };

@@ -10,6 +10,12 @@ export const qfEditions = [
   { value: "EN_US", name: "United States" }
 ];
 
+export const qfCurrencies = [
+  { value: "AUD", name: "AUD" },
+  { value: "NZD", name: "NZD" },
+  { value: "USD", name: "USD" }
+];
+
 function printQF() {
   if (
     !mptUserSettings.showAllAirlines &&
