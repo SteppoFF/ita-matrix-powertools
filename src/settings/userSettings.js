@@ -11,13 +11,9 @@ export default {
   enableIMGautoload: 0, // enables images to auto load - valid: 0 / 1
   enableFarerules: 1, // enables fare rule opening in new window - valid: 0 / 1
   enablePricebreakdown: 1, // enables price breakdown - valid: 0 / 1
-  enableMilesbreakdown: 1, // enables miles breakdown - valid: 0 / 1
-  enableMilesbreakdownautoload: 0, // enables autoload of miles breakdown - valid: 0 / 1
-  enableMilesInlinemode: 0, // always print miles breakdown inline - valid: 0 / 1
   enablePlanefinder: 1, // enables Planefinder - click on flight numbers to open Planefinder for this flight - valid: 0 / 1
   enableSeatguru: 1, // enables Seatguru - click on plane type to open Seatguru for this flight - valid: 0 / 1
   enableWheretocredit: 1, // enables Wheretocredit - click on booking class to open wheretocredit for this flight - valid: 0 / 1
-  //enableFarefreaks:  0, // enables FareFreaks features - valid: 0 / 1
 
   // Default airline/OTA languages and locale/editions:
   acEdition: "us", // sets the local edition of AirCanada.com for itinerary pricing - valid: "us", "ca", "ar", "au", "ch", "cl", "cn", "co", "de", "dk", "es", "fr", "gb", "hk", "ie", "il", "it", "jp", "mx", "nl", "no", "pa", "pe", "se"

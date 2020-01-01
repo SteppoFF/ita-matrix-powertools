@@ -24,9 +24,6 @@ import { qfEditions } from "./links/airlines/qf";
 
 // *** DO NOT CHANGE BELOW THIS LINE***/
 
-// initialize local storage for resolved distances
-var distances = new Object();
-
 function startScript() {
   if (window.location.href !== mptSettings.laststatus) {
     setTimeout(function() {
@@ -109,30 +106,17 @@ function createUsersettings() {
     '<div id="mptenableEditormode">Editor mode: <label style="cursor:pointer;">' +
     printSettingsvalue("enableEditormode") +
     "</label></div>";
-  str += '</div><div style="float:left;width:25%">';
-  str +=
-    '<div id="mptenableMilesbreakdown">Miles breakdown: <label style="cursor:pointer;">' +
-    printSettingsvalue("enableMilesbreakdown") +
-    "</label></div>";
-  str +=
-    '<div id="mptenableMilesbreakdownautoload">Miles breakdown autoload: <label style="cursor:pointer;">' +
-    printSettingsvalue("enableMilesbreakdownautoload") +
-    "</label></div>";
-  str +=
-    '<div id="mptenableMilesInlinemode">Print miles breakdown inline: <label style="cursor:pointer;">' +
-    printSettingsvalue("enableMilesInlinemode") +
-    "</label></div>";
-  str += '</div><div style="float:left;width:25%">';
+  str += '</div><div style="float:left;width:33%">';
+  str += '</div><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableIMGautoload">Images autoload: <label style="cursor:pointer;">' +
     printSettingsvalue("enableIMGautoload") +
     "</label></div>";
+  str += '</div><div style="float:left;width:33%">';
   str +=
     '<div id="mptenableWheretocredit">Enable WhereToCredit: <label style="cursor:pointer;">' +
     printSettingsvalue("enableWheretocredit") +
     "</label></div>";
-  //str +='<div id="mptenableFarefreaks">Enable FareFreaks: <label style="cursor:pointer;">'+printSettingsvalue("enableFarefreaks")+'</label></div>';
-  str += '</div><div style="float:left;width:25%">';
   str +=
     '<div id="mptenablePlanefinder">Enable Planefinder: <label style="cursor:pointer;">' +
     printSettingsvalue("enablePlanefinder") +
@@ -252,22 +236,11 @@ function createUsersettings() {
   document.getElementById("mptenablePricebreakdown").onclick = function() {
     toggleSettings("enablePricebreakdown");
   };
-  document.getElementById("mptenableMilesbreakdown").onclick = function() {
-    toggleSettings("enableMilesbreakdown");
-  };
   document.getElementById("mptlinkFontsize").onclick = function() {
     toggleSettings("linkFontsize");
   };
   document.getElementById("mptshowAllAirlines").onclick = function() {
     toggleSettings("showAllAirlines");
-  };
-  document.getElementById(
-    "mptenableMilesbreakdownautoload"
-  ).onclick = function() {
-    toggleSettings("enableMilesbreakdownautoload");
-  };
-  document.getElementById("mptenableMilesInlinemode").onclick = function() {
-    toggleSettings("enableMilesInlinemode");
   };
   document.getElementById("mptenablePlanefinder").onclick = function() {
     toggleSettings("enablePlanefinder");
@@ -278,7 +251,6 @@ function createUsersettings() {
   document.getElementById("mptenableWheretocredit").onclick = function() {
     toggleSettings("enableWheretocredit");
   };
-  //document.getElementById('mptenableFarefreaks').onclick=function(){toggleSettings("enableFarefreaks");};
   document.getElementById("mptaaEdition").onclick = function() {
     toggleSettings("aaEdition");
   };
@@ -471,18 +443,6 @@ function createUsersettings() {
         mptSavedUserSettings.enablePricebreakdown === undefined
           ? mptUserSettings.enablePricebreakdown
           : mptSavedUserSettings.enablePricebreakdown;
-      mptUserSettings.enableMilesbreakdown =
-        mptSavedUserSettings.enableMilesbreakdown === undefined
-          ? mptUserSettings.enableMilesbreakdown
-          : mptSavedUserSettings.enableMilesbreakdown;
-      mptUserSettings.enableMilesbreakdownautoload =
-        mptSavedUserSettings.enableMilesbreakdownautoload === undefined
-          ? mptUserSettings.enableMilesbreakdownautoload
-          : mptSavedUserSettings.enableMilesbreakdownautoload;
-      mptUserSettings.enableMilesInlinemode =
-        mptSavedUserSettings.enableMilesInlinemode === undefined
-          ? mptUserSettings.enableMilesInlinemode
-          : mptSavedUserSettings.enableMilesInlinemode;
       mptUserSettings.linkFontsize =
         mptSavedUserSettings.linkFontsize === undefined
           ? mptUserSettings.linkFontsize
@@ -503,7 +463,6 @@ function createUsersettings() {
         mptSavedUserSettings.enableWheretocredit === undefined
           ? mptUserSettings.enableWheretocredit
           : mptSavedUserSettings.enableWheretocredit;
-      //mptUserSettings.enableFarefreaks = (mptSavedUserSettings.enableFarefreaks === undefined ? mptUserSettings.enableFarefreaks : mptSavedUserSettings.enableFarefreaks);
       mptUserSettings.acEdition =
         mptSavedUserSettings.acEdition === undefined
           ? mptUserSettings.acEdition
@@ -1244,8 +1203,6 @@ function fePS() {
   /*** inline binding ***/
   if (mptUserSettings.enableSeatguru == 1) bindSeatguru();
   if (mptUserSettings.enablePlanefinder == 1) bindPlanefinder();
-  if (mptUserSettings.enableMilesbreakdown == 1 && typeof JSON !== "undefined")
-    printMilesbreakdown();
   if (mptUserSettings.enableWheretocredit == 1) bindWheretocredit();
 }
 
@@ -1498,203 +1455,6 @@ function rearrangeprices() {
     newtr.setAttribute("class", "pricebreakdown");
     newtr.innerHTML = "<td><div>" + output + "</div></td>";
     printtarget.parentElement.insertBefore(newtr, printtarget);
-  }
-}
-//*** Mileage breakdown ****//
-function printMilesbreakdown() {
-  if (mptUserSettings.enableMilesbreakdownautoload == 1) {
-    retrieveMileages();
-  } else {
-    const target = findItinTarget(1, 1, "headline");
-    target.innerHTML =
-      target.innerHTML.replace(
-        target.firstElementChild.className,
-        target.firstElementChild.className + '" style="display:inline-block'
-      ) +
-      '<div id="loadmileage" class="' +
-      target.firstElementChild.className +
-      '" style="display:inline-block;cursor:pointer;float:right;">Load mileage</div>';
-    document.getElementById("loadmileage").onclick = function() {
-      document
-        .getElementById("loadmileage")
-        .parentElement.removeChild(document.getElementById("loadmileage"));
-      retrieveMileages();
-    };
-  }
-}
-function retrieveMileages() {
-  // collect all airport cominations
-  var routes = new Object();
-  var params = "";
-  for (var i = 0; i < currentItin.itin.length; i++) {
-    // walks each leg
-    for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-      //walks each segment of leg
-      // check if data is localy stored or already part of current task
-      if (
-        distances[
-          currentItin.itin[i].seg[j].orig + currentItin.itin[i].seg[j].dest
-        ] === undefined &&
-        distances[
-          currentItin.itin[i].seg[j].dest + currentItin.itin[i].seg[j].orig
-        ] === undefined &&
-        routes[
-          currentItin.itin[i].seg[j].orig + currentItin.itin[i].seg[j].dest
-        ] === undefined &&
-        routes[
-          currentItin.itin[i].seg[j].dest + currentItin.itin[i].seg[j].orig
-        ] === undefined
-      ) {
-        routes[
-          currentItin.itin[i].seg[j].orig + currentItin.itin[i].seg[j].dest
-        ] =
-          currentItin.itin[i].seg[j].orig +
-          "-" +
-          currentItin.itin[i].seg[j].dest;
-      }
-    }
-  }
-  //build request
-  for (let i in routes) {
-    params += (params === "" ? "" : "&") + "r[]=" + routes[i];
-  }
-  if (params === "") {
-    //no request needed.. call final print function
-    printMileages();
-    return false;
-  }
-}
-function printMileages() {
-  var legdistance = 0;
-  for (var i = 0; i < currentItin.itin.length; i++) {
-    // walks each leg
-    for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-      //walks each segment of leg
-      // check if data is localy stored
-      if (
-        distances[
-          currentItin.itin[i].seg[j].orig + currentItin.itin[i].seg[j].dest
-        ] === undefined &&
-        distances[
-          currentItin.itin[i].seg[j].dest + currentItin.itin[i].seg[j].orig
-        ] === undefined
-      ) {
-        printNotification(
-          "Error: Missing route data for " +
-            currentItin.itin[i].seg[j].orig +
-            " => " +
-            currentItin.itin[i].seg[j].dest
-        );
-        return false;
-      } else if (
-        distances[
-          currentItin.itin[i].seg[j].orig + currentItin.itin[i].seg[j].dest
-        ] !== undefined &&
-        distances[
-          currentItin.itin[i].seg[j].dest + currentItin.itin[i].seg[j].orig
-        ] === undefined
-      ) {
-        currentItin.itin[i].seg[j].dist =
-          distances[
-            currentItin.itin[i].seg[j].orig + currentItin.itin[i].seg[j].dest
-          ];
-      } else {
-        currentItin.itin[i].seg[j].dist =
-          distances[
-            currentItin.itin[i].seg[j].dest + currentItin.itin[i].seg[j].orig
-          ];
-      }
-      legdistance += currentItin.itin[i].seg[j].dist;
-      currentItin.itin[i].seg[j].dist = Math.floor(
-        currentItin.itin[i].seg[j].dist
-      );
-    }
-    currentItin.itin[i].dist = Math.floor(legdistance);
-    legdistance = 0;
-  }
-  // lets finally print it:
-  if (
-    mptUserSettings.enableInlineMode === 1 ||
-    mptUserSettings.enableMilesInlinemode === 1
-  ) {
-    for (var i = 0; i < currentItin.itin.length; i++) {
-      // walks each leg
-      let target = findItinTarget(i + 1, 1, "headline");
-      target.innerHTML =
-        target.innerHTML.replace(
-          target.firstElementChild.className,
-          target.firstElementChild.className + '" style="display:inline-block'
-        ) +
-        '<div style="display:inline-block;float:right;"> ' +
-        currentItin.itin[i].dist +
-        " miles</div>";
-      for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-        //walks each segment of leg
-        if (currentItin.itin[i].seg.length > 1) {
-          target = findItinTarget(i + 1, j + 1, "airportsdate");
-          target.innerHTML =
-            target.innerHTML.replace(
-              target.firstElementChild.className,
-              target.firstElementChild.className +
-                '" style="display:inline-block'
-            ) +
-            '<div style="display:inline-block;float:right;margin-right:110px;"> ' +
-            currentItin.itin[i].seg[j].dist +
-            " miles</div>";
-        }
-      }
-    }
-  } else {
-    var output = "";
-    output += "<tbody>";
-    output +=
-      '<tr><td colspan="4" style="text-align:center;">Mileage breakdown: </td></tr>';
-    for (var i = 0; i < currentItin.itin.length; i++) {
-      // walks each leg
-      output +=
-        '<tr><td style="border-bottom: 1px solid #878787;padding:2px 2px">Leg ' +
-        (i + 1) +
-        '</td><td style="border-bottom: 1px solid #878787;padding:2px 0">' +
-        currentItin.itin[i].orig +
-        '</td><td style="border-bottom: 1px solid #878787;padding:2px 0">' +
-        currentItin.itin[i].dest +
-        '</td><td style="border-bottom: 1px solid #878787;padding:2px 0;text-align:right;">' +
-        currentItin.itin[i].dist +
-        "</td></tr>";
-      for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-        //walks each segment of leg
-        if (currentItin.itin[i].seg.length > 1)
-          output +=
-            "<tr><td></td><td>" +
-            currentItin.itin[i].seg[j].orig +
-            "</td><td>" +
-            currentItin.itin[i].seg[j].dest +
-            '</td><td style="text-align:right;">' +
-            currentItin.itin[i].seg[j].dist +
-            "</td></tr>";
-      }
-    }
-    output += "</tbody>";
-    if (findtarget("pricebreakdown", 1) === undefined) {
-      // create container
-      let printtarget = findtarget(classSettings.resultpage.htbContainer, 1)
-        .parentElement.parentElement.parentElement;
-      let newtr = document.createElement("tr");
-      newtr.setAttribute("class", "pricebreakdown");
-      newtr.innerHTML =
-        '<td><div><table style="float:left; margin-right:15px;">' +
-        output +
-        "</table></div></td>";
-      printtarget.parentElement.insertBefore(newtr, printtarget);
-    } else {
-      // add to existing container
-      let printtarget = findtarget("pricebreakdown", 1).firstElementChild
-        .firstElementChild.firstElementChild;
-      let newtable = document.createElement("table");
-      newtable.setAttribute("style", "float:left; margin-right:15px;");
-      newtable.innerHTML = output;
-      printtarget.parentElement.insertBefore(newtable, printtarget);
-    }
   }
 }
 
