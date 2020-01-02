@@ -4,6 +4,7 @@
   "description": "Script for greasemonkey + ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
+    "authors": "bash scripts/authors.sh",
     "prettier": "pretty-quick --staged",
     "type-check": "tsc",
     "build": "webpack && npm run minify",

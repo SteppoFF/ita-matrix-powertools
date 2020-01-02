@@ -41,11 +41,14 @@ Using debug console, you may use the shortened minified version.
 
 ### Contribution Guide
 
-1. Run `npm install`
-2. Update `ita-matrix-powertools.user.js`
-3. Bump version number
-4. Add change log
-5. Commit and create PR
+1. Fork it!
+1. Run `npm install` to install dependencies
+1. Update javascript files `./src` _(the main userscript is now auto-generated)_
+1. Bump version number
+1. Add change log
+1. Commit and create PR
+
+Thanks to all that have [contributed](./AUTHORS) so far!
 
 ### Latest major changes
 
