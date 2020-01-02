@@ -29,23 +29,34 @@ export function hasClass(element, cls) {
   return (" " + element.className + " ").indexOf(" " + cls + " ") > -1;
 }
 
+export function toggleVis(target, blockType = "block") {
+  if (hasClass(target, "vis")) {
+    target.setAttribute("class", "invis");
+    target.style.display = "none";
+  } else {
+    target.setAttribute("class", "vis");
+    target.style.display = blockType;
+  }
+}
+
+export function clearNotification() {
+  var target = document.getElementById("mtpNotification");
+  target.innerHTML = "";
+}
+
 export function printNotification(text) {
   // log the text to the browser's developer console:
-  text !== "empty" && console.log(text);
+  console.log(text);
   // display for user:
   var target = document.getElementById("mtpNotification");
   if (target === null) {
     //alert("mtp Error: Notification container not Found");
     console.log("mtp Error: Notification container not Found");
   } else {
-    if (text == "empty") {
-      target.innerHTML = "";
-    } else {
-      //possibility to print multiple notifications
-      var temp = document.createElement("div");
-      temp.appendChild(document.createTextNode(text));
-      target.appendChild(temp);
-    }
+    //possibility to print multiple notifications
+    var temp = document.createElement("div");
+    temp.appendChild(document.createTextNode(text));
+    target.appendChild(temp);
   }
 }
 
