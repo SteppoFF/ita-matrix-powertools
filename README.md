@@ -15,7 +15,7 @@ Script for greasemonkey + ITA Matrix
 ### Posts you should read
 
 1. [General statement regarding this script](http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-united-userscript-4.html#post24394534)
-2. [How to fix class names yourself](http://www.flyertalk.com/forum/24807572-post119.html)
+2. [How to fix class names yourself](http://www.flyertalk.com/forum/24807572-post119.html): class names should now be updated in [itaSettings.js](./src/itaSettings.js)
 3. [Problems and limitations regarding pricing itineraries](http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-united-userscript-9.html#post24906119)
 
 ## Usage
@@ -35,17 +35,17 @@ Using debug console, you may use the shortened minified version.
 
 ### Files
 
-`ita-matrix-powertools.user.js` -- Main userscript, install using a browser userscript manager (such as Greasemonkey or Tampermonkey) or utilize directly in your browser's debug console.
-
-`script_minified.js` -- Compact, paste-able version of the script for pasting in the debug console.
+- `ita-matrix-powertools.user.js` -- Main userscript, install using a browser userscript manager (such as Greasemonkey or Tampermonkey) or utilize directly in your browser's debug console.
+- `script_minified.js` -- Compact, paste-able version of the script for pasting in the debug console.
 
 ### Contribution Guide
 
 1. Fork it!
 1. Run `npm install` to install dependencies
 1. Update javascript files `./src` _(the main userscript is now auto-generated)_
-1. Bump version number
+1. Bump version number in `package.json`
 1. Add change log
+1. Build the userscript with `npm run build`
 1. Commit and create PR
 
 Thanks to all that have [contributed](./AUTHORS) so far!
