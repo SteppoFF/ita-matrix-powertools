@@ -1,9 +1,9 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const ibEditions = [
+const ibEditions = [
   { value: "es-AO", name: "Angola - Español" },
   { value: "pt-AO", name: "Angola - Português" },
   { value: "es-DZ", name: "Argelia - Español" },
@@ -235,3 +235,4 @@ function printIB() {
 }
 
 registerLink("airlines", printIB);
+registerSetting("Iberia", "ibEdition", ibEditions, "en-US");

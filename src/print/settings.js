@@ -1,21 +1,10 @@
 import mptSettings from "../settings/appSettings";
-import mptUserSettings, { saveUserSettings } from "../settings/userSettings";
+import mptUserSettings, {
+  registeredSettings,
+  saveUserSettings
+} from "../settings/userSettings";
 import mtpPassengerConfig from "../settings/paxSettings";
 import { toggleVis } from "../utils";
-
-import { aaEditions } from "../links/airlines/aa";
-import { aac1Editions } from "../links/airlines/aaC1";
-import { afEditions } from "../links/airlines/af";
-import { azEditions } from "../links/airlines/az";
-import { baEditions } from "../links/airlines/ba";
-import { czEditions } from "../links/airlines/cz";
-import { dlEditions } from "../links/airlines/dl";
-import { ibEditions } from "../links/airlines/ib";
-import { klEditions } from "../links/airlines/kl";
-import { laEditions } from "../links/airlines/la";
-import { lhEditions } from "../links/airlines/lh";
-import { lxEditions } from "../links/airlines/lx";
-import { qfEditions, qfCurrencies } from "../links/airlines/qf";
 
 import { render } from ".";
 import { printLinksContainer } from "./links";
@@ -56,7 +45,7 @@ export function createUsersettings() {
     "</label></div>";
   str += '</div><div style="float:left;width:25%">';
   str +=
-    '<div id="mptenableDeviders">Enable deviders: <label style="cursor:pointer;">' +
+    '<div id="mptenableDeviders">Enable dividers: <label style="cursor:pointer;">' +
     printSettingsvalue("enableDeviders") +
     "</label></div>";
   str +=
@@ -110,76 +99,16 @@ export function createUsersettings() {
     "</label></div>";
   str += '</div><div style="clear:both"></div></div>';
   str +=
-    '<div style="text-align:center;font-weight:bold">**** Airline Locale / Edition: ****</div>';
+    '<div style="text-align:center;font-weight:bold">**** Link Settings: ****</div>';
   str += '<div style="margin:5px 0">';
-  str +=
-    '<div id="mptaaEdition" style="width:33%;float:left;">American (Europe/Asia/Pacific): <label style="cursor:pointer;">' +
-    printSettingsvalue("aaEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptaac1Edition" style="width:33%;float:left;">American (America/UK): <label style="cursor:pointer;">' +
-    printSettingsvalue("aac1Edition") +
-    "</label></div>";
-  str +=
-    '<div id="mptacEdition" style="width:33%;float:left;">Air Canada: <label style="cursor:pointer;">' +
-    printSettingsvalue("acEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptafEdition" style="width:33%;float:left;">Air France: <label style="cursor:pointer;">' +
-    printSettingsvalue("afEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptazEdition" style="width:33%;float:left;">Alitalia: <label style="cursor:pointer;">' +
-    printSettingsvalue("azEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptbaLanguage" style="width:33%;float:left;">British Airways (Language): <label style="cursor:pointer;">' +
-    printSettingsvalue("baLanguage") +
-    "</label></div>";
-  str +=
-    '<div id="mptbaEdition" style="width:33%;float:left;">British Airways (Locale): <label style="cursor:pointer;">' +
-    printSettingsvalue("baEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptczEdition" style="width:33%;float:left;">China Southern: <label style="cursor:pointer;">' +
-    printSettingsvalue("czEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptdlEdition" style="width:33%;float:left;">Delta: <label style="cursor:pointer;">' +
-    printSettingsvalue("dlEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptibEdition" style="width:33%;float:left;">Iberia: <label style="cursor:pointer;">' +
-    printSettingsvalue("ibEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptklEdition" style="width:33%;float:left;">KLM: <label style="cursor:pointer;">' +
-    printSettingsvalue("klEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptlaEdition" style="width:33%;float:left;">LATAM: <label style="cursor:pointer;">' +
-    printSettingsvalue("laEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptlhEdition" style="width:33%;float:left;">Lufthansa: <label style="cursor:pointer;">' +
-    printSettingsvalue("lhEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptlxEdition" style="width:33%;float:left;">Swiss: <label style="cursor:pointer;">' +
-    printSettingsvalue("lxEdition") +
-    "</label></div>";
-  str +=
-    '<div id="mptqfEdition" style="width:33%;float:left;">Qantas Airways: <label style="cursor:pointer;">' +
-    printSettingsvalue("qfEdition") +
-    "</label></div>";
-  str += '<div style="clear:both"></div></div>';
-  str +=
-    '<div style="text-align:center;font-weight:bold">**** Airline Currency: ****</div>';
-  str += '<div style="margin:5px 0">';
-  str +=
-    '<div id="mptqfCurrency" style="width:33%;float:left;">Qantas Airways: <label style="cursor:pointer;">' +
-    printSettingsvalue("qfCurrency") +
-    "</label></div>";
+
+  Object.keys(registeredSettings).forEach(setting => {
+    str += `<div id="mpt${setting}" style="width:33%;float:left;">${
+      registeredSettings[setting].name
+    }: <label style="cursor:pointer;">${printSettingsvalue(
+      setting
+    )}</label></div>`;
+  });
   str += '<div style="clear:both"></div></div>';
   str +=
     '<div style="text-align:center;font-weight:bold"><label id="configcloser" style="cursor:pointer;text-decoration:underline;">Close</label><div>';
@@ -228,56 +157,6 @@ export function createUsersettings() {
   document.getElementById("mptenableWheretocredit").onclick = function() {
     toggleSettings("enableWheretocredit");
   };
-  document.getElementById("mptaaEdition").onclick = function() {
-    toggleSettings("aaEdition");
-  };
-  document.getElementById("mptaac1Edition").onclick = function() {
-    toggleSettings("aac1Edition");
-  };
-  document.getElementById("mptacEdition").onclick = function() {
-    toggleSettings("acEdition");
-  };
-  document.getElementById("mptafEdition").onclick = function() {
-    toggleSettings("afEdition");
-  };
-  document.getElementById("mptazEdition").onclick = function() {
-    toggleSettings("azEdition");
-  };
-  document.getElementById("mptbaLanguage").onclick = function() {
-    toggleSettings("baLanguage");
-  };
-  document.getElementById("mptbaEdition").onclick = function() {
-    toggleSettings("baEdition");
-  };
-  document.getElementById("mptczEdition").onclick = function() {
-    toggleSettings("czEdition");
-  };
-  document.getElementById("mptdlEdition").onclick = function() {
-    toggleSettings("dlEdition");
-  };
-  document.getElementById("mptibEdition").onclick = function() {
-    toggleSettings("ibEdition");
-  };
-  //document.getElementById('mptibCurrency').onclick=function(){toggleSettings("ibCurrency");};  // not supported
-  document.getElementById("mptklEdition").onclick = function() {
-    toggleSettings("klEdition");
-  };
-  document.getElementById("mptlaEdition").onclick = function() {
-    toggleSettings("laEdition");
-  };
-  //document.getElementById('mptlaCurrency').onclick=function(){toggleSettings("laCurrency");}; // not supported
-  document.getElementById("mptlhEdition").onclick = function() {
-    toggleSettings("lhEdition");
-  };
-  document.getElementById("mptlxEdition").onclick = function() {
-    toggleSettings("lxEdition");
-  };
-  document.getElementById("mptqfCurrency").onclick = function() {
-    toggleSettings("qfCurrency");
-  };
-  document.getElementById("mptqfEdition").onclick = function() {
-    toggleSettings("qfEdition");
-  };
   document.getElementById("mptCabintoggler").onclick = function() {
     toggleSettings("cabin");
   };
@@ -289,6 +168,12 @@ export function createUsersettings() {
       render();
     }, 50);
   };
+
+  Object.keys(registeredSettings).forEach(setting => {
+    document.getElementById("mpt" + setting).onclick = function() {
+      toggleSettings(setting);
+    };
+  });
 
   // Build passengers
   target = document.getElementById("mptPassengers");
@@ -390,180 +275,68 @@ function restoreDefaultSettings() {
 
 function toggleSettings(target) {
   console.log("toggleSettings called. target=" + target);
-  switch (target) {
-    case "timeformat":
-      if (mptUserSettings.timeformat == "12h") {
-        mptUserSettings.timeformat = "24h";
-      } else {
-        mptUserSettings.timeformat = "12h";
-      }
-      break;
-    case "language":
-      if (mptUserSettings.language == "de") {
-        mptUserSettings.language = "en";
-      } else {
-        mptUserSettings.language = "de";
-      }
-      break;
-    case "linkFontsize":
-      if (
-        mptUserSettings.linkFontsize <= 190 &&
-        mptUserSettings.linkFontsize >= 50
-      ) {
-        mptUserSettings.linkFontsize += 10;
-      } else {
-        mptUserSettings.linkFontsize = 50;
-      }
-      break;
-    case "aaEdition":
-      var pos = findPositionForValue(mptUserSettings.aaEdition, aaEditions);
-      if (pos >= aaEditions.length - 1 || pos === -1) {
-        mptUserSettings.aaEdition = aaEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.aaEdition = aaEditions[pos].value;
-      }
-      break;
-    case "aac1Edition":
-      var pos = findPositionForValue(mptUserSettings.aac1Edition, aac1Editions);
-      if (pos >= aac1Editions.length - 1 || pos === -1) {
-        mptUserSettings.aac1Edition = aac1Editions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.aac1Edition = aac1Editions[pos].value;
-      }
-      break;
-    case "afEdition":
-      var pos = findPositionForValue(mptUserSettings.afEdition, afEditions);
-      if (pos >= afEditions.length - 1 || pos === -1) {
-        mptUserSettings.afEdition = afEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.afEdition = afEditions[pos].value;
-      }
-      break;
-    case "azEdition":
-      var pos = findPositionForValue(mptUserSettings.azEdition, azEditions);
-      if (pos >= azEditions.length - 1 || pos === -1) {
-        mptUserSettings.azEdition = azEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.azEdition = azEditions[pos].value;
-      }
-      break;
-    case "baEdition":
-      var pos = findPositionForValue(mptUserSettings.baEdition, baEditions);
-      if (pos >= baEditions.length - 1 || pos === -1) {
-        mptUserSettings.baEdition = baEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.baEdition = baEditions[pos].value;
-      }
-      break;
-    case "czEdition":
-      var pos = findPositionForValue(mptUserSettings.czEdition, czEditions);
-      if (pos >= czEditions.length - 1 || pos === -1) {
-        mptUserSettings.czEdition = czEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.czEdition = czEditions[pos].value;
-      }
-      break;
-    case "dlEdition":
-      var pos = findPositionForValue(mptUserSettings.dlEdition, dlEditions);
-      if (pos >= dlEditions.length - 1 || pos === -1) {
-        mptUserSettings.dlEdition = dlEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.dlEdition = dlEditions[pos].value;
-      }
-      break;
-    case "ibEdition":
-      var pos = findPositionForValue(mptUserSettings.ibEdition, ibEditions);
-      if (pos >= ibEditions.length - 1 || pos === -1) {
-        mptUserSettings.ibEdition = ibEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.ibEdition = ibEditions[pos].value;
-      }
-      break;
-    case "klEdition":
-      var pos = findPositionForValue(mptUserSettings.klEdition, klEditions);
-      if (pos >= klEditions.length - 1 || pos === -1) {
-        mptUserSettings.klEdition = klEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.klEdition = klEditions[pos].value;
-      }
-      break;
-    case "laEdition":
-      var pos = findPositionForValue(mptUserSettings.laEdition, laEditions);
-      if (pos >= laEditions.length - 1 || pos === -1) {
-        mptUserSettings.laEdition = laEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.laEdition = laEditions[pos].value;
-      }
-      break;
-    case "lhEdition":
-      var pos = findPositionForValue(mptUserSettings.lhEdition, lhEditions);
-      if (pos >= lhEditions.length - 1 || pos === -1) {
-        mptUserSettings.lhEdition = lhEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.lhEdition = lhEditions[pos].value;
-      }
-      break;
-    case "lxEdition":
-      var pos = findPositionForValue(mptUserSettings.lxEdition, lxEditions);
-      if (pos >= lxEditions.length - 1 || pos === -1) {
-        mptUserSettings.lxEdition = lxEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.lxEdition = lxEditions[pos].value;
-      }
-      break;
-    case "qfEdition":
-      var pos = findPositionForValue(mptUserSettings.qfEdition, qfEditions);
-      if (pos >= qfEditions.length - 1 || pos === -1) {
-        mptUserSettings.qfEdition = qfEditions[0].value;
-      } else {
-        pos++;
-        mptUserSettings.qfEdition = qfEditions[pos].value;
-      }
-      break;
-    case "qfCurrency":
-      var pos = findPositionForValue(mptUserSettings.qfCurrency, qfCurrencies);
-      if (pos >= qfCurrencies.length - 1 || pos === -1) {
-        mptUserSettings.qfCurrency = qfCurrencies[0].value;
-      } else {
-        pos++;
-        mptUserSettings.qfCurrency = qfCurrencies[pos].value;
-      }
-      break;
-    case "cabin":
-      if (mptSettings.cabin === "Auto") {
-        mptSettings.cabin = "Y";
-      } else if (mptSettings.cabin === "Y") {
-        mptSettings.cabin = "Y+";
-      } else if (mptSettings.cabin === "Y+") {
-        mptSettings.cabin = "C";
-      } else if (mptSettings.cabin === "C") {
-        mptSettings.cabin = "F";
-      } else if (mptSettings.cabin === "F") {
-        mptSettings.cabin = "Auto";
-      }
-      document.getElementById("mptCabinMode").innerHTML = mptSettings.cabin;
 
-      // refresh links
-      printLinksContainer();
-      break;
-    default:
-      if (mptUserSettings[target] == 1) {
-        mptUserSettings[target] = 0;
-      } else {
-        mptUserSettings[target] = 1;
-      }
+  if (registeredSettings[target] && registeredSettings[target].values) {
+    const pos = findPositionForValue(
+      mptUserSettings[target],
+      registeredSettings[target].values
+    );
+    if (pos >= registeredSettings[target].values.length - 1 || pos === -1) {
+      mptUserSettings[target] = registeredSettings[target].values[0].value;
+    } else {
+      mptUserSettings[target] =
+        registeredSettings[target].values[pos + 1].value;
+    }
+  } else {
+    switch (target) {
+      case "timeformat":
+        if (mptUserSettings.timeformat == "12h") {
+          mptUserSettings.timeformat = "24h";
+        } else {
+          mptUserSettings.timeformat = "12h";
+        }
+        break;
+      case "language":
+        if (mptUserSettings.language == "de") {
+          mptUserSettings.language = "en";
+        } else {
+          mptUserSettings.language = "de";
+        }
+        break;
+      case "linkFontsize":
+        if (
+          mptUserSettings.linkFontsize <= 190 &&
+          mptUserSettings.linkFontsize >= 50
+        ) {
+          mptUserSettings.linkFontsize += 10;
+        } else {
+          mptUserSettings.linkFontsize = 50;
+        }
+        break;
+      case "cabin":
+        if (mptSettings.cabin === "Auto") {
+          mptSettings.cabin = "Y";
+        } else if (mptSettings.cabin === "Y") {
+          mptSettings.cabin = "Y+";
+        } else if (mptSettings.cabin === "Y+") {
+          mptSettings.cabin = "C";
+        } else if (mptSettings.cabin === "C") {
+          mptSettings.cabin = "F";
+        } else if (mptSettings.cabin === "F") {
+          mptSettings.cabin = "Auto";
+        }
+        document.getElementById("mptCabinMode").innerHTML = mptSettings.cabin;
+
+        // refresh links
+        printLinksContainer();
+        break;
+      default:
+        if (mptUserSettings[target] == 1) {
+          mptUserSettings[target] = 0;
+        } else {
+          mptUserSettings[target] = 1;
+        }
+    }
   }
   document.getElementById(
     "mpt" + target
@@ -610,74 +383,30 @@ function processChild(target) {
 }
 
 function printSettingsvalue(target) {
-  var ret = "";
+  if (registeredSettings[target]) {
+    return findNameForValue(
+      mptUserSettings[target],
+      registeredSettings[target].values
+    );
+  }
+
   switch (target) {
     case "timeformat":
-      ret = mptUserSettings.timeformat;
-      break;
+      return mptUserSettings.timeformat;
     case "language":
-      ret = mptUserSettings.language;
-      break;
+      return mptUserSettings.language;
     case "linkFontsize":
-      ret = mptUserSettings.linkFontsize.toString();
-      break;
-    case "acEdition":
-      ret = mptUserSettings.acEdition;
-      break;
-    case "aaEdition":
-      ret = findNameForValue(mptUserSettings.aaEdition, aaEditions);
-      break;
-    case "aac1Edition":
-      ret = findNameForValue(mptUserSettings.aac1Edition, aac1Editions);
-      break;
-    case "afEdition":
-      ret = findNameForValue(mptUserSettings.afEdition, afEditions);
-      break;
-    case "azEdition":
-      ret = findNameForValue(mptUserSettings.azEdition, azEditions);
-      break;
-    case "baEdition":
-      ret = findNameForValue(mptUserSettings.baEdition, baEditions);
-      break;
-    case "czEdition":
-      ret = findNameForValue(mptUserSettings.czEdition, czEditions);
-      break;
-    case "dlEdition":
-      ret = findNameForValue(mptUserSettings.dlEdition, dlEditions);
-      break;
-    case "ibEdition":
-      ret = findNameForValue(mptUserSettings.ibEdition, ibEditions);
-      break;
-    case "klEdition":
-      ret = findNameForValue(mptUserSettings.klEdition, klEditions);
-      break;
-    case "laEdition":
-      ret = findNameForValue(mptUserSettings.laEdition, laEditions);
-      break;
-    case "lhEdition":
-      ret = findNameForValue(mptUserSettings.lhEdition, lhEditions);
-      break;
-    case "lxEdition":
-      ret = findNameForValue(mptUserSettings.lxEdition, lxEditions);
-      break;
-    case "qfEdition":
-      ret = findNameForValue(mptUserSettings.qfEdition, qfEditions);
-      break;
-    case "qfCurrency":
-      ret = findNameForValue(mptUserSettings.qfCurrency, qfCurrencies);
-      break;
+      return mptUserSettings.linkFontsize.toString();
     default:
-      ret = boolToEnabled(mptUserSettings[target]);
+      return boolToEnabled(mptUserSettings[target]);
   }
-  return ret;
 }
 
 function findNameForValue(needle, haystack) {
   var ret = "Unknown";
   for (var i in haystack) {
     if (haystack[i].value == needle) {
-      ret = haystack[i].name;
-      break;
+      return haystack[i].name;
     }
   }
   return ret;

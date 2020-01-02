@@ -1,10 +1,10 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 import { getAmadeusUrl, getAmadeusPax } from "../../print/amadeus";
 
-export const czEditions = [
+const czEditions = [
   { value: "AR-GB", name: "Argentina / English" },
   { value: "AU-GB", name: "Australia / English" },
   { value: "AZ-GB", name: "Azerbaijan / English" },
@@ -146,3 +146,4 @@ function printCZ() {
 }
 
 registerLink("airlines", printCZ);
+registerSetting("China Southern", "czEdition", czEditions, "US-GB");

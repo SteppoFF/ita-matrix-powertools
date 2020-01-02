@@ -1,10 +1,10 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const afEditions = [
+const afEditions = [
   { value: "DE/de", name: "Germany / Deutsch" },
   { value: "DE/en", name: "Germany / English" },
   { value: "FR/en", name: "France / English" },
@@ -157,3 +157,4 @@ function printAF() {
 }
 
 registerLink("airlines", printAF);
+registerSetting("Air France", "afEdition", afEditions, "US/en");

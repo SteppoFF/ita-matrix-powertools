@@ -1,9 +1,9 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const azEditions = [
+const azEditions = [
   { value: "de_de", name: "Germany / Deutsch" },
   { value: "at_de", name: "Austria / Deutsch" },
   { value: "ch_de", name: "Switzerland / Deutsch" },
@@ -139,3 +139,4 @@ function printAZ() {
 }
 
 registerLink("airlines", printAZ);
+registerSetting("Alitalia", "azEdition", azEditions, "us_en");

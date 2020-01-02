@@ -1,9 +1,9 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const klEditions = [
+const klEditions = [
   { value: "de_de", name: "Germany / Deutsch" },
   { value: "de_en", name: "Germany / English" },
   { value: "fr_en", name: "France / English" },
@@ -137,3 +137,4 @@ function printKL() {
 }
 
 registerLink("airlines", printKL);
+registerSetting("KLM", "klEdition", klEditions, "us_en");

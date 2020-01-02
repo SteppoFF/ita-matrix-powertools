@@ -1,9 +1,9 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const laEditions = [
+const laEditions = [
   { value: "es/ar", name: "Argentina / Spanish" },
   { value: "pt/br", name: "Brasil / Portuguese" },
   { value: "es/cl", name: "Chile / Spanish" },
@@ -150,3 +150,4 @@ function printLA() {
 }
 
 registerLink("airlines", printLA);
+registerSetting("LATAM", "laEdition", laEditions, "en/us");

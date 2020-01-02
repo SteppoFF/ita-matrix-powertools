@@ -1,16 +1,16 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const qfEditions = [
+const qfEditions = [
   { value: "EN_AU", name: "Australia" },
   { value: "EN_NZ", name: "New Zealand" },
   { value: "EN_US", name: "United States" }
 ];
 
-export const qfCurrencies = [
+const qfCurrencies = [
   { value: "AUD", name: "AUD" },
   { value: "NZD", name: "NZD" },
   { value: "USD", name: "USD" }
@@ -197,3 +197,5 @@ function printQF() {
 }
 
 registerLink("airlines", printQF);
+registerSetting("Qantas", "qfEdition", qfEditions, "EN_US");
+registerSetting("Qantas", "qfCurrency", qfCurrencies, "USD");

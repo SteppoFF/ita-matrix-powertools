@@ -1,10 +1,10 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const lxEditions = [
+const lxEditions = [
   { value: "de_de", name: "Germany" },
   { value: "us_en", name: "US" }
 ];
@@ -119,3 +119,4 @@ function printLX() {
 }
 
 registerLink("airlines", printLX);
+registerSetting("Swiss", "lxEdition", lxEditions, "us_en");

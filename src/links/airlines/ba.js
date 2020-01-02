@@ -1,10 +1,10 @@
 import mptSettings, { getForcedCabin } from "../../settings/appSettings";
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const baEditions = [
+const baEditions = [
   { value: "AF", name: "Afghanistan" },
   { value: "AL", name: "Albania" },
   { value: "DZ", name: "Algeria" },
@@ -345,3 +345,4 @@ function printBA() {
 }
 
 registerLink("airlines", printBA);
+registerSetting("British Airways", "baEdition", baEditions, "US");

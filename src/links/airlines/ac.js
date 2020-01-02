@@ -1,5 +1,5 @@
 import mptSettings from "../../settings/appSettings";
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import translations from "../../settings/translations";
 import { printNotification } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
@@ -10,31 +10,78 @@ import {
   getAmadeusPax
 } from "../../print/amadeus";
 
-export const acEditions = [
-  "us",
-  "ca",
-  "ar",
-  "au",
-  "ch",
-  "cl",
-  "cn",
-  "co",
-  "de",
-  "dk",
-  "es",
-  "fr",
-  "gb",
-  "hk",
-  "ie",
-  "il",
-  "it",
-  "jp",
-  "mx",
-  "nl",
-  "no",
-  "pa",
-  "pe",
-  "se"
+const acEditions = [
+  { name: "Algeria", value: "dz" },
+  { name: "Antigua", value: "ag" },
+  { name: "Argentina", value: "ar" },
+  { name: "Australia", value: "au" },
+  { name: "Austria", value: "at" },
+  { name: "Bahamas", value: "bs" },
+  { name: "Bahrain", value: "bh" },
+  { name: "Barbados", value: "bb" },
+  { name: "Belgium", value: "be" },
+  { name: "Bermuda", value: "bm" },
+  { name: "Canada", value: "ca" },
+  { name: "Cayman Islands", value: "ky" },
+  { name: "Chile", value: "cl" },
+  { name: "China", value: "cn" },
+  { name: "Colombia", value: "co" },
+  { name: "Costa Rica", value: "cr" },
+  { name: "Croatia", value: "hr" },
+  { name: "Czech Republic", value: "cz" },
+  { name: "Denmark", value: "dk" },
+  { name: "Dominican Republic", value: "do" },
+  { name: "Egypt", value: "eg" },
+  { name: "Finland", value: "fi" },
+  { name: "France", value: "fr" },
+  { name: "Germany", value: "de" },
+  { name: "Greece", value: "gr" },
+  { name: "Haiti", value: "ht" },
+  { name: "Hong Kong SAR, China", value: "hk" },
+  { name: "Hungary", value: "hu" },
+  { name: "India", value: "in" },
+  { name: "Indonesia", value: "id" },
+  { name: "Ireland", value: "ie" },
+  { name: "Israel", value: "il" },
+  { name: "Italy", value: "it" },
+  { name: "Jamaica", value: "jm" },
+  { name: "Japan", value: "jp" },
+  { name: "Jordan", value: "jo" },
+  { name: "Kuwait", value: "kw" },
+  { name: "Malaysia", value: "my" },
+  { name: "Mexico", value: "mx" },
+  { name: "Morocco", value: "ma" },
+  { name: "Mozambique", value: "mz" },
+  { name: "Netherlands", value: "nl" },
+  { name: "New Zealand", value: "nz" },
+  { name: "Nigeria", value: "ng" },
+  { name: "Norway", value: "no" },
+  { name: "Panama", value: "pa" },
+  { name: "Peru", value: "pe" },
+  { name: "Poland", value: "pl" },
+  { name: "Portugal", value: "pt" },
+  { name: "Qatar", value: "qa" },
+  { name: "Russia", value: "ru" },
+  { name: "Romania", value: "ro" },
+  { name: "Saudi Arabia", value: "sa" },
+  { name: "Singapore", value: "sg" },
+  { name: "South Africa", value: "za" },
+  { name: "South Korea", value: "kr" },
+  { name: "Spain", value: "es" },
+  { name: "St. Lucia", value: "lc" },
+  { name: "Sweden", value: "se" },
+  { name: "Switzerland", value: "ch" },
+  { name: "Taiwan, China", value: "tw" },
+  { name: "Thailand", value: "th" },
+  { name: "Trinidad &amp; Tobago", value: "tt" },
+  { name: "Turkey", value: "tr" },
+  { name: "Turks and Caicos Island", value: "tc" },
+  { name: "Ukraine", value: "ua" },
+  { name: "United Arab Emirates", value: "ae" },
+  { name: "United Kingdom", value: "gb" },
+  { name: "United States", value: "us" },
+  { name: "Venezuela", value: "ve" },
+  { name: "Vietnam", value: "vn" }
 ];
 
 function printAC() {
@@ -102,9 +149,9 @@ function printAC() {
     .map(function(edition, i) {
       return (
         '<a href="' +
-        createUrl(edition.toUpperCase()) +
+        createUrl(edition.value.toUpperCase()) +
         '" target="_blank">' +
-        edition +
+        edition.name +
         "</a>"
       );
     })
@@ -171,3 +218,4 @@ function addACPromo() {
 }
 
 registerLink("airlines", printAC);
+registerSetting("Air Canada", "acEdition", acEditions, "us");

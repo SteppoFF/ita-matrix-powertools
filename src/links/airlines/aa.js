@@ -1,9 +1,9 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
 
-export const aaEditions = [
+const aaEditions = [
   { value: "en_AU", name: "Australia" },
   { value: "en_BE", name: "Belgium" },
   { value: "en_CN", name: "China" },
@@ -166,3 +166,9 @@ function printAA() {
 }
 
 registerLink("airlines", printAA);
+registerSetting(
+  "American (Europe/Asia/Pacific)",
+  "aaEdition",
+  aaEditions,
+  "en_DE"
+);

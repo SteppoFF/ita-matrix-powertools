@@ -15,6 +15,15 @@ const links = {
 
 require("../links");
 
+/**
+ * Registers a link
+ * @param {keyof links} type
+ * @param {(itin: typeof currentItin) => { url: string, title: string, desc?: string, nth?: number, extra?: string }} factory
+ */
+export function registerLink(type, factory) {
+  links[type].push(factory);
+}
+
 export function printLinksContainer() {
   // do nothing if editor mode is active
   if (findtargets("editoritem").length > 0) {
@@ -264,15 +273,6 @@ export function validatePaxcount(config) {
     return;
   }
   return ret;
-}
-
-/**
- * Registers a link
- * @param {keyof links} type
- * @param {(itin: typeof currentItin) => { url: string, title: string, desc?: string, nth?: number, extra?: string }} factory
- */
-export function registerLink(type, factory) {
-  links[type].push(factory);
 }
 
 // Inline Stuff

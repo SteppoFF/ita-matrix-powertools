@@ -1,4 +1,4 @@
-import mptUserSettings from "../../settings/userSettings";
+import mptUserSettings, { registerSetting } from "../../settings/userSettings";
 import { printNotification, inArray } from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
 import { currentItin } from "../../parse/itin";
@@ -8,7 +8,7 @@ import {
   getAmadeusPax
 } from "../../print/amadeus";
 
-export const lhEditions = [
+const lhEditions = [
   { value: "AL-gb", name: "Albania / English" },
   { value: "DZ-fr", name: "Algeria / Français" },
   { value: "AO-gb", name: "Angola / English" },
@@ -208,3 +208,4 @@ function printLH() {
 }
 
 registerLink("airlines", printLH);
+registerSetting("Lufthansa", "lhEdition", lhEditions, "US-gb");
