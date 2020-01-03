@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.40.0
+// @version 0.40.1
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -1095,7 +1095,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.40.0",
+  version: "0.40.1",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -5390,7 +5390,7 @@ function printExpedia() {
   return {
     url: ExpediaUrl,
     title: "Expedia",
-    container
+    extra: container
   };
 }
 

@@ -119,7 +119,7 @@ function printExpedia() {
   return {
     url: ExpediaUrl,
     title: "Expedia",
-    container
+    extra: container
   };
 }
 
