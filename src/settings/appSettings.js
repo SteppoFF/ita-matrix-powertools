@@ -23,6 +23,10 @@ export function reset() {
   appSettings.retrycount = 1;
 }
 
+export function getCabin(autoCabin) {
+  return appSettings.cabin === "Auto" ? autoCabin : getForcedCabin();
+}
+
 export function getForcedCabin() {
   switch (appSettings.cabin) {
     case "Y":

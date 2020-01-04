@@ -247,6 +247,16 @@ function parseAddInfo(info) {
   return ret;
 }
 
+export function getCurrentSegs() {
+  return currentItin.itin
+    .map(function(p) {
+      return p.seg;
+    })
+    .reduce(function(a, b) {
+      return a.concat(b);
+    }, []);
+}
+
 /**************************************** General Functions *****************************************/
 function getcabincode(cabin) {
   switch (cabin) {

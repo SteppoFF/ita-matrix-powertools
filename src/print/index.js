@@ -1,7 +1,7 @@
 import mptUserSettings from "../settings/userSettings";
 import classSettings from "../settings/itaSettings";
 import translations from "../settings/translations";
-import { currentItin, readItinerary } from "../parse/itin";
+import { currentItin, getCurrentSegs, readItinerary } from "../parse/itin";
 import {
   printNotification,
   findtarget,
@@ -141,13 +141,7 @@ function bindPageLayout() {
 
 function bind24HourTime() {
   // lets do the time-replacement
-  const segs = currentItin.itin
-    .map(function(p) {
-      return p.seg;
-    })
-    .reduce(function(a, b) {
-      return a.concat(b);
-    }, []);
+  const segs = getCurrentSegs();
   if (segs.length > 0) {
     const target = findtarget(classSettings.resultpage.itin, 1)
       .nextElementSibling;

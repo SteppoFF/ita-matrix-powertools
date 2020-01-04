@@ -1,6 +1,6 @@
 {
   "name": "ita-matrix-powertools",
-  "version": "0.40.1",
+  "version": "0.40.2",
   "description": "Script for greasemonkey + ITA Matrix",
   "main": "ita-matrix-powertools.user.js",
   "scripts": {
@@ -13,7 +13,6 @@
   "dependencies": {
     "@types/greasemonkey": "^4.0.0",
     "@types/webpack-env": "^1.14.1",
-    "fs": "0.0.1-security",
     "husky": "^3.1.0",
     "path": "^0.12.7",
     "prettier": "^1.19.1",

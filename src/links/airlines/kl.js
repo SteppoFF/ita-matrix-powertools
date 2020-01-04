@@ -1,7 +1,14 @@
+import { getCabin } from "../../settings/appSettings";
 import mptUserSettings, { registerSetting } from "../../settings/userSettings";
-import { printNotification } from "../../utils";
+import {
+  printNotification,
+  to2digits,
+  to4digits,
+  to4digitTime,
+  inArray
+} from "../../utils";
 import { validatePaxcount, registerLink } from "../../print/links";
-import { currentItin } from "../../parse/itin";
+import { currentItin, getCurrentSegs } from "../../parse/itin";
 
 const klEditions = [
   { value: "de_de", name: "Germany / Deutsch" },
@@ -13,16 +20,17 @@ const klEditions = [
   { value: "us_en", name: "US / English" }
 ];
 
+const cabins = ["M", "W", "C", "F"];
+
 function printKL() {
+  if (
+    !mptUserSettings.showAllAirlines &&
+    !inArray("KL", currentItin.carriers)
+  ) {
+    return;
+  }
+
   var createUrl = function(edition) {
-    var klUrl = "https://www.klm.com/travel/";
-    klUrl +=
-      edition[0] +
-      "_" +
-      edition[1] +
-      "/apps/ebt/ebt_home.htm?lang=" +
-      edition[1].toUpperCase();
-    klUrl += "&dev=5&cffcc=ECONOMY";
     var pax = validatePaxcount({
       maxPaxcount: 9,
       countInf: false,
@@ -34,76 +42,36 @@ function printKL() {
       printNotification("Error: Failed to validate Passengers in printKL");
       return;
     }
-    klUrl +=
-      "&adtQty=" +
-      pax.adults +
-      "&chdQty=" +
-      pax.children.length +
-      "&infQty=" +
-      pax.infLap;
-    var fb = "";
-    var oper = "";
-    for (var i = 0; i < currentItin.itin.length; i++) {
-      klUrl += "&c[" + i + "].os=" + currentItin.itin[i].orig;
-      klUrl += "&c[" + i + "].ds=" + currentItin.itin[i].dest;
-      klUrl +=
-        "&c[" +
-        i +
-        "].dd=" +
-        currentItin.itin[i].dep.year +
-        "-" +
-        ("0" + currentItin.itin[i].dep.month).slice(-2) +
-        "-" +
-        ("0" + currentItin.itin[i].dep.day).slice(-2);
-      if (i > 0) oper += "..";
-      for (var j = 0; j < currentItin.itin[i].seg.length; j++) {
-        klUrl +=
-          "&c[" + i + "].s[" + j + "].os=" + currentItin.itin[i].seg[j].orig;
-        klUrl +=
-          "&c[" + i + "].s[" + j + "].ds=" + currentItin.itin[i].seg[j].dest;
-        klUrl +=
-          "&c[" +
-          i +
-          "].s[" +
-          j +
-          "].dd=" +
-          currentItin.itin[i].seg[j].dep.year +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].dep.month).slice(-2) +
-          "-" +
-          ("0" + currentItin.itin[i].seg[j].dep.day).slice(-2);
-        klUrl +=
-          "&c[" +
-          i +
-          "].s[" +
-          j +
-          "].dt=" +
-          ("0" + currentItin.itin[i].seg[j].dep.time.replace(":", "")).slice(
-            -4
-          );
-        klUrl +=
-          "&c[" + i + "].s[" + j + "].mc=" + currentItin.itin[i].seg[j].carrier;
-        klUrl +=
-          "&c[" +
-          i +
-          "].s[" +
-          j +
-          "].fn=" +
-          ("000" + currentItin.itin[i].seg[j].fnr).slice(-4);
 
-        if (j > 0) oper += ".";
-        oper += currentItin.itin[i].seg[j].carrier;
-      }
-    }
+    const segs = getCurrentSegs();
 
-    for (var i = 0; i < currentItin.farebases.length; i++) {
-      if (i > 0) fb += ",";
-      fb += currentItin.farebases[i];
-    }
+    let url =
+      "https://www.klm.com/ams/search-web/api/metasearch?application=EBT7";
+    url +=
+      "&trip=" +
+      segs
+        .map(
+          seg =>
+            `${seg.orig}:${seg.dep.year}${to2digits(seg.dep.month)}${to2digits(
+              seg.dep.day
+            )}@${to4digitTime(seg.dep.time)}:${seg.carrier}${to4digits(
+              seg.fnr
+            )}:${seg.bookingclass}>${seg.dest}`
+        )
+        .join("-");
+    url += "&ref=MS,fb=" + currentItin.farebases.join(".");
+    url += "&numberOfAdults=" + pax.adults;
+    url += "&numberOfChildren=" + pax.children.length;
+    url += "&numberOfInfants=" + pax.infLap;
+    url +=
+      "&cabinClass=" +
+      cabins[getCabin(Math.min(...segs.map(seg => seg.cabin)))];
+    url += "&country=" + edition[0];
+    url += "&language=" + edition[1];
 
-    klUrl += "&ref=fb=" + fb; //+',oper='+oper;
-    return klUrl;
+    return url;
   };
+
   // get edition
   var edition = mptUserSettings.klEdition.split("_");
   if (edition.length != 2) {

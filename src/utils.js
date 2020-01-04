@@ -84,6 +84,18 @@ export function inArray(needle, haystack) {
   return false;
 }
 
+export function to2digits(str) {
+  return ("00" + str).slice(-2);
+}
+
+export function to4digits(str) {
+  return ("0000" + str).slice(-4);
+}
+
+export function to4digitTime(time) {
+  return to4digits(time.replace(":", ""));
+}
+
 export function monthnumberToName(month) {
   var monthnames = [
     "JAN",
