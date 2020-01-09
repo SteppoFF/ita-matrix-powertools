@@ -2,7 +2,7 @@
 // @name ITA-Matrix-Powertools
 // @namespace https://github.com/SteppoFF/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.40.2
+// @version 0.41.0
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
 // @grant GM_setValue
@@ -636,11 +636,11 @@ function inArray(needle, haystack) {
 }
 
 function to2digits(str) {
-  return ('00' + str).slice(-2);
+  return ("00" + str).slice(-2);
 }
 
 function to4digits(str) {
-  return ('0000' + str).slice(-4);
+  return ("0000" + str).slice(-4);
 }
 
 function to4digitTime(time) {
@@ -1122,7 +1122,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.40.2",
+  version: "0.41.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1170,21 +1170,21 @@ function getForcedCabin() {
 // ITA Matrix CSS class definitions:
 /* harmony default export */ __webpack_exports__["a"] = ({
   startpage: {
-    maindiv: "IR6M2QD-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
+    maindiv: "KIR33AB-w-d" //Container of main content. Unfortunately id "contentwrapper" is used twice
   },
   resultpage: {
-    itin: "IR6M2QD-v-d", //Container with headline: "Itinerary"
-    itinRow: "IR6M2QD-j-i", // TR in itin with Orig, Dest and date
-    milagecontainer: "IR6M2QD-v-e", // TD-Container on the right
-    rulescontainer: "IR6M2QD-k-d", // First container before rulelinks (the one with Fare X:)
-    htbContainer: "IR6M2QD-k-k", // full "how to buy"-container inner div (td=>div=>div)
-    htbLeft: "IR6M2QD-k-g", // Left column in the "how to buy"-container
-    htbRight: "IR6M2QD-k-f", // Class for normal right column
-    htbGreyBorder: "IR6M2QD-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
+    itin: "KIR33AB-v-d", //Container with headline: "Itinerary"
+    itinRow: "KIR33AB-j-i", // TR in itin with Orig, Dest and date
+    milagecontainer: "KIR33AB-v-e", // TD-Container on the right
+    rulescontainer: "KIR33AB-k-d", // First container before rulelinks (the one with Fare X:)
+    htbContainer: "KIR33AB-k-k", // full "how to buy"-container inner div (td=>div=>div)
+    htbLeft: "KIR33AB-k-g", // Left column in the "how to buy"-container
+    htbRight: "KIR33AB-k-f", // Class for normal right column
+    htbGreyBorder: "KIR33AB-k-l", // Class for right cell with light grey border (used for subtotal of passenger)
     //inline
-    mcDiv: "IR6M2QD-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
-    mcHeader: "IR6M2QD-y-b", // Right menu header class ("Mileage", etc.)
-    mcLinkList: "IR6M2QD-y-c" // Right menu ul list class (immediately following header)
+    mcDiv: "KIR33AB-y-d", // Right menu sections class (3 divs surrounding entire Mileage, Emissions, and Airport Info)
+    mcHeader: "KIR33AB-y-b", // Right menu header class ("Mileage", etc.)
+    mcLinkList: "KIR33AB-y-c" // Right menu ul list class (immediately following header)
   }
 });
 
@@ -3521,7 +3521,7 @@ function printKL() {
   ) {
     return;
   }
-  
+
   var createUrl = function(edition) {
     var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_3__[/* validatePaxcount */ "d"])({
       maxPaxcount: 9,
@@ -3537,13 +3537,27 @@ function printKL() {
 
     const segs = Object(_parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* getCurrentSegs */ "b"])();
 
-    let url = "https://www.klm.com/ams/search-web/api/metasearch?application=EBT7";
-    url += "&trip=" + segs.map(seg => `${seg.orig}:${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(seg.dep.day)}@${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digitTime */ "j"])(seg.dep.time)}:${seg.carrier}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digits */ "k"])(seg.fnr)}:${seg.bookingclass}>${seg.dest}`).join("-");
-    url += "&ref=MS,fb=" + _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].farebases.join('.');
+    let url =
+      "https://www.klm.com/ams/search-web/api/metasearch?application=EBT7";
+    url +=
+      "&trip=" +
+      segs
+        .map(
+          seg =>
+            `${seg.orig}:${seg.dep.year}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(seg.dep.month)}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to2digits */ "i"])(
+              seg.dep.day
+            )}@${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digitTime */ "j"])(seg.dep.time)}:${seg.carrier}${Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* to4digits */ "k"])(
+              seg.fnr
+            )}:${seg.bookingclass}>${seg.dest}`
+        )
+        .join("-");
+    url += "&ref=MS,fb=" + _parse_itin__WEBPACK_IMPORTED_MODULE_4__[/* currentItin */ "a"].farebases.join(".");
     url += "&numberOfAdults=" + pax.adults;
     url += "&numberOfChildren=" + pax.children.length;
     url += "&numberOfInfants=" + pax.infLap;
-    url += "&cabinClass=" + cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getCabin */ "b"])(Math.min(...segs.map(seg => seg.cabin)))];
+    url +=
+      "&cabinClass=" +
+      cabins[Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getCabin */ "b"])(Math.min(...segs.map(seg => seg.cabin)))];
     url += "&country=" + edition[0];
     url += "&language=" + edition[1];
 
