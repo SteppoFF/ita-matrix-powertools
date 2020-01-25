@@ -29,7 +29,7 @@ Using debug console, you may use the shortened minified version.
 - Installing via a userscript manager simplifies saving your settings between sessions
 - You can also create a [Bookmarklet](https://support.mozilla.org/en-US/kb/bookmarklets-perform-common-web-page-tasks) by creating a Bookmark or Favorite in your browser with the following code as the URL:
 
-`javascript:var scr=document.createElement('script');scr.src='https://rawgit.com/SteppoFF/ita-matrix-powertools/master/script_minified.js';document.body.appendChild(scr);`
+`javascript:var scr=document.createElement('script');scr.src='https://rawgit.com/adamhwang/ita-matrix-powertools/master/script_minified.js';document.body.appendChild(scr);`
 
 ![ITA Buy Bookmarklet example GIF](http://i.imgur.com/q5ttPrY.gif)
 

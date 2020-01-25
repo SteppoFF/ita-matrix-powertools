@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name ITA-Matrix-Powertools
-// @namespace https://github.com/SteppoFF/ita-matrix-powertools
+// @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
 // @version 0.41.3
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -14,7 +14,7 @@
 /*
  Written by paul21, Steppo & Adam Hwang (IAkH) of FlyerTalk.com
  http://www.flyertalk.com/forum/members/paul21.html
- Includes contriutions by https://github.com/SteppoFF/ita-matrix-powertools/blob/master/AUTHORS
+ Includes contriutions by https://github.com/adamhwang/ita-matrix-powertools/blob/master/AUTHORS
  Copyright Reserved -- At least share with credit if you do
 */
 
