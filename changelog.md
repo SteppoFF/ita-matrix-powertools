@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.42.0] - 2020-01-26
+
+Edited by IAkH
+
+- removed Hipmunk
+-
+
 ## [0.40.2] - 2020-01-03
 
 Edited by IAkH

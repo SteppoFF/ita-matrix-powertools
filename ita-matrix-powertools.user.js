@@ -2,7 +2,7 @@
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
 // @description Adds new features and builds fare purchase links for ITA Matrix
-// @version 0.41.3
+// @version 0.42.0
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @grant GM.getValue
@@ -113,7 +113,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1161,7 +1161,7 @@ const appSettings = {
   scriptEngine:
     typeof GM === "undefined" || typeof GM.info === "undefined" ? 0 : 1, // 0 - console mode, 1 - tamper or grease mode
   itaLanguage: "en",
-  version: "0.41.3",
+  version: "0.42.0",
   retrycount: 1,
   laststatus: "",
   scriptrunning: 1,
@@ -1607,14 +1607,13 @@ var map = {
 	"./airlines/qf.js": 27,
 	"./airlines/tk.js": 28,
 	"./index.js": 9,
-	"./meta/hipmunk.js": 29,
-	"./meta/kayak.js": 30,
-	"./meta/momondo.js": 31,
-	"./meta/skyscanner.js": 32,
-	"./otas/cheapoair.js": 33,
-	"./otas/etraveli.js": 34,
-	"./otas/expedia.js": 35,
-	"./otas/priceline.js": 36
+	"./meta/kayak.js": 29,
+	"./meta/momondo.js": 30,
+	"./meta/skyscanner.js": 31,
+	"./otas/cheapoair.js": 32,
+	"./otas/etraveli.js": 33,
+	"./otas/expedia.js": 34,
+	"./otas/priceline.js": 35
 };
 
 
@@ -4682,97 +4681,6 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("airli
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
-/* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
-
-
-
-
-
-function printHipmunk() {
-  // 0 = Economy; 1=Premium Economy; 2=Business; 3=First
-  var cabins = ["Coach", "Coach", "Business", "First"];
-  var url = "https://www.hipmunk.com/search/flights?";
-  var mincabin = 3;
-  var pax = Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* validatePaxcount */ "d"])({
-    maxPaxcount: 9,
-    countInf: true,
-    childAsAdult: 18,
-    sepInfSeat: true,
-    childMinAge: 2
-  });
-  if (!pax) {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__[/* printNotification */ "h"])("Error: Failed to validate Passengers in printHipmunk");
-    return;
-  }
-  //Build multi-city search based on legs
-  for (var i = 0; i < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin.length; i++) {
-    // walks each leg
-    url += "&from" + i + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].orig;
-    for (var j = 0; j < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length; j++) {
-      //walks each segment of leg
-      var k = 0;
-      // lets have a look if we need to skip segments - Flightnumber has to be the same and it must be just a layover
-      while (j + k < _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg.length - 1) {
-        if (
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].fnr !=
-            _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k + 1].fnr ||
-          _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j + k].layoverduration >= 1440
-        )
-          break;
-        k++;
-      }
-      url +=
-        (j > 0 ? "%20" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].orig + "%20" : "%3A%3A") +
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].carrier +
-        _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].fnr;
-      if (_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].cabin < mincabin) {
-        mincabin = _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].seg[j].cabin;
-      }
-      j += k;
-    }
-    url +=
-      "&date" +
-      i +
-      "=" +
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.year +
-      "-" +
-      (Number(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.month) <= 9 ? "0" : "") +
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.month.toString() +
-      "-" +
-      (Number(_parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.day) <= 9 ? "0" : "") +
-      _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dep.day.toString();
-    url += "&to" + i + "=" + _parse_itin__WEBPACK_IMPORTED_MODULE_3__[/* currentItin */ "a"].itin[i].dest;
-  }
-  url +=
-    "&pax=" +
-    pax.adults +
-    "&cabin=" +
-    cabins[_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].cabin === "Auto" ? mincabin : Object(_settings_appSettings__WEBPACK_IMPORTED_MODULE_0__[/* getForcedCabin */ "c"])()] +
-    "&infant_lap=" +
-    pax.infLap +
-    "&infant_seat=" +
-    pax.infSeat +
-    "&seniors=0&children=" +
-    pax.children.length;
-
-  return {
-    url,
-    title: "Hipmunk"
-  };
-}
-
-Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("meta", printHipmunk);
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _settings_appSettings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _settings_userSettings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var _print_links__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _parse_itin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
@@ -4913,7 +4821,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5007,7 +4915,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5104,7 +5012,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("meta"
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5198,7 +5106,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5335,7 +5243,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5473,7 +5381,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_2__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5568,7 +5476,7 @@ Object(_print_links__WEBPACK_IMPORTED_MODULE_1__[/* registerLink */ "c"])("otas"
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
