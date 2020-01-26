@@ -10,13 +10,14 @@
 // @grant GM.setValue
 // @grant GM_setValue
 // @include http*://matrix.itasoftware.com/*
+// @license GPL-2.0-only
 // ==/UserScript==
 
 /*
  Written by paul21, Steppo & Adam Hwang (IAkH) of FlyerTalk.com
  http://www.flyertalk.com/forum/members/paul21.html
  Includes contriutions by https://github.com/adamhwang/ita-matrix-powertools/blob/master/AUTHORS
- Copyright Reserved -- At least share with credit if you do
+ GNU General Public License v2.0
 */
 
 //------------------------------------------------------------------------------
