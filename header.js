@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name ITA Matrix Powertools
 // @namespace https://github.com/adamhwang/ita-matrix-powertools
-// @description Adds new features and builds fare purchase links for ITA Matrix
+// @description __DESCRIPTION__
 // @version __VERSION__
 // @icon https://raw.githubusercontent.com/adamhwang/ita-matrix-powertools/master/icons/icon32.png
 // @require https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js

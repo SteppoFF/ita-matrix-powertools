@@ -15,6 +15,7 @@ module.exports = {
     new webpack.BannerPlugin({
       banner: fs
         .readFileSync(path.resolve(__dirname, "header.js"), "utf8")
+        .replace("__DESCRIPTION__", process.env.npm_package_description)
         .replace("__VERSION__", process.env.npm_package_version),
       raw: true
     }),
