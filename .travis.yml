@@ -1,5 +1,13 @@
 language: node_js
 node_js:
   - lts/*
+env:
+  - EXTENSION_ID=menecfddnlmanmpadcalononkolnplpp
 script:
   - npm run build
+deploy:
+  provider: script
+  script: npm run release
+  on:
+    branch: master
+    tags: true

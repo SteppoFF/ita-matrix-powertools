@@ -8,11 +8,13 @@
     "prettier": "pretty-quick --staged",
     "type-check": "tsc",
     "build": "webpack && npm run minify",
-    "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js"
+    "minify": "uglifyjs ita-matrix-powertools.user.js -o script_minified.js",
+    "release": "webstore upload --source=dist/ita-matrix-powertools.webext.zip --auto-publish"
   },
   "dependencies": {
     "@types/greasemonkey": "^4.0.0",
     "@types/webpack-env": "^1.14.1",
+    "chrome-webstore-upload-cli": "^1.2.0",
     "copy-webpack-plugin": "^5.1.1",
     "husky": "^3.1.0",
     "path": "^0.12.7",
