@@ -1,5 +1,8 @@
 # ita-matrix-powertools
 
+[![Build Status](https://travis-ci.com/adamhwang/ita-matrix-powertools.svg?branch=master)](https://travis-ci.com/adamhwang/ita-matrix-powertools)
+[![Dependencies Status](https://david-dm.org/adamhwang/ita-matrix-powertools/status.svg)](https://david-dm.org/adamhwang/ita-matrix-powertools)
+
 Script for greasemonkey + ITA Matrix
 
 [Main discussion thread at FlyerTalk Forums](http://www.flyertalk.com/forum/travel-tools/1623427-ita-purchase-fares-orbitz-delta-userscript.html)
